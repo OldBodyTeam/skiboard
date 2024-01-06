@@ -27,8 +27,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // ReloadInstructions,
 // } from 'react-native/Libraries/NewAppScreen';
 import Login from '@pages/login/Login';
-import { Text, View } from 'react-native';
+// import { Text, View } from 'react-native';
 import Register from '@pages/register/Register';
+import BleManager from '@pages/ble-manager/BleManager';
 // type SectionProps = PropsWithChildren<{
 //   title: string;
 // }>;
@@ -70,9 +71,10 @@ function App(): React.JSX.Element {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Register">
+        initialRouteName="BleManager">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="BleManager" component={BleManager} />
       </Stack.Navigator>
     </NavigationContainer>
   );
