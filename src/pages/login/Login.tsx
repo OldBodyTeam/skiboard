@@ -1,12 +1,21 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import WebView from 'react-native-webview';
 import { loginStyles } from './style';
 
 const Login = () => {
   return (
-    <View style={loginStyles.container}>
-      <Text>111</Text>
-    </View>
+    <WebView
+      source={{ uri: 'http://10.255.177.255:5173/login' }}
+      style={loginStyles.container}
+      originWhitelist={['*']}
+      scalesPageToFit={false}
+      javaScriptEnabled
+      useWebView2
+      mixedContentMode="compatibility"
+      cacheMode="LOAD_NO_CACHE"
+      scrollEnabled={false}
+      hideKeyboardAccessoryView
+    />
   );
 };
 export default Login;

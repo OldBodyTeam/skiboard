@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start --reset-cache",
     "test": "jest",
-    "setup": "rm -rf node_modules && rm -rf package-lock.json && watchman watch-del '/Users/bytedance/holiday/skiboard' && watchman watch-project '/Users/bytedance/holiday/skiboard' && npm install"
+    "setup": "rm -rf node_modules && rm -rf package-lock.json && watchman watch-del '/Users/bytedance/holiday/skiboard' && watchman watch-project '/Users/bytedance/holiday/skiboard' && npm install",
+    "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
   },
   "dependencies": {
     "@react-navigation/native-stack": "^6.9.17",
