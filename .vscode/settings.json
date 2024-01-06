@@ -1,0 +1,7 @@
+{
+  "explorer.compactFolders": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "cloudcode.duetAI.inlineSuggestions.enableAuto": false
+}
