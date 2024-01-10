@@ -12,10 +12,11 @@ import {
   FlatList,
   TouchableHighlight,
   Pressable,
+  Alert,
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import { Buffer } from 'buffer';
 const SECONDS_TO_SCAN_FOR = 3;
 const SERVICE_UUIDS: string[] = [];
 const ALLOW_DUPLICATES = true;
@@ -213,10 +214,18 @@ const BleManagerBlock = () => {
                     characteristic.characteristic,
                     descriptor.uuid,
                   );
+                  await BleManager.startNotification(
+                    peripheral.id,
+                    characteristic.service,
+                    characteristic.characteristic,
+                  );
                   console.debug(
                     `[connectPeripheral][${peripheral.id}] ${characteristic.service} ${characteristic.characteristic} ${descriptor.uuid} descriptor read as:`,
                     data,
                   );
+                  const buffer = Buffer.from(data);
+                  // const sensorData = buffer.readUInt8(1, true);
+                  Alert.alert(buffer.toString());
                 } catch (error) {
                   console.error(
                     `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
