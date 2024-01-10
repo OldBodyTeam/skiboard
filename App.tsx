@@ -5,9 +5,10 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import BootSplash from 'react-native-bootsplash';
 // import type {PropsWithChildren} from 'react';
 // import {
 //   SafeAreaView,
@@ -30,6 +31,7 @@ import Login from '@pages/login/Login';
 // import { Text, View } from 'react-native';
 import Register from '@pages/register/Register';
 import BleManager from '@pages/ble-manager/BleManager';
+import { Platform, StatusBar } from 'react-native';
 // type SectionProps = PropsWithChildren<{
 //   title: string;
 // }>;
@@ -66,9 +68,22 @@ function App(): React.JSX.Element {
   // const backgroundStyle = {
   //   backgroundColor: isDarkMode ? Colors.darker : Colors.blue,
   // };
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('transparent');
+      StatusBar.setTranslucent(true);
+    }
+    const init = async () => {
+      // …do multiple sync or async tasks
+    };
+    init().finally(async () => {
+      await BootSplash.hide({ fade: true });
+      console.debug('BootSplash has been hidden successfully');
+    });
+  }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
         initialRouteName="BleManager">
