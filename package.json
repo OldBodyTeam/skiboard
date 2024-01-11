@@ -13,6 +13,7 @@
     "build:logo": "react-native generate-bootsplash logo.svg --platforms=android --background=F5FCFF --logo-width=100 --assets-output=assets --flavor=main --html=index.html"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native-stack": "^6.9.17",
     "buffer": "^6.0.3",
     "react": "18.2.0",
