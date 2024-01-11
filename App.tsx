@@ -32,6 +32,7 @@ import Login from '@pages/login/Login';
 import Register from '@pages/register/Register';
 import BleManager from '@pages/ble-manager/BleManager';
 import { Platform, StatusBar } from 'react-native';
+import ColorPickerPage from '@pages/color-picker/ColorPicker';
 // type SectionProps = PropsWithChildren<{
 //   title: string;
 // }>;
@@ -86,10 +87,11 @@ function App(): React.JSX.Element {
     <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="BleManager">
+        initialRouteName="ColorPickerPage">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="BleManager" component={BleManager} />
+        <Stack.Screen name="ColorPickerPage" component={ColorPickerPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
