@@ -1,5 +1,6 @@
+import CoverImage from '@components/cover-image/CoverImage';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { SafeAreaView, StatusBar, ScrollView, View } from 'react-native';
 
 const LightScreen = (_props: any) => {
   //   console.log(props);
@@ -7,10 +8,12 @@ const LightScreen = (_props: any) => {
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: '#131416',
       }}>
-      <Text>LightScreen</Text>
+      <StatusBar />
+      <ScrollView>
+        <CoverImage type="light" />
+      </ScrollView>
     </View>
   );
 };
