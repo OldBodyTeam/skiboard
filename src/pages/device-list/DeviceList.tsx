@@ -1,5 +1,12 @@
-import React from 'react';
-import { SafeAreaView, StatusBar, Text, View, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import {
+  SafeAreaView,
+  StatusBar,
+  Text,
+  View,
+  FlatList,
+  Image,
+} from 'react-native';
 import DeviceListItem from './DeviceListItem';
 const DeviceList = () => {
   return (
@@ -18,13 +25,19 @@ const DeviceList = () => {
             width: 41,
             height: 41,
             borderRadius: 41,
-            backgroundColor: 'red',
+            backgroundColor: 'rgba(255,255,255,0.15)',
             position: 'absolute',
             left: 16,
             top: 16.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             // rgba(255,255,255,0.15)
           }}>
-          <Text>返回</Text>
+          <Image
+            source={require('../../assets/header-back.png')}
+            style={{ width: 16, height: 16 }}
+          />
         </View>
         <Text style={{ color: 'white', fontWeight: '600', fontSize: 20 }}>
           Devices
@@ -37,7 +50,9 @@ const DeviceList = () => {
           .map(() => {
             return { index: Math.random() };
           })}
-        renderItem={item => <DeviceListItem key={item.index} />}
+        renderItem={item => (
+          <DeviceListItem key={item.index} device={item.index} />
+        )}
         keyExtractor={item => item.index + ''}
       />
     </SafeAreaView>
