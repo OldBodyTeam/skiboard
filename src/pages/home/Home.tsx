@@ -7,7 +7,10 @@ const Tab = createBottomTabNavigator();
 
 const Home = () => {
   return (
-    <Tab.Navigator tabBar={CustomTabBar} screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      tabBar={CustomTabBar}
+      screenOptions={{ headerShown: false }}
+      initialRouteName="MusicScreen">
       {TabConfig.map(item => {
         return (
           <Tab.Screen
