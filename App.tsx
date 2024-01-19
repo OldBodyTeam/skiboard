@@ -31,8 +31,8 @@ function App(): React.JSX.Element {
   return (
     <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
       <Stack.Navigator
-        screenOptions={{ headerShown: false, animation: 'none' }}
-        initialRouteName="DeviceList">
+        screenOptions={{ headerShown: false }}
+        initialRouteName="Draw">
         {routeConfig.map(item => (
           <Stack.Screen
             name={item.name}

@@ -10,10 +10,12 @@
     "test": "jest",
     "setup": "rm -rf node_modules && rm -rf package-lock.json && watchman watch-del '/Users/bytedance/holiday/skiboard' && watchman watch-project '/Users/bytedance/holiday/skiboard' && npm install",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
-    "build:logo": "react-native generate-bootsplash logo.svg --platforms=android --background=F5FCFF --logo-width=100 --assets-output=assets --flavor=main --html=index.html"
+    "build:logo": "react-native generate-bootsplash logo.svg --platforms=android --background=F5FCFF --logo-width=100 --assets-output=assets --flavor=main --html=index.html",
+    "link": "react-native link react-native-picker"
   },
   "dependencies": {
     "@react-native-community/blur": "^4.3.2",
+    "@react-native-community/datetimepicker": "^7.6.2",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native-stack": "^6.9.17",
     "buffer": "^6.0.3",
@@ -26,6 +28,7 @@
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
     "react-native-switch": "^1.5.1",
+    "react-native-ui-lib": "^7.14.4",
     "react-native-webview": "^13.6.4",
     "reanimated-color-picker": "^2.4.2"
   },

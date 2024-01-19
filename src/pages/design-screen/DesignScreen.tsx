@@ -1,16 +1,266 @@
-import React from 'react';
-import { Text, View } from 'react-native';
+import CoverImage from '@components/cover-image/CoverImage';
+import React, { useState } from 'react';
+import {
+  ScrollView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Dimensions,
+} from 'react-native';
 
 const DesignScreen = (_props: any) => {
+  const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   return (
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#131416',
       }}>
-      <Text>DesignScreen</Text>
+      <StatusBar />
+      <ScrollView style={{ paddingHorizontal: 5 }}>
+        <CoverImage type="design" marginTop={116}>
+          <View
+            style={{
+              marginTop: 76,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              width: Dimensions.get('window').width - 50,
+              marginHorizontal: 25,
+            }}>
+            <Image
+              source={require('../../assets/design.png')}
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 0,
+                marginRight: 15,
+                marginLeft: 15,
+              }}
+            />
+            <View
+              style={{
+                display: 'flex',
+                flex: 1,
+              }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 32,
+                    color: 'red',
+                  }}>
+                  xxxxx，
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 32,
+                    color: 'red',
+                    width: 32 * 7,
+                  }}>
+                  nice to
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 32,
+                  color: 'red',
+                }}>
+                see you!
+              </Text>
+            </View>
+          </View>
+        </CoverImage>
+        <View
+          style={{
+            width: '100%',
+            height: 193 / 2,
+            borderRadius: 77 / 2,
+            backgroundColor: 'rgba(52, 53, 54, 0.5)',
+            display: 'flex',
+            flexDirection: 'row',
+            overflow: 'hidden',
+            marginTop: 28,
+          }}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => setSwitchStatus('off')}>
+            <View
+              style={{
+                flex: 1,
+
+                borderRadius: 77 / 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ...(switchStatus === 'off'
+                  ? { backgroundColor: 'white' }
+                  : { backgroundColor: '#767676' }),
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  ...(switchStatus === 'off'
+                    ? { color: 'black', fontWeight: '600' }
+                    : { color: '#ffffff' }),
+                }}>
+                Off
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => setSwitchStatus('on')}>
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 5,
+                borderRadius: 77 / 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ...(switchStatus === 'on'
+                  ? { backgroundColor: 'white' }
+                  : { backgroundColor: '#767676' }),
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  ...(switchStatus === 'on'
+                    ? { color: 'black', fontWeight: '600' }
+                    : { color: '#ffffff' }),
+                }}>
+                On
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            height: 191 / 2,
+            marginTop: 5,
+          }}>
+          <TouchableOpacity
+            style={{
+              width: '66.850829%',
+              height: '100%',
+              overflow: 'hidden',
+              borderRadius: 30,
+            }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#ffffff',
+                }}>
+                My Effects
+              </Text>
+              <Image
+                source={require('../../assets/design/love.png')}
+                style={{ width: 122 / 2, height: 111 / 2, marginLeft: 16 }}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: '33.149171%',
+              height: '100%',
+              overflow: 'hidden',
+              borderRadius: 30,
+              marginLeft: 3,
+            }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#ffffff',
+                }}>
+                Scrolling Text
+              </Text>
+              {/* <Image source={require('../../assets/design/text.png')} /> */}
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
+          <TouchableOpacity style={{ flex: 1 }}>
+            <View
+              style={{
+                height: 444 / 2,
+                width: '100%',
+                backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                borderRadius: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#ffffff',
+                  marginBottom: 43 / 2,
+                }}>
+                Custom Design
+              </Text>
+              <Image
+                source={require('../../assets/design/shan-dian.png')}
+                style={{ width: 258 / 2, height: 228 / 2 }}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1, marginLeft: 5 }}>
+            <View
+              style={{
+                height: 444 / 2,
+                width: '100%',
+                backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                borderRadius: 30,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#ffffff',
+                  marginBottom: 68 / 2,
+                }}>
+                Creative Patterns
+              </Text>
+              <Image
+                source={require('../../assets/design/kun.png')}
+                style={{ width: 178 / 2, height: 178 / 2 }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };

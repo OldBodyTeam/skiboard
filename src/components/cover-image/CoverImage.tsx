@@ -1,5 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Dimensions, Image, ImageBackground, Text, View } from 'react-native';
+import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 const bgList = {
   light: {
     bg: require('../../assets/cover-img/light-bg.png'),
@@ -8,10 +15,26 @@ const bgList = {
       width: Dimensions.get('window').width,
     },
   },
+  design: {
+    bg: require('../../assets/cover-img/design-bg.png'),
+    style: {
+      height: (567 / 2) * (Dimensions.get('window').height / 567 / 2),
+      width: Dimensions.get('window').width,
+    },
+  },
+  music: {
+    bg: require('../../assets/cover-img/music-bg.png'),
+    style: {
+      height: (567 / 2) * (Dimensions.get('window').height / 567 / 2),
+      width: Dimensions.get('window').width,
+    },
+  },
 };
-export type CoverImageProps = { type: keyof typeof bgList };
-const CoverImage: FC<CoverImageProps> = props => {
-  const { type } = props;
+export type CoverImageProps = { type: keyof typeof bgList } & {
+  marginTop?: number;
+};
+const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
+  const { type, children, marginTop = 0 } = props;
   const [height, setHeight] = useState<number>(0);
   useEffect(() => {
     const img = Image.resolveAssetSource(bgList[type].bg);
@@ -28,13 +51,10 @@ const CoverImage: FC<CoverImageProps> = props => {
           height,
           width: Dimensions.get('window').width,
         }}>
-        <View>
-          <Text>111</Text>
-          <Text>111</Text>
-        </View>
+        {children}
         <View
           style={{
-            marginTop: 183,
+            marginTop: 183 - marginTop,
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
@@ -55,34 +75,78 @@ const CoverImage: FC<CoverImageProps> = props => {
               paddingHorizontal: 16,
             }}>
             <Text style={{ fontSize: 14, color: 'white' }}>Connected</Text>
-            <Text>111</Text>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Text style={{ fontSize: 14, color: '#FF7B79' }}>20%</Text>
+              <View
+                style={{
+                  width: 27,
+                  height: 14,
+                  position: 'relative',
+                  backgroundColor: '#6D5251',
+                  overflow: 'hidden',
+                  borderRadius: 5.5,
+                  marginLeft: 4,
+                }}>
+                <View
+                  style={{
+                    width: 10,
+                    height: '100%',
+                    backgroundColor: '#FF7B79',
+                  }}
+                />
+              </View>
+              <View
+                style={{
+                  width: 2,
+                  height: 5,
+                  borderRadius: 1,
+                  backgroundColor: '#6D5251',
+                  marginLeft: 1,
+                }}
+              />
+            </View>
           </View>
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 50,
-              height: 50,
-              borderRadius: 50,
-              backgroundColor: '#000000',
-              marginLeft: 8,
-            }}>
-            <Text>11</Text>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 50,
-              height: 50,
-              borderRadius: 50,
-              backgroundColor: '#000000',
-              marginLeft: 8,
-            }}>
-            <Text>11</Text>
-          </View>
+          <TouchableOpacity>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                backgroundColor: '#000000',
+                marginLeft: 8,
+              }}>
+              <Image
+                source={require('../../assets/cover-img/go.png')}
+                style={{ width: 16, height: 16 }}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                backgroundColor: '#000000',
+                marginLeft: 8,
+              }}>
+              <Image
+                source={require('../../assets/cover-img/people.png')}
+                style={{ width: 16, height: 16 }}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     </View>
