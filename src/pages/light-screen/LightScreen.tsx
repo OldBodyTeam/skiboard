@@ -7,7 +7,6 @@ import {
   StatusBar,
   ScrollView,
   View,
-  TouchableNativeFeedbackBase,
   TouchableOpacity,
   Image,
   Text,

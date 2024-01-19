@@ -2,7 +2,11 @@ import React from 'react';
 import LightScreen from '@pages/light-screen/LightScreen';
 import MusicScreen from '@pages/music-screen/MusicScreen';
 import DesignScreen from '@pages/design-screen/DesignScreen';
-
+export type TabParamList = {
+  DesignScreen: any;
+  LightScreen: any;
+  MusicScreen: any;
+};
 const TabConfig = [
   {
     name: 'DesignScreen',
@@ -22,5 +26,5 @@ const TabConfig = [
     selectedIcon: require('../../assets/selected-music.png'),
     icon: require('../../assets/music.png'),
   },
-];
+] as const;
 export { TabConfig };

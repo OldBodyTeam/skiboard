@@ -32,7 +32,7 @@ function App(): React.JSX.Element {
     <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Draw">
+        initialRouteName="EditLight">
         {routeConfig.map(item => (
           <Stack.Screen
             name={item.name}

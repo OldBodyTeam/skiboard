@@ -97,6 +97,7 @@ const MusicScreen = (_props: any) => {
         <View />
       </ScrollView>
       {/* <PickerModal /> */}
+      {/* https://github.com/rcbyr/keen-slider */}
     </View>
   );
 };

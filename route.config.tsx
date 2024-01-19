@@ -3,6 +3,7 @@ import ColorPickerPage from '@pages/color-picker/ColorPicker';
 import DeviceList from '@pages/device-list/DeviceList';
 import EditLight from '@pages/edit-light/EditLight';
 import Home from '@pages/home/Home';
+import LightList from '@pages/light-list/LightList';
 import Login from '@pages/login/Login';
 import Register from '@pages/register/Register';
 export type RootStackParamList = {
@@ -12,7 +13,8 @@ export type RootStackParamList = {
   ColorPickerPage: any;
   Home: any;
   DeviceList: any;
-  Draw: any;
+  EditLight: any;
+  LightList: any;
 };
 const routeConfig = [
   {
@@ -40,8 +42,12 @@ const routeConfig = [
     component: DeviceList,
   },
   {
-    name: 'Draw',
+    name: 'EditLight',
     component: EditLight,
+  },
+  {
+    name: 'LightList',
+    component: LightList,
   },
 ] as const;
 export { routeConfig };

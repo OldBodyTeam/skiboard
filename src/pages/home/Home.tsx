@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TabConfig } from './tab-config';
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
+import { TabConfig, TabParamList } from './tab-config';
 import CustomTabBar from '@components/custom-tab-bar/CustomTabBar';
+import { RootStackParamList } from 'route.config';
 
-const Tab = createBottomTabNavigator();
-
-const Home = () => {
+const Tab = createBottomTabNavigator<TabParamList>();
+type HomeProps = BottomTabScreenProps<RootStackParamList, 'Home'> &
+  React.PropsWithChildren<{ name?: string }>;
+const Home = (_props: HomeProps) => {
   return (
     <Tab.Navigator
       tabBar={CustomTabBar}

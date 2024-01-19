@@ -1,5 +1,7 @@
 import CoverImage from '@components/cover-image/CoverImage';
-import React, { useState } from 'react';
+import { TabParamList } from '@pages/home/tab-config';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -9,8 +11,10 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-
-const DesignScreen = (_props: any) => {
+type DesignScreenProps = BottomTabScreenProps<TabParamList, 'DesignScreen'> &
+  PropsWithChildren<{ name?: string }>;
+const DesignScreen = (props: DesignScreenProps) => {
+  const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   return (
     <View
@@ -209,7 +213,9 @@ const DesignScreen = (_props: any) => {
           </TouchableOpacity>
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-          <TouchableOpacity style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => navigation.navigate('EditLight')}>
             <View
               style={{
                 height: 444 / 2,
@@ -234,7 +240,9 @@ const DesignScreen = (_props: any) => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1, marginLeft: 5 }}>
+          <TouchableOpacity
+            style={{ flex: 1, marginLeft: 5 }}
+            onPress={() => navigation.navigate('LightList')}>
             <View
               style={{
                 height: 444 / 2,

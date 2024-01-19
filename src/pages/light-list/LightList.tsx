@@ -1,25 +1,24 @@
 import React, { PropsWithChildren } from 'react';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
-import { drawStyles } from './style';
 import { SafeAreaView } from 'react-native';
 import { View } from 'react-native-ui-lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
-type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
+type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
-const EditLight = (props: EditLightProps) => {
+const LightList = (props: LightListProps) => {
   const { navigation } = props;
   const handleNavigation = (event: WebViewMessageEvent) => {
     const data = event.nativeEvent.data;
     console.log(data);
-    navigation.navigate('Home', { screen: 'DesignScreen' });
+    navigation.navigate('Home');
   };
   return (
-    <View style={{ backgroundColor: 'rgba(89,56,236,1)', flex: 1 }}>
-      <SafeAreaView style={drawStyles.container}>
+    <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         <WebView
-          source={{ uri: 'http://192.168.199.106:5173/draw' }}
-          style={drawStyles.container}
+          source={{ uri: 'http://192.168.199.106:5173/draw-list' }}
+          style={{ flex: 1 }}
           originWhitelist={['*']}
           scalesPageToFit={false}
           javaScriptEnabled
@@ -34,4 +33,4 @@ const EditLight = (props: EditLightProps) => {
     </View>
   );
 };
-export default EditLight;
+export default LightList;
