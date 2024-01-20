@@ -10,9 +10,12 @@ type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
 const EditLight = (props: EditLightProps) => {
   const { navigation } = props;
   const handleNavigation = (event: WebViewMessageEvent) => {
-    const data = event.nativeEvent.data;
+    const data = JSON.parse(event.nativeEvent.data);
     console.log(data);
-    navigation.navigate('Home', { screen: 'DesignScreen' });
+    navigation.navigate(
+      data.goPage,
+      data.screen ? { screen: data.screen } : {},
+    );
   };
   return (
     <View style={{ backgroundColor: 'rgba(89,56,236,1)', flex: 1 }}>

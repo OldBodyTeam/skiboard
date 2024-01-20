@@ -15,7 +15,7 @@ const Home = (_props: HomeProps) => {
     <Tab.Navigator
       tabBar={CustomTabBar}
       screenOptions={{ headerShown: false }}
-      initialRouteName="MusicScreen">
+      initialRouteName="DesignScreen">
       {TabConfig.map(item => {
         return (
           <Tab.Screen

@@ -1,11 +1,19 @@
-import React from 'react';
-import WebView from 'react-native-webview';
+import React, { PropsWithChildren } from 'react';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { loginStyles } from './style';
-
-const Login = () => {
+import { RootStackParamList } from 'route.config';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
+  PropsWithChildren<{ name?: string }>;
+const Login = (props: LoginProps) => {
+  const { navigation } = props;
+  const handleNavigation = (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data);
+    navigation.navigate(data.goPage);
+  };
   return (
     <WebView
-      source={{ uri: 'http://10.255.177.255:5173/login' }}
+      source={{ uri: 'http://192.168.199.106:5173/login' }}
       style={loginStyles.container}
       originWhitelist={['*']}
       scalesPageToFit={false}
@@ -15,6 +23,7 @@ const Login = () => {
       cacheMode="LOAD_NO_CACHE"
       scrollEnabled={false}
       hideKeyboardAccessoryView
+      onMessage={handleNavigation}
     />
   );
 };

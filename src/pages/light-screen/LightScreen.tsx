@@ -27,7 +27,7 @@ const LightScreen = (_props: any) => {
       }}>
       <StatusBar />
       <ScrollView>
-        <CoverImage type="light">
+        <CoverImage type="light" marginTop={80}>
           <View style={{ marginTop: 137 / 2, marginLeft: 25 }}>
             <Text
               style={{ fontSize: 24, fontWeight: 'bold', color: '#121115' }}>

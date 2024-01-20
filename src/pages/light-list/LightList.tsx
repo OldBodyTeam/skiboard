@@ -9,9 +9,12 @@ type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
 const LightList = (props: LightListProps) => {
   const { navigation } = props;
   const handleNavigation = (event: WebViewMessageEvent) => {
-    const data = event.nativeEvent.data;
+    const data = JSON.parse(event.nativeEvent.data);
     console.log(data);
-    navigation.navigate('Home');
+    navigation.navigate(
+      data.goPage,
+      data.screen ? { screen: data.screen } : {},
+    );
   };
   return (
     <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
