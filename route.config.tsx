@@ -6,6 +6,9 @@ import Home from '@pages/home/Home';
 import LightList from '@pages/light-list/LightList';
 import Login from '@pages/login/Login';
 import Register from '@pages/register/Register';
+import Scenes from '@pages/scenes/Scenes';
+import ScrollText from '@pages/scroll-text/ScrollText';
+import Settings from '@pages/settings/Settings';
 export type RootStackParamList = {
   Login: any;
   Register: any;
@@ -15,6 +18,9 @@ export type RootStackParamList = {
   DeviceList: any;
   EditLight: any;
   LightList: any;
+  ScrollText: any;
+  Scenes: any;
+  Settings: any;
 };
 const routeConfig = [
   {
@@ -48,6 +54,18 @@ const routeConfig = [
   {
     name: 'LightList',
     component: LightList,
+  },
+  {
+    name: 'ScrollText',
+    component: ScrollText,
+  },
+  {
+    name: 'Scenes',
+    component: Scenes,
+  },
+  {
+    name: 'Settings',
+    component: Settings,
   },
 ] as const;
 export { routeConfig };

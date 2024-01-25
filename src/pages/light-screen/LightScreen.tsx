@@ -44,7 +44,13 @@ const LightScreen = (_props: any) => {
             </Text>
           </View>
         </CoverImage>
-        <View style={{ paddingHorizontal: 5 }}>
+        <View
+          style={{
+            marginHorizontal: 5,
+            backgroundColor: 'rgba(52, 53, 54, 0.3)',
+            borderRadius: 30,
+            padding: 16,
+          }}>
           <View style={{ flex: 1 }}>
             <ColorPicker value="red" onComplete={onSelectColor}>
               <HueSlider
@@ -61,6 +67,7 @@ const LightScreen = (_props: any) => {
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
+              marginBottom: 12,
             }}>
             <Progress />
             <Switch />
@@ -128,13 +135,17 @@ const LightScreen = (_props: any) => {
                 style={{
                   fontSize: 14,
                   color: '#ffffff',
-                  marginBottom: 66 / 2,
+                  marginVertical: 52 / 2,
                 }}>
                 LED Strips Effects
               </Text>
               <Image
-                source={require('../../assets/music/led.png')}
-                style={{ width: 140 / 2, height: 116 / 2 }}
+                source={require('../../assets/light/music.png')}
+                style={{
+                  width: 101 / 2,
+                  height: 132 / 2,
+                  marginBottom: 52 / 2,
+                }}
               />
             </View>
           </TouchableOpacity>
@@ -153,13 +164,13 @@ const LightScreen = (_props: any) => {
                 style={{
                   fontSize: 14,
                   color: '#ffffff',
-                  marginBottom: 45 / 2,
+                  marginVertical: 52 / 2,
                 }}>
                 Scenes
               </Text>
               <Image
-                source={require('../../assets/music/scenes.png')}
-                style={{ width: 138 / 2, height: 138 / 2 }}
+                source={require('../../assets/light/flush.png')}
+                style={{ width: 124 / 2, height: 124 / 2 }}
               />
             </View>
           </TouchableOpacity>

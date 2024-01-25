@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BootSplash from 'react-native-bootsplash';
 import { RootStackParamList, routeConfig } from './route.config';
 import { Platform, StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function App(): React.JSX.Element {
@@ -29,19 +30,21 @@ function App(): React.JSX.Element {
   }, []);
 
   return (
-    <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
-      <Stack.Navigator
-        screenOptions={{ headerShown: false }}
-        initialRouteName="Login">
-        {routeConfig.map(item => (
-          <Stack.Screen
-            name={item.name}
-            component={item.component}
-            key={item.name}
-          />
-        ))}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Settings">
+          {routeConfig.map(item => (
+            <Stack.Screen
+              name={item.name}
+              component={item.component}
+              key={item.name}
+            />
+          ))}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 

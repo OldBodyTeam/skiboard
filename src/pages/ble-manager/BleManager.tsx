@@ -1,3 +1,7 @@
+/**
+ * Sample BLE React Native App
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
@@ -12,7 +16,7 @@ import {
   FlatList,
   TouchableHighlight,
   Pressable,
-  Alert,
+  Image,
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -20,7 +24,8 @@ import { Buffer } from 'buffer';
 const SECONDS_TO_SCAN_FOR = 3;
 const SERVICE_UUIDS: string[] = [];
 const ALLOW_DUPLICATES = true;
-
+const buffer = Buffer.from('tést');
+console.log(buffer);
 import BleManager, {
   BleDisconnectPeripheralEvent,
   BleManagerDidUpdateValueForCharacteristicEvent,
@@ -110,10 +115,11 @@ const BleManagerBlock = () => {
     console.debug('[handleDiscoverPeripheral] new BLE peripheral=', peripheral);
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
+    } else {
+      setPeripherals(map => {
+        return new Map(map.set(peripheral.id, peripheral));
+      });
     }
-    setPeripherals(map => {
-      return new Map(map.set(peripheral.id, peripheral));
-    });
   };
 
   const togglePeripheralConnection = async (peripheral: Peripheral) => {
@@ -214,18 +220,10 @@ const BleManagerBlock = () => {
                     characteristic.characteristic,
                     descriptor.uuid,
                   );
-                  await BleManager.startNotification(
-                    peripheral.id,
-                    characteristic.service,
-                    characteristic.characteristic,
-                  );
                   console.debug(
                     `[connectPeripheral][${peripheral.id}] ${characteristic.service} ${characteristic.characteristic} ${descriptor.uuid} descriptor read as:`,
                     data,
                   );
-                  const buffer = Buffer.from(data);
-                  // const sensorData = buffer.readUInt8(1, true);
-                  Alert.alert(buffer.toString());
                 } catch (error) {
                   console.error(
                     `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
@@ -363,7 +361,7 @@ const BleManagerBlock = () => {
   };
 
   return (
-    <>
+    <View style={styles.body}>
       <StatusBar />
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
@@ -393,7 +391,64 @@ const BleManagerBlock = () => {
           keyExtractor={item => item.id}
         />
       </SafeAreaView>
-    </>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 8,
+          left: 5,
+          right: 5,
+          backgroundColor: '#FDFDFD',
+          borderRadius: 30,
+          paddingVertical: 28,
+          paddingHorizontal: 24,
+        }}>
+        <TouchableHighlight
+          style={{
+            overflow: 'hidden',
+            position: 'absolute',
+            top: 20,
+            right: 29,
+          }}>
+          <Image
+            source={require('../../assets/toast-close.png')}
+            style={{
+              width: 24,
+              height: 24,
+            }}
+          />
+        </TouchableHighlight>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: 'bold',
+            color: '#000000',
+            textAlign: 'center',
+          }}>
+          Wagii Lumii
+        </Text>
+        <View style={{ marginVertical: 32, height: 212 }} />
+        <TouchableHighlight style={{ flex: 1, overflow: 'hidden' }}>
+          <View
+            style={{
+              backgroundColor: 'rgba(215, 220, 225, 0.43)',
+              height: 50,
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: '#333333',
+              }}>
+              Connect
+            </Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    </View>
   );
 };
 
@@ -432,6 +487,7 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: '#0082FC',
     flex: 1,
+    position: 'relative',
   },
   sectionContainer: {
     marginTop: 32,

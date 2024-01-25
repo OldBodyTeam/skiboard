@@ -11,19 +11,22 @@
     "setup": "rm -rf node_modules && rm -rf package-lock.json && watchman watch-del '/Users/bytedance/holiday/skiboard' && watchman watch-project '/Users/bytedance/holiday/skiboard' && npm install",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
     "build:logo": "react-native generate-bootsplash logo.svg --platforms=android --background=F5FCFF --logo-width=100 --assets-output=assets --flavor=main --html=index.html",
-    "link": "react-native link react-native-picker"
+    "link": "react-native link react-native-picker",
+    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions"
   },
   "dependencies": {
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/datetimepicker": "^7.6.2",
+    "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native-stack": "^6.9.17",
     "buffer": "^6.0.3",
     "react": "18.2.0",
-    "react-native": "0.73.1",
-    "react-native-ble-manager": "^11.0.8",
+    "react-native": "^0.73.1",
+    "react-native-ble-manager": "^11.2.0",
     "react-native-bootsplash": "^5.2.2",
     "react-native-gesture-handler": "^2.14.0",
+    "react-native-image-picker": "^7.1.0",
     "react-native-reanimated": "^3.6.1",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
@@ -52,5 +55,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "resolutions": {
+    "ob1": "0.80.4",
+    "metro-source-map": "0.80.4"
   }
 }

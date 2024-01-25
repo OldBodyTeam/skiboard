@@ -22,7 +22,7 @@ const SwitchCom = () => {
       }} // style for inner animated circle for what you (may) be rendering inside the circle
       switchLeftPx={4} // denominator for logic when sliding to TRUE position. Higher number = more space from RIGHT of the circle to END of the slider
       switchRightPx={4} // denominator for logic when sliding to FALSE position. Higher number = more space from LEFT of the circle to BEGINNING of the slider
-      containerStyle={{ width: 146 }}
+      containerStyle={{ width: 146, height: 166 }}
       activeTextStyle={{
         color: 'black',
         fontSize: 14,

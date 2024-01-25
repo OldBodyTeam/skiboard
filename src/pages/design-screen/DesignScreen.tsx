@@ -1,6 +1,7 @@
 import CoverImage from '@components/cover-image/CoverImage';
 import { TabParamList } from '@pages/home/tab-config';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useState } from 'react';
 import {
   ScrollView,
@@ -11,7 +12,12 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-type DesignScreenProps = BottomTabScreenProps<TabParamList, 'DesignScreen'> &
+import { RootStackParamList } from 'route.config';
+import type { CompositeScreenProps } from '@react-navigation/native';
+type DesignScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'DesignScreen'>,
+  NativeStackScreenProps<RootStackParamList, 'Home'>
+> &
   PropsWithChildren<{ name?: string }>;
 const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
@@ -186,6 +192,7 @@ const DesignScreen = (props: DesignScreenProps) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => navigation.navigate('ScrollText')}
             style={{
               width: '33.149171%',
               height: '100%',

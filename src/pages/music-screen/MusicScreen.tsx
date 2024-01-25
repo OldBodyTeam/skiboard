@@ -1,6 +1,6 @@
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
-import PickerModal from '@components/picker-modal/PickerModal';
+// import PickerModal from '@components/picker-modal/PickerModal';
 import React from 'react';
 import {
   Image,
@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import Switch from '@components/switch/Switch';
+import PickerDemo from '@components/time-picker';
 const MusicScreen = (_props: any) => {
   return (
     <View
@@ -37,7 +38,7 @@ const MusicScreen = (_props: any) => {
                 <Switch />
               </View>
               <View style={{ marginTop: 22 }}>
-                <Text style={{ color: 'white', fontSize: 22 }}>Schedute</Text>
+                <PickerDemo />
               </View>
             </View>
           </BlurBg>
