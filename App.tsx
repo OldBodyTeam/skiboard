@@ -34,7 +34,7 @@ function App(): React.JSX.Element {
       <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Settings">
+          initialRouteName="LightGlowModes">
           {routeConfig.map(item => (
             <Stack.Screen
               name={item.name}

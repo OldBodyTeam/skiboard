@@ -1,7 +1,7 @@
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
 // import PickerModal from '@components/picker-modal/PickerModal';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import {
   Image,
   ScrollView,
@@ -12,7 +12,18 @@ import {
 } from 'react-native';
 import Switch from '@components/switch/Switch';
 import PickerDemo from '@components/time-picker';
-const MusicScreen = (_props: any) => {
+import { TabParamList } from '@pages/home/tab-config';
+import { RootStackParamList } from 'route.config';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
+type MusicScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'MusicScreen'>,
+  NativeStackScreenProps<RootStackParamList, 'Home'>
+> &
+  PropsWithChildren<{ name?: string }>;
+const MusicScreen = (props: MusicScreenProps) => {
+  const { navigation } = props;
   return (
     <View
       style={{
@@ -21,7 +32,10 @@ const MusicScreen = (_props: any) => {
       }}>
       <StatusBar />
       <ScrollView>
-        <CoverImage type="music" />
+        <CoverImage
+          type="music"
+          handleNavigation={() => navigation.navigate('Settings')}
+        />
         <View style={{ marginTop: 28, paddingHorizontal: 5 }}>
           <BlurBg borderRadius={30} width={'100%'}>
             <View style={{ backgroundColor: 'transparent', padding: 22 }}>

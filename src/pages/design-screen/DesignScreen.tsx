@@ -30,7 +30,10 @@ const DesignScreen = (props: DesignScreenProps) => {
       }}>
       <StatusBar />
       <ScrollView style={{ paddingHorizontal: 5 }}>
-        <CoverImage type="design" marginTop={116}>
+        <CoverImage
+          type="design"
+          marginTop={116}
+          handleNavigation={() => navigation.navigate('Settings')}>
           <View
             style={{
               marginTop: 76,

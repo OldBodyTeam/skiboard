@@ -32,9 +32,10 @@ const bgList = {
 };
 export type CoverImageProps = { type: keyof typeof bgList } & {
   marginTop?: number;
+  handleNavigation: () => void;
 };
 const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
-  const { type, children, marginTop = 0 } = props;
+  const { type, children, marginTop = 0, handleNavigation } = props;
   const [height, setHeight] = useState<number>(0);
   useEffect(() => {
     const img = Image.resolveAssetSource(bgList[type].bg);
@@ -129,7 +130,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleNavigation}>
             <View
               style={{
                 display: 'flex',

@@ -2,7 +2,7 @@ import CoverImage from '@components/cover-image/CoverImage';
 import CustomThumb from '@components/custom-thumb/CustomThumb';
 import Progress from '@components/progress/Progress';
 import Switch from '@components/switch/Switch';
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   StatusBar,
   ScrollView,
@@ -12,8 +12,18 @@ import {
   Text,
 } from 'react-native';
 import ColorPicker, { HueSlider } from 'reanimated-color-picker';
-
-const LightScreen = (_props: any) => {
+import type { CompositeScreenProps } from '@react-navigation/native';
+import { RootStackParamList } from 'route.config';
+import { TabParamList } from '@pages/home/tab-config';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+type LightScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'MusicScreen'>,
+  NativeStackScreenProps<RootStackParamList, 'Home'>
+> &
+  PropsWithChildren<{ name?: string }>;
+const LightScreen = (props: LightScreenProps) => {
+  const { navigation } = props;
   const onSelectColor = ({ hex }: { hex: string }) => {
     // do something with the selected color.
     console.log(hex);
@@ -27,7 +37,10 @@ const LightScreen = (_props: any) => {
       }}>
       <StatusBar />
       <ScrollView>
-        <CoverImage type="light" marginTop={80}>
+        <CoverImage
+          type="light"
+          marginTop={80}
+          handleNavigation={() => navigation.navigate('Settings')}>
           <View style={{ marginTop: 137 / 2, marginLeft: 25 }}>
             <Text
               style={{ fontSize: 24, fontWeight: 'bold', color: '#121115' }}>
@@ -50,6 +63,7 @@ const LightScreen = (_props: any) => {
             backgroundColor: 'rgba(52, 53, 54, 0.3)',
             borderRadius: 30,
             padding: 16,
+            position: 'relative',
           }}>
           <View style={{ flex: 1 }}>
             <ColorPicker value="red" onComplete={onSelectColor}>
@@ -61,6 +75,7 @@ const LightScreen = (_props: any) => {
                 renderThumb={CustomThumb}
               />
             </ColorPicker>
+            v
           </View>
           <View
             style={{
@@ -87,7 +102,6 @@ const LightScreen = (_props: any) => {
               '#FF8A5E',
               '#FF8A5E',
               '#60AEE6',
-              '#60AEE6',
             ].map((color, index) => {
               return (
                 <TouchableOpacity
@@ -97,7 +111,7 @@ const LightScreen = (_props: any) => {
                     style={{
                       width: 55,
                       height: 55,
-                      borderColor: color,
+                      borderColor: 'white',
                       borderRadius: 55,
                       backgroundColor: 'transparent',
                       borderWidth: selected === index ? 2 : 0,
@@ -117,6 +131,25 @@ const LightScreen = (_props: any) => {
                 </TouchableOpacity>
               );
             })}
+            <TouchableOpacity onPress={() => setSelected(11)}>
+              <View
+                style={{
+                  width: 55,
+                  height: 55,
+                  borderColor: 'white',
+                  borderRadius: 55,
+                  backgroundColor: 'transparent',
+                  borderWidth: selected === 11 ? 2 : 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('../../assets/light/all.png')}
+                  style={{ width: 36, height: 36 }}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>

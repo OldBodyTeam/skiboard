@@ -9,8 +9,8 @@ const SwitchCom = () => {
       disabled={false}
       activeText={'On'}
       inActiveText={'Off'}
-      circleSize={28}
-      barHeight={36}
+      circleSize={40}
+      barHeight={50}
       backgroundActive={'rgba(255, 255, 255, 1)'}
       backgroundInactive={'rgba(255, 255, 255, 1)'}
       circleActiveColor={'rgba(0, 0, 0, 1)'}
@@ -20,8 +20,8 @@ const SwitchCom = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }} // style for inner animated circle for what you (may) be rendering inside the circle
-      switchLeftPx={4} // denominator for logic when sliding to TRUE position. Higher number = more space from RIGHT of the circle to END of the slider
-      switchRightPx={4} // denominator for logic when sliding to FALSE position. Higher number = more space from LEFT of the circle to BEGINNING of the slider
+      switchLeftPx={6} // denominator for logic when sliding to TRUE position. Higher number = more space from RIGHT of the circle to END of the slider
+      switchRightPx={6} // denominator for logic when sliding to FALSE position. Higher number = more space from LEFT of the circle to BEGINNING of the slider
       containerStyle={{ width: 146, height: 166 }}
       activeTextStyle={{
         color: 'black',
@@ -33,7 +33,7 @@ const SwitchCom = () => {
         fontSize: 14,
         fontWeight: '600',
       }}
-      switchWidthMultiplier={2.7}
+      switchWidthMultiplier={2.3}
       switchBorderRadius={36}
     />
   );

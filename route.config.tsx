@@ -3,6 +3,7 @@ import ColorPickerPage from '@pages/color-picker/ColorPicker';
 import DeviceList from '@pages/device-list/DeviceList';
 import EditLight from '@pages/edit-light/EditLight';
 import Home from '@pages/home/Home';
+import LightGlowModes from '@pages/light-glow-modes/LightGlowModes';
 import LightList from '@pages/light-list/LightList';
 import Login from '@pages/login/Login';
 import Register from '@pages/register/Register';
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   ScrollText: any;
   Scenes: any;
   Settings: any;
+  LightGlowModes: any;
 };
 const routeConfig = [
   {
@@ -66,6 +68,10 @@ const routeConfig = [
   {
     name: 'Settings',
     component: Settings,
+  },
+  {
+    name: 'LightGlowModes',
+    component: LightGlowModes,
   },
 ] as const;
 export { routeConfig };
