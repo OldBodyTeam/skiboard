@@ -14,6 +14,7 @@ import {
 import { useScreenSize } from '@hooks/useScreenSize';
 import ProgressNumber from '@components/progress-number/ProgressNumber';
 import Reverse from '@components/reverse/Reverse';
+import SVGNum from '@components/svg-num/SVGNum';
 
 type LightGlowModesProps = NativeStackScreenProps<
   RootStackParamList,
@@ -130,6 +131,36 @@ const LightGlowModes = (props: LightGlowModesProps) => {
                 zIndex: 1,
               }}>
               <ScrollSelected scrollData={scrollData} title={selectedTitle} />
+              <View
+                style={{
+                  position: 'absolute',
+                  zIndex: 10,
+                  right: 10,
+                  top: 160,
+                  width: 44,
+                  height: 44,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: 44,
+                    height: 44,
+                  }}>
+                  <SVGNum num={1} />
+                </View>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 11,
+                    color: 'rgba(51, 51, 51, 0.3)',
+                  }}>
+                  1 <Text style={{ color: 'rgba(51, 51, 51, 1)' }}>of 7</Text>
+                </Text>
+              </View>
               <View
                 style={{
                   flexDirection: 'row',

@@ -1,10 +1,8 @@
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
-// import PickerModal from '@components/picker-modal/PickerModal';
 import React, { PropsWithChildren, useState } from 'react';
 import {
   Image,
-  Pressable,
   ScrollView,
   StatusBar,
   Text,
@@ -12,13 +10,12 @@ import {
   View,
 } from 'react-native';
 import Switch from '@components/switch/Switch';
-import PickerDemo from '@components/time-picker';
 import { TabParamList } from '@pages/home/tab-config';
 import { RootStackParamList } from 'route.config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
-import PickerModal from '@components/picker-modal/PickerModal';
+import PickTime from '@components/pick-time/PickTime';
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -66,98 +63,8 @@ const MusicScreen = (props: MusicScreenProps) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: 'rgba(255,255,255,0.6)',
-                      marginRight: 12,
-                    }}>
-                    From
-                  </Text>
-                  <Pressable>
-                    <View
-                      style={{
-                        paddingHorizontal: 12,
-                        paddingVertical: 10,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        borderRadius: 14,
-                        backgroundColor: '#767676',
-                        minWidth: 101,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          fontWeight: 'bold',
-                          color: 'white',
-                          marginRight: 13 / 2,
-                        }}>
-                        6:00
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: 'rgba(255,255,255,0.6)',
-                          marginRight: 12,
-                        }}>
-                        AM
-                      </Text>
-                    </View>
-                  </Pressable>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: 'rgba(255,255,255,0.6)',
-                      marginRight: 12,
-                    }}>
-                    To
-                  </Text>
-                  <Pressable>
-                    <View
-                      style={{
-                        paddingHorizontal: 12,
-                        paddingVertical: 10,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        borderRadius: 14,
-                        backgroundColor: '#767676',
-                        minWidth: 101,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          fontWeight: 'bold',
-                          color: 'white',
-                          marginRight: 13 / 2,
-                        }}>
-                        6:00
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: 'rgba(255,255,255,0.6)',
-                          marginRight: 12,
-                        }}>
-                        AM
-                      </Text>
-                    </View>
-                  </Pressable>
-                </View>
+                <PickTime type="AM" />
+                <PickTime type="PM" />
               </View>
             </View>
           </BlurBg>
@@ -226,7 +133,6 @@ const MusicScreen = (props: MusicScreenProps) => {
         </View>
         <View />
       </ScrollView>
-      <PickerModal />
       {/* https://github.com/rcbyr/keen-slider */}
     </View>
   );

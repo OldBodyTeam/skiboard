@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
+import SVGNum from '@components/svg-num/SVGNum';
+
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
