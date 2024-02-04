@@ -4,6 +4,7 @@ import CoverImage from '@components/cover-image/CoverImage';
 import React, { PropsWithChildren, useState } from 'react';
 import {
   Image,
+  Pressable,
   ScrollView,
   StatusBar,
   Text,
@@ -17,6 +18,7 @@ import { RootStackParamList } from 'route.config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
+import PickerModal from '@components/picker-modal/PickerModal';
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -57,7 +59,106 @@ const MusicScreen = (props: MusicScreenProps) => {
                   onSwitchChange={setSwitchValue}
                 />
               </View>
-              <View style={{ marginTop: 22 }}>{/* <PickerDemo /> */}</View>
+              <View
+                style={{
+                  marginTop: 22,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: 'rgba(255,255,255,0.6)',
+                      marginRight: 12,
+                    }}>
+                    From
+                  </Text>
+                  <Pressable>
+                    <View
+                      style={{
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderRadius: 14,
+                        backgroundColor: '#767676',
+                        minWidth: 101,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                          color: 'white',
+                          marginRight: 13 / 2,
+                        }}>
+                        6:00
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: 'rgba(255,255,255,0.6)',
+                          marginRight: 12,
+                        }}>
+                        AM
+                      </Text>
+                    </View>
+                  </Pressable>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: 'rgba(255,255,255,0.6)',
+                      marginRight: 12,
+                    }}>
+                    To
+                  </Text>
+                  <Pressable>
+                    <View
+                      style={{
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderRadius: 14,
+                        backgroundColor: '#767676',
+                        minWidth: 101,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                          color: 'white',
+                          marginRight: 13 / 2,
+                        }}>
+                        6:00
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: 'rgba(255,255,255,0.6)',
+                          marginRight: 12,
+                        }}>
+                        AM
+                      </Text>
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
             </View>
           </BlurBg>
         </View>
@@ -125,7 +226,7 @@ const MusicScreen = (props: MusicScreenProps) => {
         </View>
         <View />
       </ScrollView>
-      {/* <PickerModal /> */}
+      <PickerModal />
       {/* https://github.com/rcbyr/keen-slider */}
     </View>
   );
