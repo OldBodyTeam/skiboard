@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-
 const drawStyles = StyleSheet.create({
   container: {
     // backgroundColor: '#131416',

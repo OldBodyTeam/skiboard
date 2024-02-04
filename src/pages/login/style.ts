@@ -6,6 +6,8 @@ const loginStyles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'space-between',
     // alignItems: 'center',
+    flexShrink: 0,
+    flexGrow: 1,
   },
 });
 

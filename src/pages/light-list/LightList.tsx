@@ -20,7 +20,7 @@ const LightList = (props: LightListProps) => {
     <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <WebView
-          source={{ uri: 'http://192.168.199.106:5173/draw-list' }}
+          source={{ uri: 'http://120.77.9.222/draw-list' }}
           style={{ flex: 1 }}
           originWhitelist={['*']}
           scalesPageToFit={false}

@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { FC } from 'react';
 import { Switch } from 'react-native-switch';
-const SwitchCom = () => {
-  const [openMusic, setOpenMusic] = useState<boolean>(false);
+export type SwitchComProps = {
+  onSwitchChange: (value: boolean) => void;
+  switchValue: boolean;
+};
+const SwitchCom: FC<SwitchComProps> = props => {
+  const { onSwitchChange, switchValue } = props;
+
   return (
     <Switch
-      value={openMusic}
-      onValueChange={setOpenMusic}
+      value={switchValue}
+      onValueChange={onSwitchChange}
       disabled={false}
       activeText={'On'}
       inActiveText={'Off'}

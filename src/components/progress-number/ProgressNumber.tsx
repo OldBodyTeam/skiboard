@@ -2,14 +2,14 @@ import React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  interpolateColor,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+
 import ItemText from './ItemText';
-const END_POSITION = 44;
+const END_POSITION = 65 / 2;
 const ProgressNumber = () => {
   const oldValue = useSharedValue(0);
   const position = useSharedValue(0);
@@ -19,9 +19,11 @@ const ProgressNumber = () => {
   };
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
-      position.value = oldValue.value + e.translationX;
-      const index = Math.round(position.value / END_POSITION);
-      positionValue.value = index;
+      if (position.value >= 0 && position.value <= END_POSITION * 4) {
+        position.value = oldValue.value + e.translationX;
+        const index = Math.round(position.value / END_POSITION);
+        positionValue.value = index;
+      }
     })
     .onEnd(e => {
       const index = Math.round(position.value / END_POSITION);
@@ -56,20 +58,20 @@ const ProgressNumber = () => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value }],
   }));
-  const animatedTextStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      positionValue.value,
-      [0, 1],
-      ['white', 'black', 'white'],
-    ),
-  }));
+  // const animatedTextStyle = useAnimatedStyle(() => ({
+  //   color: interpolateColor(
+  //     positionValue.value,
+  //     [0, 1],
+  //     ['white', 'black', 'white'],
+  //   ),
+  // }));
 
   return (
     <ImageBackground
       source={require('../../assets/progress-number/bg.png')}
       style={{
-        width: 346 / 2,
-        height: 42,
+        width: 368 / 2,
+        height: 62 / 2,
         position: 'relative',
         paddingHorizontal: 16,
       }}>
@@ -81,7 +83,7 @@ const ProgressNumber = () => {
           alignItems: 'center',
           flexDirection: 'row',
           top: 0,
-          left: 16,
+          left: 12,
           zIndex: 2,
         }}>
         {[0, 1, 2, 3, 4].map(v => {
@@ -89,8 +91,8 @@ const ProgressNumber = () => {
             <View
               key={v}
               style={{
-                width: 44,
-                height: 44,
+                width: 65 / 2,
+                height: 65 / 2,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
@@ -110,7 +112,7 @@ const ProgressNumber = () => {
         <Animated.View style={[styles.container, animatedStyle]}>
           <ImageBackground
             source={require('../../assets/progress-number/slider.png')}
-            style={{ width: 44, height: 56 }}
+            style={{ width: 65 / 2, height: 40 }}
           />
         </Animated.View>
       </GestureDetector>
@@ -120,11 +122,9 @@ const ProgressNumber = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: 16,
+    left: 12,
     zIndex: 1,
-    width: 44,
-    height: 56,
-    top: -6,
+    top: -4.5,
   },
 });
 export default ProgressNumber;

@@ -1,15 +1,17 @@
 import React, { FC } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export type HeaderProps = {
   title: string;
   handlePress: () => void;
 };
 const Header: FC<HeaderProps> = props => {
   const { title, handlePress } = props;
+  const insets = useSafeAreaInsets();
   return (
     <View
       style={{
-        height: 74,
+        height: 74 + (Platform.OS === 'android' ? insets.top : 0),
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

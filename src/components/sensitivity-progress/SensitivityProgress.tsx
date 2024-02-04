@@ -1,0 +1,166 @@
+import React from 'react';
+import { Image, ImageBackground, Text } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { View } from 'react-native-ui-lib';
+const END_POSITION = 65 / 2;
+const SensitivityProgress = () => {
+  const oldValue = useSharedValue(0);
+  const position = useSharedValue(105);
+  const positionValue = useSharedValue(0);
+  const handleSelected = (index: number) => {
+    console.log(index);
+  };
+  const panGesture = Gesture.Pan()
+    .onUpdate(e => {
+      position.value = oldValue.value + e.translationX;
+      const index = Math.round(position.value / END_POSITION);
+      positionValue.value = index;
+    })
+    .onEnd(e => {
+      const index = Math.round(position.value / END_POSITION);
+      if (index < 0) {
+        position.value = withTiming(0, { duration: 100 });
+        oldValue.value = withTiming(0);
+        positionValue.value = 0;
+        runOnJS(handleSelected)(0);
+        return;
+      }
+      if (index > 4) {
+        position.value = withTiming(END_POSITION * 4, { duration: 100 });
+        oldValue.value = withTiming(END_POSITION * 4);
+        positionValue.value = 4;
+        runOnJS(handleSelected)(4);
+        return;
+      }
+      positionValue.value = index;
+      runOnJS(handleSelected)(index);
+      if (e.translationX > 0) {
+        const distance = END_POSITION * index;
+        position.value = withTiming(distance, { duration: 100 });
+        oldValue.value = withTiming(distance);
+      } else {
+        const distance = END_POSITION * index;
+        position.value = withTiming(distance, {
+          duration: 100,
+        });
+        oldValue.value = withTiming(distance);
+      }
+    });
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: position.value,
+  }));
+
+  return (
+    <View
+      style={{
+        marginHorizontal: 10,
+        marginTop: 16,
+        flexDirection: 'row',
+        height: 44,
+        backgroundColor: 'rgba(29, 33, 34, 1)',
+        borderRadius: 44,
+      }}>
+      <Image
+        source={require('../../assets/sound-effects/left.png')}
+        style={{
+          width: 20,
+          height: 20,
+          marginRight: 21,
+          position: 'absolute',
+          left: 8,
+          top: 11,
+          zIndex: 1,
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'row',
+          top: 0,
+          left: 115 / 2,
+          zIndex: 2,
+          height: 44,
+        }}>
+        <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
+        {[0, 1, 2, 3, 4].map(v => {
+          return (
+            <View
+              key={v}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  width: 70 / 2,
+                  height: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text>{v + 1}</Text>
+                {/* <ItemText position={v} positionValue={positionValue} /> */}
+                {/* <Animated.Text
+                style={[
+                  { fontSize: 14, color: 'white' },
+                  v === positionValue.value ? animatedTextStyle : {},
+                ]}>
+                {v}
+              </Animated.Text> */}
+              </View>
+              <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
+            </View>
+          );
+        })}
+      </View>
+      <Image
+        source={require('../../assets/sound-effects/right.png')}
+        style={{
+          width: 20,
+          height: 20,
+          position: 'absolute',
+          right: 8,
+          top: 11,
+          zIndex: 1,
+        }}
+      />
+      <Animated.View
+        style={[
+          {
+            backgroundColor: 'rgba(250, 237, 69, 1)',
+            height: 44,
+            borderRadius: 44,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            paddingRight: 2,
+          },
+          animatedStyle,
+        ]}>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
+            style={[
+              {
+                backgroundColor: '#1D2122',
+                height: 40,
+                width: 54,
+                borderRadius: 22,
+              },
+              //   animatedStyle,
+            ]}
+          />
+        </GestureDetector>
+      </Animated.View>
+    </View>
+  );
+};
+export default SensitivityProgress;

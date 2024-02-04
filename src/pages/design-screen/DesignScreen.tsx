@@ -29,11 +29,12 @@ const DesignScreen = (props: DesignScreenProps) => {
         backgroundColor: '#131416',
       }}>
       <StatusBar />
-      <ScrollView style={{ paddingHorizontal: 5 }}>
+      <ScrollView>
         <CoverImage
           type="design"
           marginTop={116}
-          handleNavigation={() => navigation.navigate('Settings')}>
+          handleNavigationPerson={() => navigation.navigate('Settings')}
+          handleNavigationDevice={() => navigation.navigate('DeviceList')}>
           <View
             style={{
               marginTop: 76,
@@ -69,7 +70,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   style={{
                     fontWeight: 'bold',
                     fontSize: 32,
-                    color: 'red',
+                    color: '#121115',
                   }}>
                   xxxxx，
                 </Text>
@@ -77,7 +78,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   style={{
                     fontWeight: 'bold',
                     fontSize: 32,
-                    color: 'red',
+                    color: 'rgba(18,17,21,0.5)',
                     width: 32 * 7,
                   }}>
                   nice to
@@ -87,7 +88,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                 style={{
                   fontWeight: 'bold',
                   fontSize: 32,
-                  color: 'red',
+                  color: 'rgba(18,17,21,0.5)',
                 }}>
                 see you!
               </Text>
@@ -96,14 +97,15 @@ const DesignScreen = (props: DesignScreenProps) => {
         </CoverImage>
         <View
           style={{
-            width: '100%',
             height: 193 / 2,
             borderRadius: 77 / 2,
             backgroundColor: 'rgba(52, 53, 54, 0.5)',
+            // backgroundColor: 'red',
             display: 'flex',
             flexDirection: 'row',
             overflow: 'hidden',
             marginTop: 28,
+            marginHorizontal: 5,
           }}>
           <TouchableOpacity
             style={{ flex: 1 }}
@@ -111,7 +113,6 @@ const DesignScreen = (props: DesignScreenProps) => {
             <View
               style={{
                 flex: 1,
-
                 borderRadius: 77 / 2,
                 display: 'flex',
                 alignItems: 'center',
@@ -164,14 +165,16 @@ const DesignScreen = (props: DesignScreenProps) => {
             flexDirection: 'row',
             height: 191 / 2,
             marginTop: 5,
+            marginHorizontal: 5,
           }}>
           <TouchableOpacity
             style={{
-              width: '66.850829%',
               height: '100%',
               overflow: 'hidden',
               borderRadius: 30,
-            }}>
+              flex: 1,
+            }}
+            onPress={() => navigation.navigate('LightList')}>
             <View
               style={{
                 flex: 1,
@@ -218,11 +221,16 @@ const DesignScreen = (props: DesignScreenProps) => {
                 }}>
                 Scrolling Text
               </Text>
-              {/* <Image source={require('../../assets/design/text.png')} /> */}
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 5,
+            marginHorizontal: 5,
+          }}>
           <TouchableOpacity
             style={{ flex: 1 }}
             onPress={() => navigation.navigate('EditLight')}>

@@ -1,13 +1,17 @@
 import React, { useImperativeHandle, useState } from 'react';
-import { View, Text, LayoutRectangle, Pressable } from 'react-native';
+import { View, Text, LayoutRectangle, Pressable, Image } from 'react-native';
 export type InterpolateItemRef = {
   getWidth: any;
 };
 const InterpolateItem = React.forwardRef<
   InterpolateItemRef,
-  { item: { title: string }; onPress: () => void }
+  {
+    item: { title: string; icon: any };
+    onPress: () => void;
+    selectedLed: boolean;
+  }
 >((props, ref) => {
-  const { item, onPress } = props;
+  const { item, onPress, selectedLed } = props;
   const [domRef, setDomRef] = useState<LayoutRectangle>();
   useImperativeHandle(
     ref,
@@ -25,7 +29,7 @@ const InterpolateItem = React.forwardRef<
           height: 64,
           borderRadius: 64,
           marginHorizontal: 11,
-          borderWidth: 1,
+          borderWidth: selectedLed ? 1 : 0,
           borderColor: '#2D2F33',
           display: 'flex',
           alignItems: 'center',
@@ -47,15 +51,22 @@ const InterpolateItem = React.forwardRef<
           }}>
           <View
             style={{
-              width: 60,
-              height: 60,
-              borderRadius: 60,
+              width: 53,
+              height: 53,
+              borderRadius: 53,
               overflow: 'hidden',
-              backgroundColor: 'red',
               marginRight: 39 / 2,
-            }}
-          />
-          <Text style={{ fontSize: 16, color: 'white', fontWeight: '400' }}>
+            }}>
+            <Image source={item.icon} style={{ width: 53, height: 53 }} />
+          </View>
+          <Text
+            style={{
+              fontSize: 16,
+              color: selectedLed ? 'white' : 'rgba(255,255,255,0.6)',
+              fontWeight: '400',
+              flex: 1,
+              textAlign: 'center',
+            }}>
             {item.title}
           </Text>
         </View>

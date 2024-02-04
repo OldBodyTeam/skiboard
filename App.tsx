@@ -20,8 +20,9 @@ function App(): React.JSX.Element {
       StatusBar.setBackgroundColor('transparent');
       StatusBar.setTranslucent(true);
     }
+
     const init = async () => {
-      // …do multiple sync or async tasks
+      // async () => {};
     };
     init().finally(async () => {
       await BootSplash.hide({ fade: true });
@@ -34,7 +35,7 @@ function App(): React.JSX.Element {
       <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="LightGlowModes">
+          initialRouteName="Login">
           {routeConfig.map(item => (
             <Stack.Screen
               name={item.name}

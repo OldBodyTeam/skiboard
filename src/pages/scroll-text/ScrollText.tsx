@@ -22,7 +22,7 @@ const ScrollText = (props: ScrollTextProps) => {
     <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <WebView
-          source={{ uri: 'http://192.168.199.106:5173/scroll-text' }}
+          source={{ uri: 'http://120.77.9.222/scroll-text' }}
           style={{ flex: 1 }}
           originWhitelist={['*']}
           scalesPageToFit={false}

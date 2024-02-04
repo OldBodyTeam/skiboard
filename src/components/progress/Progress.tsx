@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Image, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Slider } from 'react-native-ui-lib';
-
-const Progress = () => {
+// Colors.loadSchemes({ $ });
+export type ProgressProps = {
+  onProgressChange: (value: number) => void;
+};
+const Progress: FC<ProgressProps> = props => {
+  const { onProgressChange } = props;
   return (
     <GestureHandlerRootView style={{ flex: 1, marginRight: 4 }}>
       <View
@@ -42,11 +46,14 @@ const Progress = () => {
         </View>
 
         <Slider
-          containerStyle={{ height: 50 }}
+          containerStyle={{
+            height: 50,
+            position: 'relative',
+            zIndex: 0,
+          }}
           trackStyle={{
             height: 50,
             borderRadius: 0,
-            backgroundColor: 'yellow',
           }}
           thumbStyle={{
             backgroundColor: 'transparent',
@@ -61,6 +68,8 @@ const Progress = () => {
             overflow: 'hidden',
           }}
           minimumTrackTintColor="yellow"
+          maximumTrackTintColor="rgba(118, 118, 118, 0.1)"
+          onValueChange={onProgressChange}
         />
       </View>
     </GestureHandlerRootView>

@@ -3,16 +3,7 @@ import Interpolate from '@components/interpolate/Interpolate';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  View,
-  LogBox,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Text,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, View, Text } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import {
   CarouselOneData,
@@ -36,12 +27,6 @@ const LightGlowModes = (props: LightGlowModesProps) => {
     navigation.goBack();
   };
 
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, []);
-  const handleSelected = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    console.log(e.nativeEvent);
-  };
   const ScrollViewRef = useRef<ScrollView>(null);
   useEffect(() => {
     ScrollViewRef.current?.scrollTo({ y: -43, animated: true });
@@ -103,14 +88,12 @@ const LightGlowModes = (props: LightGlowModesProps) => {
           <ScrollView
             horizontal={false}
             showsHorizontalScrollIndicator={false}
-            style={{ flex: 1, paddingBottom: 40 }}>
+            style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
             <View
               style={{
                 position: 'absolute',
                 left: 17,
                 top: 36,
-                //   right: 0,
-                //   bottom: 0,
                 transform: [{ rotateZ: '6deg' }],
                 backgroundColor: 'rgba(179, 180, 180, 1)',
                 width: width - 34,
@@ -124,8 +107,6 @@ const LightGlowModes = (props: LightGlowModesProps) => {
                 position: 'absolute',
                 left: 17,
                 top: 36,
-                //   right: 0,
-                //   bottom: 0,
                 transform: [{ rotateZ: '12deg' }],
                 backgroundColor: 'rgba(65, 66, 66, 1)',
                 width: width - 34,
@@ -154,6 +135,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginTop: 46,
+                  justifyContent: 'space-between',
                 }}>
                 <View>
                   <Text

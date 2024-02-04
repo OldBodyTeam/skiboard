@@ -24,11 +24,24 @@ type LightScreenProps = CompositeScreenProps<
   PropsWithChildren<{ name?: string }>;
 const LightScreen = (props: LightScreenProps) => {
   const { navigation } = props;
+
+  const [selected, setSelected] = useState(-1);
+  const [switchValue, setSwitchValue] = useState<boolean>(false);
+  const handleSelectedColor = (currentOptIndex: number) => {
+    if (switchValue) {
+      setSelected(currentOptIndex);
+    }
+  };
+  const [progress, setProgress] = useState(0);
+  const handleProgressChange = (num: number) => {
+    setProgress(num);
+  };
+  console.log(progress);
   const onSelectColor = ({ hex }: { hex: string }) => {
     // do something with the selected color.
     console.log(hex);
+    setSelected(-1);
   };
-  const [selected, setSelected] = useState(-1);
   return (
     <View
       style={{
@@ -40,7 +53,8 @@ const LightScreen = (props: LightScreenProps) => {
         <CoverImage
           type="light"
           marginTop={80}
-          handleNavigation={() => navigation.navigate('Settings')}>
+          handleNavigationPerson={() => navigation.navigate('Settings')}
+          handleNavigationDevice={() => navigation.navigate('DeviceList')}>
           <View style={{ marginTop: 137 / 2, marginLeft: 25 }}>
             <Text
               style={{ fontSize: 24, fontWeight: 'bold', color: '#121115' }}>
@@ -68,14 +82,16 @@ const LightScreen = (props: LightScreenProps) => {
           <View style={{ flex: 1 }}>
             <ColorPicker value="red" onComplete={onSelectColor}>
               <HueSlider
-                style={{ borderRadius: 60, marginBottom: 10 }}
+                style={{
+                  borderRadius: 60,
+                  marginBottom: 10,
+                }}
                 boundedThumb
                 sliderThickness={60}
                 thumbColor="#FFFFFF"
                 renderThumb={CustomThumb}
               />
             </ColorPicker>
-            v
           </View>
           <View
             style={{
@@ -84,8 +100,11 @@ const LightScreen = (props: LightScreenProps) => {
               alignItems: 'center',
               marginBottom: 12,
             }}>
-            <Progress />
-            <Switch />
+            <Progress onProgressChange={handleProgressChange} />
+            <Switch
+              switchValue={switchValue}
+              onSwitchChange={(value: boolean) => setSwitchValue(value)}
+            />
           </View>
           <View
             style={{
@@ -105,7 +124,7 @@ const LightScreen = (props: LightScreenProps) => {
             ].map((color, index) => {
               return (
                 <TouchableOpacity
-                  onPress={() => setSelected(index)}
+                  onPress={() => handleSelectedColor(index)}
                   key={color + index}>
                   <View
                     style={{
@@ -131,7 +150,7 @@ const LightScreen = (props: LightScreenProps) => {
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity onPress={() => setSelected(11)}>
+            <TouchableOpacity onPress={() => handleSelectedColor(11)}>
               <View
                 style={{
                   width: 55,
@@ -152,8 +171,16 @@ const LightScreen = (props: LightScreenProps) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-          <TouchableOpacity style={{ flex: 1 }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 5,
+            marginHorizontal: 5,
+          }}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => navigation.navigate('LightGlowModes')}>
             <View
               style={{
                 height: 322 / 2,
@@ -170,10 +197,10 @@ const LightScreen = (props: LightScreenProps) => {
                   color: '#ffffff',
                   marginVertical: 52 / 2,
                 }}>
-                LED Strips Effects
+                LightGlow Modes
               </Text>
               <Image
-                source={require('../../assets/light/music.png')}
+                source={require('../../assets/light/flush.png')}
                 style={{
                   width: 101 / 2,
                   height: 132 / 2,
@@ -182,16 +209,16 @@ const LightScreen = (props: LightScreenProps) => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1, marginLeft: 5 }}>
+          <TouchableOpacity
+            style={{ flex: 1, marginLeft: 5 }}
+            onPress={() => navigation.navigate('SoundEffects')}>
             <View
               style={{
                 height: 322 / 2,
                 width: '100%',
                 backgroundColor: 'rgba(52, 53, 54, 0.3)',
                 borderRadius: 30,
-                display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
               }}>
               <Text
                 style={{
@@ -199,10 +226,10 @@ const LightScreen = (props: LightScreenProps) => {
                   color: '#ffffff',
                   marginVertical: 52 / 2,
                 }}>
-                Scenes
+                Sound Effects
               </Text>
               <Image
-                source={require('../../assets/light/flush.png')}
+                source={require('../../assets/light/music.png')}
                 style={{ width: 124 / 2, height: 124 / 2 }}
               />
             </View>

@@ -48,6 +48,7 @@ const Scenes = (props: ScenesTextProps) => {
               flexDirection: 'row',
               marginHorizontal: 5 / 2,
               flex: 1,
+              marginBottom: 5,
             }}>
             {renderData.map(item => {
               return (
@@ -88,7 +89,11 @@ const Scenes = (props: ScenesTextProps) => {
                       flexDirection: 'row',
                       justifyContent: 'flex-end',
                     }}>
-                    <Text style={{ fontSize: 20, color: 'white' }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        color: selected === item.label ? '#131416' : 'white',
+                      }}>
                       {item.label}
                     </Text>
                   </View>

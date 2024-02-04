@@ -9,13 +9,22 @@ import Carousel from 'react-native-reanimated-carousel';
 export type InterpolateProps = {
   autoPlayReverse?: boolean;
   style?: StyleProp<ViewStyle>;
-  carouselData: { title: string }[];
+  carouselData: { title: string; icon: any }[];
   autoPlay: boolean;
   handleAutoPlay: (title: string, index?: number) => void;
+  selectedLinePosition: number;
+  selectedLine: boolean;
 };
 const Interpolate: FC<InterpolateProps> = props => {
-  const { autoPlayReverse, style, carouselData, autoPlay, handleAutoPlay } =
-    props;
+  const {
+    autoPlayReverse,
+    style,
+    carouselData,
+    autoPlay,
+    handleAutoPlay,
+    selectedLine,
+    selectedLinePosition,
+  } = props;
   const r = React.useRef<ICarouselInstance>(null);
   return (
     <View style={style}>
@@ -31,20 +40,25 @@ const Interpolate: FC<InterpolateProps> = props => {
         }}
         data={carouselData}
         width={230}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <InterpolateItem
               item={item}
               onPress={() => {
-                handleAutoPlay(item.title, r.current?.getCurrentIndex());
+                const position = r.current?.getCurrentIndex();
+                if (typeof index === 'number') {
+                  handleAutoPlay(item.title, position);
+                  r.current?.scrollTo({ index, animated: false });
+                }
               }}
+              selectedLed={selectedLine && selectedLinePosition === index}
             />
           );
         }}
-        autoPlay={autoPlay}
+        autoPlay={true}
         withAnimation={{
           type: 'timing',
-          config: { duration: 2000, easing: Easing.linear },
+          config: { duration: 15000, easing: Easing.linear },
         }}
         autoPlayReverse={autoPlayReverse}
       />

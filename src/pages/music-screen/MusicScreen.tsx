@@ -1,7 +1,7 @@
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
 // import PickerModal from '@components/picker-modal/PickerModal';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -24,6 +24,7 @@ type MusicScreenProps = CompositeScreenProps<
   PropsWithChildren<{ name?: string }>;
 const MusicScreen = (props: MusicScreenProps) => {
   const { navigation } = props;
+  const [switchValue, setSwitchValue] = useState<boolean>(false);
   return (
     <View
       style={{
@@ -34,7 +35,9 @@ const MusicScreen = (props: MusicScreenProps) => {
       <ScrollView>
         <CoverImage
           type="music"
-          handleNavigation={() => navigation.navigate('Settings')}
+          handleNavigationPerson={() => navigation.navigate('Settings')}
+          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          marginTop={-50}
         />
         <View style={{ marginTop: 28, paddingHorizontal: 5 }}>
           <BlurBg borderRadius={30} width={'100%'}>
@@ -49,16 +52,25 @@ const MusicScreen = (props: MusicScreenProps) => {
                 <View>
                   <Text style={{ color: 'white', fontSize: 22 }}>Schedute</Text>
                 </View>
-                <Switch />
+                <Switch
+                  switchValue={switchValue}
+                  onSwitchChange={setSwitchValue}
+                />
               </View>
-              <View style={{ marginTop: 22 }}>
-                <PickerDemo />
-              </View>
+              <View style={{ marginTop: 22 }}>{/* <PickerDemo /> */}</View>
             </View>
           </BlurBg>
         </View>
-        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-          <TouchableOpacity style={{ flex: 1 }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 5,
+            marginHorizontal: 5,
+          }}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => navigation.navigate('LEDStripsEffects')}>
             <View
               style={{
                 height: 322 / 2,
@@ -83,7 +95,9 @@ const MusicScreen = (props: MusicScreenProps) => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1, marginLeft: 5 }}>
+          <TouchableOpacity
+            style={{ flex: 1, marginLeft: 5 }}
+            onPress={() => navigation.navigate('Scenes')}>
             <View
               style={{
                 height: 322 / 2,

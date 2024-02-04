@@ -14,7 +14,7 @@ const Register = (props: RegisterProps) => {
   };
   return (
     <WebView
-      source={{ uri: 'http://192.168.199.106:5173/register' }}
+      source={{ uri: 'http://120.77.9.222/register' }}
       style={registerStyles.container}
       originWhitelist={['*']}
       scalesPageToFit={false}

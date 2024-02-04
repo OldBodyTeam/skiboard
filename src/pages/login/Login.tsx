@@ -13,7 +13,7 @@ const Login = (props: LoginProps) => {
   };
   return (
     <WebView
-      source={{ uri: 'http://192.168.199.106:5173/login' }}
+      source={{ uri: 'http://120.77.9.222/login' }}
       style={loginStyles.container}
       originWhitelist={['*']}
       scalesPageToFit={false}

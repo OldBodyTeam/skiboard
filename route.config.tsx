@@ -3,6 +3,7 @@ import ColorPickerPage from '@pages/color-picker/ColorPicker';
 import DeviceList from '@pages/device-list/DeviceList';
 import EditLight from '@pages/edit-light/EditLight';
 import Home from '@pages/home/Home';
+import LEDStripsEffects from '@pages/led-strips-effects/LEDStripsEffects';
 import LightGlowModes from '@pages/light-glow-modes/LightGlowModes';
 import LightList from '@pages/light-list/LightList';
 import Login from '@pages/login/Login';
@@ -10,6 +11,7 @@ import Register from '@pages/register/Register';
 import Scenes from '@pages/scenes/Scenes';
 import ScrollText from '@pages/scroll-text/ScrollText';
 import Settings from '@pages/settings/Settings';
+import SoundEffects from '@pages/sound-effects/SoundEffects';
 export type RootStackParamList = {
   Login: any;
   Register: any;
@@ -23,6 +25,8 @@ export type RootStackParamList = {
   Scenes: any;
   Settings: any;
   LightGlowModes: any;
+  SoundEffects: any;
+  LEDStripsEffects: any;
 };
 const routeConfig = [
   {
@@ -72,6 +76,14 @@ const routeConfig = [
   {
     name: 'LightGlowModes',
     component: LightGlowModes,
+  },
+  {
+    name: 'SoundEffects',
+    component: SoundEffects,
+  },
+  {
+    name: 'LEDStripsEffects',
+    component: LEDStripsEffects,
   },
 ] as const;
 export { routeConfig };
