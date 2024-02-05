@@ -5,7 +5,14 @@ import MusicCarousel from '@components/music-carousel/MusicCarousel';
 import MusicPlayer from '@components/music-player/MusicPlayer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useState } from 'react';
-import { View, StatusBar, SafeAreaView, ScrollView, Text } from 'react-native';
+import {
+  View,
+  StatusBar,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  ImageBackground,
+} from 'react-native';
 import { RootStackParamList } from 'route.config';
 import { musicListData } from './utils';
 import SoundEffectsCarousel from '@components/sound-effects-carousel/SoundEffectsCarousel';
@@ -75,12 +82,13 @@ const SoundEffects = (props: SoundEffectsProps) => {
     setSelectModuleName(moduleName);
   };
   return (
-    <View
+    <ImageBackground
       style={{
         flex: 1,
         backgroundColor: 'rgba(19, 20, 22, 1)',
         flexDirection: 'row',
-      }}>
+      }}
+      source={require('../../assets/sound-effects/bg.png')}>
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
@@ -95,7 +103,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 carouselData={[
                   { title: require('../../assets/sound-effects/music.png') },
                 ]}
-                style={{ width: width - 10, height: 66 }}
+                style={{ width: 496, height: 66 }}
                 handleSelected={() => handleSelected(TABS.MUSIC)}
                 currentSelected={currentSelected === TABS.MUSIC}
               />
@@ -107,7 +115,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 carouselData={[
                   { title: require('../../assets/sound-effects/sound.png') },
                 ]}
-                style={{ width, height: 34 }}
+                style={{ width: 409.5, height: 34 }}
                 handleSelected={() => handleSelected(TABS.SOUND)}
                 currentSelected={currentSelected === TABS.SOUND}
               />
@@ -306,7 +314,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
           {/* </View> */}
         </ScrollView>
       </SafeAreaView>
-    </View>
+    </ImageBackground>
   );
 };
 export default SoundEffects;

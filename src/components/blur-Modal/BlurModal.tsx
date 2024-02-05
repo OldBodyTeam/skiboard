@@ -32,7 +32,7 @@ const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
     const { width, height } = useScreenSize();
     return (
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

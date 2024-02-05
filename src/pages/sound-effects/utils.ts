@@ -14,5 +14,4 @@ const musicListData = Array(6)
       endIndex,
     };
   });
-console.log(musicListData[3]);
 export { musicListData };

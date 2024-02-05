@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 export type MusicCarouselItemProps = {
   onPress: () => void;
-  item: { title: string; artwork: string };
+  item: { title: string; artwork: string; bg: string };
   selected: boolean;
 };
 const MusicCarouselItem: FC<MusicCarouselItemProps> = props => {
@@ -33,7 +33,7 @@ const MusicCarouselItem: FC<MusicCarouselItemProps> = props => {
             source={{
               uri: item.artwork,
             }}
-            style={{ width: 41, height: 41, backgroundColor: 'green' }}
+            style={{ width: 41, height: 41, backgroundColor: item.bg }}
           />
         </View>
         <Text

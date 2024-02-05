@@ -72,6 +72,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>DINPro-Bold.otf</string>
+		<string>FuturaLT-ExtraBold.ttf</string>
 	</array>
 </dict>
 </plist>

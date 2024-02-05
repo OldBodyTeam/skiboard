@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { RootStackParamList } from 'route.config';
 type ScrollTextProps = NativeStackScreenProps<
@@ -18,23 +19,27 @@ const ScrollText = (props: ScrollTextProps) => {
       data.screen ? { screen: data.screen } : {},
     );
   };
+  const insets = useSafeAreaInsets();
   return (
-    <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <WebView
-          source={{ uri: 'http://120.77.9.222/scroll-text' }}
-          style={{ flex: 1 }}
-          originWhitelist={['*']}
-          scalesPageToFit={false}
-          javaScriptEnabled
-          useWebView2
-          mixedContentMode="compatibility"
-          cacheMode="LOAD_NO_CACHE"
-          scrollEnabled={false}
-          hideKeyboardAccessoryView
-          onMessage={handleNavigation}
-        />
-      </SafeAreaView>
+    <View
+      style={{
+        backgroundColor: 'rgba(19, 20, 22, 1)',
+        flex: 1,
+        paddingTop: insets.top,
+      }}>
+      <WebView
+        source={{ uri: 'http://120.77.9.222/scroll-text' }}
+        style={{ flex: 1, backgroundColor: 'rgba(19, 20, 22, 1)' }}
+        originWhitelist={['*']}
+        scalesPageToFit={false}
+        javaScriptEnabled
+        useWebView2
+        mixedContentMode="compatibility"
+        cacheMode="LOAD_NO_CACHE"
+        scrollEnabled={false}
+        hideKeyboardAccessoryView
+        onMessage={handleNavigation}
+      />
     </View>
   );
 };

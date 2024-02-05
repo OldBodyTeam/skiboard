@@ -52,7 +52,7 @@ const Scenes = (props: ScenesTextProps) => {
               flexDirection: 'row',
               marginHorizontal: 5 / 2,
               flex: 1,
-              marginBottom: 5,
+              paddingTop: 5,
             }}>
             {renderData.map(item => {
               const icon =

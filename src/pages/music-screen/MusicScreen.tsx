@@ -3,6 +3,7 @@ import CoverImage from '@components/cover-image/CoverImage';
 import React, { PropsWithChildren, useState } from 'react';
 import {
   Image,
+  ImageBackground,
   ScrollView,
   StatusBar,
   Text,
@@ -16,6 +17,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import PickTime from '@components/pick-time/PickTime';
+import { TIME } from './config';
+
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -24,12 +27,14 @@ type MusicScreenProps = CompositeScreenProps<
 const MusicScreen = (props: MusicScreenProps) => {
   const { navigation } = props;
   const [switchValue, setSwitchValue] = useState<boolean>(false);
+  const [selectedTimeMode, setSelectedTimeMode] = useState<TIME>(TIME.AM);
   return (
-    <View
+    <ImageBackground
       style={{
         flex: 1,
         backgroundColor: 'rgba(19, 20, 22, 1)',
-      }}>
+      }}
+      source={require('../../assets/bg-home.png')}>
       <StatusBar />
       <ScrollView>
         <CoverImage
@@ -37,6 +42,7 @@ const MusicScreen = (props: MusicScreenProps) => {
           handleNavigationPerson={() => navigation.navigate('Settings')}
           handleNavigationDevice={() => navigation.navigate('DeviceList')}
           marginTop={-50}
+          bottom={32}
         />
         <View style={{ marginTop: 28, paddingHorizontal: 5 }}>
           <BlurBg borderRadius={30} width={'100%'}>
@@ -63,8 +69,16 @@ const MusicScreen = (props: MusicScreenProps) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <PickTime type="AM" />
-                <PickTime type="PM" />
+                <PickTime
+                  type={TIME.AM}
+                  handleSelectedTime={() => console.log(1)}
+                  selectedTimeMode={selectedTimeMode}
+                />
+                <PickTime
+                  type={TIME.PM}
+                  handleSelectedTime={() => console.log(1)}
+                  selectedTimeMode={selectedTimeMode}
+                />
               </View>
             </View>
           </BlurBg>
@@ -134,7 +148,7 @@ const MusicScreen = (props: MusicScreenProps) => {
         <View />
       </ScrollView>
       {/* https://github.com/rcbyr/keen-slider */}
-    </View>
+    </ImageBackground>
   );
 };
 export default MusicScreen;

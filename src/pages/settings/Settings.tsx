@@ -20,7 +20,6 @@ const pageInfo = [
   { label: 'GUIDE' },
   { label: 'ABOUT' },
   { label: 'BLOG' },
-  { label: 'STORY' },
 ];
 type SettingsTextProps = NativeStackScreenProps<
   RootStackParamList,
@@ -104,7 +103,7 @@ const Settings = (props: SettingsTextProps) => {
             </View>
           </TouchableOpacity>
           <View style={{ position: 'relative', marginTop: 97 / 2 }}>
-            {pageInfo.map((v, index) => {
+            {pageInfo.map(v => {
               return (
                 <TouchableOpacity
                   key={v.label}
@@ -113,7 +112,7 @@ const Settings = (props: SettingsTextProps) => {
                     style={{
                       borderColor: 'rgba(216, 216, 216, 0.2)',
                       borderTopWidth: 3,
-                      borderBottomWidth: index === pageInfo.length - 1 ? 3 : 0,
+                      // borderBottomWidth: index === pageInfo.length - 1 ? 3 : 0,
                       paddingVertical: 12,
                       alignItems: 'center',
                     }}>
@@ -130,6 +129,27 @@ const Settings = (props: SettingsTextProps) => {
                 </TouchableOpacity>
               );
             })}
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <View
+                style={{
+                  borderColor: 'rgba(216, 216, 216, 0.2)',
+                  borderTopWidth: 3,
+                  borderBottomWidth: 3,
+                  paddingVertical: 12,
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 44,
+                    fontWeight: '600',
+                    color: '#F9DD58',
+                    lineHeight: 53,
+                    fontFamily: 'FuturaLT-ExtraBold',
+                  }}>
+                  STORY
+                </Text>
+              </View>
+            </TouchableOpacity>
             <Image
               source={require('../../assets/settings/new.png')}
               style={{

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  ImageBackground,
 } from 'react-native';
 import ColorPicker, { HueSlider } from 'reanimated-color-picker';
 import type { CompositeScreenProps } from '@react-navigation/native';
@@ -43,18 +44,20 @@ const LightScreen = (props: LightScreenProps) => {
     setSelected(-1);
   };
   return (
-    <View
+    <ImageBackground
       style={{
         flex: 1,
         backgroundColor: '#131416',
-      }}>
+      }}
+      source={require('../../assets/bg-home.png')}>
       <StatusBar />
       <ScrollView>
         <CoverImage
           type="light"
           marginTop={80}
           handleNavigationPerson={() => navigation.navigate('Settings')}
-          handleNavigationDevice={() => navigation.navigate('DeviceList')}>
+          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          bottom={53}>
           <View style={{ marginTop: 137 / 2, marginLeft: 25 }}>
             <Text
               style={{ fontSize: 24, fontWeight: 'bold', color: '#121115' }}>
@@ -236,7 +239,7 @@ const LightScreen = (props: LightScreenProps) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 };
 export default LightScreen;

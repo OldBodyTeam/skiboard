@@ -1,6 +1,15 @@
 import React, { FC, useRef, useState } from 'react';
-import { Text, TouchableHighlight, View, Image, TextInput } from 'react-native';
+import {
+  Text,
+  TouchableHighlight,
+  View,
+  Image,
+  TextInput,
+  Pressable,
+  ImageBackground,
+} from 'react-native';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
+import { useScreenSize } from '@hooks/useScreenSize';
 export type DeviceListItemProps = {
   device: any;
 };
@@ -21,22 +30,28 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
     console.log('delete');
     modalEditRef.current?.closeModal();
   };
-
+  const { width } = useScreenSize();
   return (
     <>
-      <TouchableHighlight onPress={handleConnectDevice}>
-        <View
+      <TouchableHighlight onPress={handleConnectDevice} style={{ flex: 1 }}>
+        <ImageBackground
           style={{
             margin: 8,
             height: 80.5,
             borderRadius: 10,
-            backgroundColor: selectedDevice ? '#FFE400' : '#262626',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: 20,
             flexDirection: 'row',
-          }}>
+            width: width - 8 - 8,
+            overflow: 'hidden',
+          }}
+          source={
+            selectedDevice
+              ? require('../../assets/device/bg.png')
+              : require('../../assets/device/bg-unselected.png')
+          }>
           <View
             style={{
               display: 'flex',
@@ -102,12 +117,15 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                       ? require('../../assets/device/batteryed.png')
                       : require('../../assets/device/battery.png')
                   }
+                  style={{ width: 12, height: 12 }}
                 />
                 <Text
                   style={{
                     fontWeight: '400',
                     fontSize: 12,
-                    color: '#5B5100',
+                    color: selectedDevice
+                      ? 'rgba(0,0,0,0.65)'
+                      : 'rgba(255,255,255,0.65)',
                     marginLeft: 4,
                   }}>
                   99%
@@ -121,8 +139,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
               alignItems: 'center',
               flexDirection: 'row',
             }}>
-            <TouchableHighlight
-              onPress={() => modalEditRef.current?.openModal()}>
+            <Pressable onPress={() => modalEditRef.current?.openModal()}>
               <Image
                 source={
                   !selectedDevice
@@ -131,8 +148,8 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                 }
                 style={{ width: 22, height: 22 }}
               />
-            </TouchableHighlight>
-            <TouchableHighlight
+            </Pressable>
+            <Pressable
               style={{ marginLeft: 20 }}
               onPress={() => modalDeleteRef.current?.openModal()}>
               <Image
@@ -143,9 +160,9 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                 }
                 style={{ width: 22, height: 22 }}
               />
-            </TouchableHighlight>
+            </Pressable>
           </View>
-        </View>
+        </ImageBackground>
       </TouchableHighlight>
       <BlurModal
         ref={modalDeleteRef}
@@ -196,7 +213,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                 width: '100%',
                 paddingLeft: 12,
                 paddingRight: 12,
-                color: 'white',
+                color: 'rgba(255,255,255,0.65)',
               }}
             />
           </View>

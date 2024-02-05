@@ -1,11 +1,9 @@
 import React, {
   PropsWithChildren,
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useState,
 } from 'react';
-// import { BlurView } from '@react-native-community/blur';
 import {
   FlatList,
   Modal,
@@ -15,6 +13,8 @@ import {
   View,
 } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { Image } from 'react-native-ui-lib';
+import { TIME } from '@pages/music-screen/config';
 const secondsList = Array(60)
   .fill(1)
   .map((_i, index) => {
@@ -33,15 +33,22 @@ export type PickerModalRef = {
   closeModal: () => void;
 };
 export type BlurModalProps = {
-  type: 'AM' | 'PM';
-  handleCurrentSelectedTime: () => void;
+  type: TIME;
+  handleCurrentSelectedTime: (chooseTime: {
+    currentTime: string;
+    time: TIME;
+  }) => void; // 选择当前时间
 };
 const PickerModal = forwardRef<
   PickerModalRef,
   PropsWithChildren<BlurModalProps>
 >((props, ref) => {
-  const { type, handleCurrentSelectedTime } = props;
+  const { handleCurrentSelectedTime } = props;
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTimeMode, setSelectedTimeMode] = useState<TIME>(TIME.AM);
+  const handleMode = (time: TIME) => {
+    setSelectedTimeMode(time);
+  };
   useImperativeHandle(
     ref,
     () => {
@@ -54,27 +61,32 @@ const PickerModal = forwardRef<
   );
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <BlurView
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      onRequestClose={() => setModalVisible(false)}>
+      <Pressable
+        onPress={() => setModalVisible(false)}
         style={{
           ...StyleSheet.absoluteFillObject,
-        }}
-        tint="systemThinMaterialDark"
-        blurReductionFactor={10}
-        experimentalBlurMethod="dimezisBlurView"
-      />
+        }}>
+        <BlurView
+          style={{ flex: 1 }}
+          tint="systemThinMaterialDark"
+          blurReductionFactor={10}
+          experimentalBlurMethod="dimezisBlurView"
+        />
+      </Pressable>
       <View
         style={{
           position: 'absolute',
           width: '100%',
           height: 420,
-          borderRadius: 10,
+          borderRadius: 30,
           overflow: 'hidden',
           left: 0,
-          bottom: 0,
+          bottom: 24,
         }}>
         <BlurView
           intensity={100}
@@ -84,12 +96,50 @@ const PickerModal = forwardRef<
           experimentalBlurMethod="dimezisBlurView">
           <View
             style={{
+              pointerEvents: 'none',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              zIndex: 1,
+              width: '100%',
+              height: 184,
+            }}>
+            <Image
+              source={require('../../assets/music/top-blur.png')}
+              style={{
+                width: '100%',
+                height: 184,
+              }}
+            />
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              pointerEvents: 'none',
+              zIndex: 1,
+              width: '100%',
+              height: 295,
+            }}>
+            <Image
+              source={require('../../assets/music/bottom-blur.png')}
+              style={{
+                width: '100%',
+                height: 295,
+              }}
+            />
+          </View>
+          <View
+            style={{
               backgroundColor: 'rgba(118, 118, 118, 0.4)',
               height: 4,
               borderRadius: 2,
               width: 40,
               marginTop: 8,
               marginBottom: 24,
+              position: 'relative',
+              zIndex: 1,
             }}
           />
           <View
@@ -101,30 +151,42 @@ const PickerModal = forwardRef<
               flexDirection: 'row',
               justifyContent: 'space-between',
               padding: 4,
+              position: 'relative',
+              zIndex: 1,
             }}>
-            <View
-              style={{
-                height: 36,
-                width: 45,
-                backgroundColor: type === 'AM' ? '#25262B' : '',
-                borderRadius: 9,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 19 / 2,
-              }}>
-              <Text>AM</Text>
-            </View>
-            <View
-              style={{
-                height: 36,
-                width: 45,
-                backgroundColor: type === 'PM' ? '#25262B' : '',
-                borderRadius: 9,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text>PM</Text>
-            </View>
+            <Pressable onPress={() => handleMode(TIME.AM)}>
+              <View
+                style={{
+                  height: 36,
+                  width: 45,
+                  backgroundColor:
+                    selectedTimeMode === TIME.AM
+                      ? '#25262B'
+                      : 'rgba(118, 118, 118, 0.19)',
+                  borderRadius: 9,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 19 / 2,
+                }}>
+                <Text style={{ color: 'white' }}>AM</Text>
+              </View>
+            </Pressable>
+            <Pressable onPress={() => handleMode(TIME.PM)}>
+              <View
+                style={{
+                  height: 36,
+                  width: 45,
+                  backgroundColor:
+                    selectedTimeMode === TIME.PM
+                      ? '#25262B'
+                      : 'rgba(118, 118, 118, 0.19)',
+                  borderRadius: 9,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{ color: 'white' }}>PM</Text>
+              </View>
+            </Pressable>
           </View>
           <View
             style={{
@@ -173,7 +235,14 @@ const PickerModal = forwardRef<
               />
             </View>
           </View>
-          <Pressable onPress={handleCurrentSelectedTime}>
+          <Pressable
+            onPress={() =>
+              handleCurrentSelectedTime({
+                currentTime: 'xxx',
+                time: selectedTimeMode,
+              })
+            }
+            style={{ position: 'relative', zIndex: 1 }}>
             <View
               style={{
                 width: 106,

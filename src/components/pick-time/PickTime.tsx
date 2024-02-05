@@ -1,18 +1,22 @@
 import PickerModal, {
   PickerModalRef,
 } from '@components/picker-modal/PickerModal';
-import React, { FC, useRef } from 'react';
+import { TIME } from '@pages/music-screen/config';
+import React, { FC, useRef, useState } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 
 export type PickTimeProps = {
-  type: 'AM' | 'PM';
+  type: TIME;
+  handleSelectedTime: (timeType: TIME) => void;
+  selectedTimeMode: TIME;
 };
 const PickTime: FC<PickTimeProps> = props => {
-  const { type } = props;
+  const { type, selectedTimeMode, handleSelectedTime } = props;
   const modalRef = useRef<PickerModalRef>(null);
   const handleCurrentSelectedTime = () => {
     modalRef.current?.closeModal();
   };
+
   return (
     <View
       style={{
@@ -26,7 +30,7 @@ const PickTime: FC<PickTimeProps> = props => {
           color: 'rgba(255,255,255,0.6)',
           marginRight: 12,
         }}>
-        {type === 'AM' ? 'From' : 'To'}
+        {type === TIME.AM ? 'From' : 'To'}
       </Text>
       <Pressable onPress={() => modalRef.current?.openModal()}>
         <View
@@ -37,7 +41,7 @@ const PickTime: FC<PickTimeProps> = props => {
             justifyContent: 'space-between',
             alignItems: 'center',
             borderRadius: 14,
-            backgroundColor: '#767676',
+            backgroundColor: 'rgba(118,118,188,0.19)',
             minWidth: 101,
           }}>
           <Text
@@ -65,8 +69,10 @@ const PickTime: FC<PickTimeProps> = props => {
       </Pressable>
       <PickerModal
         ref={modalRef}
-        type={type}
+        type={selectedTimeMode}
         handleCurrentSelectedTime={handleCurrentSelectedTime}
+        handleMode={handleSelectedTime}
+        selectedTimeMode={selectedTimeMode}
       />
     </View>
   );

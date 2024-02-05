@@ -55,7 +55,7 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
         autoPlay={autoPlay}
         withAnimation={{
           type: 'timing',
-          config: { duration: 15000, easing: Easing.linear },
+          config: { duration: 25000, easing: Easing.linear },
         }}
         autoPlayReverse={autoPlayReverse}
       />

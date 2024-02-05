@@ -5,6 +5,7 @@ const drawStyles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'space-between',
     // alignItems: 'center',
+    backgroundColor: 'rgba(89,56,236,1)',
   },
 });
 

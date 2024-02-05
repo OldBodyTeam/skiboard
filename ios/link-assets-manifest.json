@@ -4,6 +4,10 @@
     {
       "path": "assets/fonts/DINPro-Bold.otf",
       "sha1": "77a9105b059cca1d84a1c49f719117ea9f7437c2"
+    },
+    {
+      "path": "assets/fonts/FuturaLT-ExtraBold.ttf",
+      "sha1": "48da6506d72795ae38d4dbb0b53b4f501029b4fd"
     }
   ]
 }

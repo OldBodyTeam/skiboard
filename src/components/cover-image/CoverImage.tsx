@@ -34,6 +34,7 @@ export type CoverImageProps = { type: keyof typeof bgList } & {
   marginTop?: number;
   handleNavigationPerson: () => void;
   handleNavigationDevice: () => void;
+  bottom: number;
 };
 const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
   const {
@@ -42,6 +43,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
     marginTop = 0,
     handleNavigationPerson,
     handleNavigationDevice,
+    bottom,
   } = props;
   const [height, setHeight] = useState<number>(0);
   useEffect(() => {
@@ -58,6 +60,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
         style={{
           height,
           width: Dimensions.get('screen').width,
+          position: 'relative',
         }}>
         {children}
         <View
@@ -67,8 +70,10 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingLeft: 25,
-            paddingRight: 25,
+            position: 'absolute',
+            left: 25,
+            bottom,
+            width: Dimensions.get('screen').width - 50,
           }}>
           <View
             style={{

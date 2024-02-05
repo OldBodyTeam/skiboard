@@ -12,6 +12,7 @@ import {
   Image,
   Dimensions,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
@@ -25,27 +26,29 @@ const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   return (
-    <View
+    <ImageBackground
       style={{
         flex: 1,
         backgroundColor: '#131416',
-      }}>
+      }}
+      source={require('../../assets/bg-home.png')}>
       <StatusBar />
       <ScrollView>
         <CoverImage
           type="design"
-          marginTop={116}
+          marginTop={92}
           handleNavigationPerson={() => navigation.navigate('Settings')}
-          handleNavigationDevice={() => navigation.navigate('DeviceList')}>
+          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          bottom={32}>
           <View
             style={{
-              marginTop: 76,
+              marginTop: 100,
               display: 'flex',
               flexDirection: 'row',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               justifyContent: 'center',
-              width: Dimensions.get('window').width - 50,
               marginHorizontal: 25,
+              height: 80,
             }}>
             <Image
               source={require('../../assets/avatar.png')}
@@ -54,13 +57,14 @@ const DesignScreen = (props: DesignScreenProps) => {
                 height: 80,
                 borderRadius: 0,
                 marginRight: 15,
-                marginLeft: 15,
               }}
             />
             <View
               style={{
                 display: 'flex',
                 flex: 1,
+                alignItems: 'flex-start',
+                justifyContent: 'center',
               }}>
               <View
                 style={{
@@ -290,7 +294,7 @@ const DesignScreen = (props: DesignScreenProps) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 };
 const style = StyleSheet.create({
@@ -299,6 +303,14 @@ const style = StyleSheet.create({
     fontSize: 32,
     lineHeight: 36,
     fontFamily: 'DINPro-Bold',
+  },
+  bg: {
+    position: 'absolute',
+    bottom: 12,
+    right: 0,
+    width: 235.5,
+    height: 558,
+    zIndex: -10,
   },
 });
 export default DesignScreen;

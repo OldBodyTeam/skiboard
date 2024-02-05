@@ -4,7 +4,7 @@ const customTabBarStyle = StyleSheet.create({
   tabBarContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 14,
+    bottom: 38,
     width: 259,
     left: (screenWidth - 259) / 2,
     height: 65,

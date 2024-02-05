@@ -1,4 +1,3 @@
-import { useScreenSize } from '@hooks/useScreenSize';
 import React, { FC } from 'react';
 import {
   Image,
@@ -30,7 +29,6 @@ const SoundEffectsCarousel: FC<SoundEffectsCarouselProps> = props => {
     style,
   } = props;
   const r = React.useRef<ICarouselInstance>(null);
-  const { width } = useScreenSize();
   return (
     <Carousel
       ref={r}
@@ -42,14 +40,14 @@ const SoundEffectsCarousel: FC<SoundEffectsCarouselProps> = props => {
         alignItems: 'center',
       }}
       data={carouselData}
-      width={width}
+      width={StyleSheet.flatten(style).width as number}
       renderItem={({ item }) => {
         return (
           <TouchableNativeFeedback onPress={handleSelected}>
             <View
               style={{
                 opacity: currentSelected ? 1 : 0.4,
-                marginHorizontal: 5,
+                marginHorizontal: 6,
                 ...StyleSheet.flatten(style),
               }}>
               <Image source={item.title} style={style as ImageStyle} />
