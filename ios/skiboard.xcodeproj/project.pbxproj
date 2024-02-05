@@ -17,6 +17,7 @@
 		7699B88040F8A987B510C191 /* libPods-skiboard-skiboardTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-skiboard-skiboardTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B15E8290EDD8133B96F76ABC /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */; };
+		0CBA41B74801436C8E5AB56E /* DINPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A7C718F314A041508C5E45BC /* DINPro-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		89C6BE57DB24E9ADA2F236DE /* Pods-skiboard-skiboardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard-skiboardTests.release.xcconfig"; path = "Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-skiboard-skiboardTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		A7C718F314A041508C5E45BC /* DINPro-Bold.otf */ = {isa = PBXFileReference; name = "DINPro-Bold.otf"; path = "../assets/fonts/DINPro-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				50C9BB8ABDF74A183B6A4011 /* ExpoModulesProviders */,
+				083EA117AAD8418F98B8FA98 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -182,6 +185,15 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		083EA117AAD8418F98B8FA98 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				A7C718F314A041508C5E45BC /* DINPro-Bold.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -281,6 +293,7 @@
 				2B49063C2B4ED1E600BF586E /* BootSplash.storyboard in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				0CBA41B74801436C8E5AB56E /* DINPro-Bold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,13 +1,20 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Image, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Slider } from 'react-native-ui-lib';
-// Colors.loadSchemes({ $ });
 export type ProgressProps = {
   onProgressChange: (value: number) => void;
 };
 const Progress: FC<ProgressProps> = props => {
   const { onProgressChange } = props;
+  const [leftStatus, setLeftStatus] = useState(false);
+  const [rightStatus, setRightStatus] = useState(false);
+  const handleValueChange = (value: number) => {
+    const currentProgress = Math.round(value * 100);
+    onProgressChange(currentProgress);
+    setLeftStatus(currentProgress > 15);
+    setRightStatus(currentProgress > 92);
+  };
   return (
     <GestureHandlerRootView style={{ flex: 1, marginRight: 4 }}>
       <View
@@ -26,7 +33,11 @@ const Progress: FC<ProgressProps> = props => {
             zIndex: 90,
           }}>
           <Image
-            source={require('../../assets/light/2.png')}
+            source={
+              leftStatus
+                ? require('../../assets/light/2.png')
+                : require('../../assets/light/left-selected.png')
+            }
             style={{ width: 16, height: 16 }}
           />
         </View>
@@ -40,7 +51,11 @@ const Progress: FC<ProgressProps> = props => {
             // backgroundColor: 'green',
           }}>
           <Image
-            source={require('../../assets/light/1.png')}
+            source={
+              rightStatus
+                ? require('../../assets/light/right-elected.png')
+                : require('../../assets/light/1.png')
+            }
             style={{ width: 16, height: 16 }}
           />
         </View>
@@ -69,7 +84,7 @@ const Progress: FC<ProgressProps> = props => {
           }}
           minimumTrackTintColor="yellow"
           maximumTrackTintColor="rgba(118, 118, 118, 0.1)"
-          onValueChange={onProgressChange}
+          onValueChange={handleValueChange}
         />
       </View>
     </GestureHandlerRootView>

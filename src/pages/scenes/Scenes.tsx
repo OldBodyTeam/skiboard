@@ -18,7 +18,11 @@ const renderData = [
   { label: 'Party', icon: require('../../assets/scenes/party.png') },
   { label: 'Starry', icon: require('../../assets/scenes/starry.png') },
   { label: 'Birthday', icon: require('../../assets/scenes/birthday.png') },
-  { label: 'Firworks', icon: require('../../assets/scenes/firworks.png') },
+  {
+    label: 'Firworks',
+    icon: require('../../assets/scenes/firworks.png'),
+    selectIcon: require('../../assets/scenes/selected.png'),
+  },
   { label: 'Christmas', icon: require('../../assets/scenes/christmas.png') },
   { label: 'Sunset', icon: require('../../assets/scenes/sunset.png') },
 ];
@@ -51,6 +55,12 @@ const Scenes = (props: ScenesTextProps) => {
               marginBottom: 5,
             }}>
             {renderData.map(item => {
+              const icon =
+                item.label !== 'Firworks'
+                  ? item.icon
+                  : selected === item.label
+                  ? item.selectIcon
+                  : item.icon;
               return (
                 <TouchableOpacity
                   onPress={() => setSelected(item.label)}
@@ -75,7 +85,7 @@ const Scenes = (props: ScenesTextProps) => {
                       selected === item.label ? [{ rotateZ: '-3deg' }] : [],
                   }}>
                   <Image
-                    source={item.icon}
+                    source={icon}
                     style={{
                       width: 116 / 2,
                       height: 116 / 2,

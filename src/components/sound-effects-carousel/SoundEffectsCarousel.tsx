@@ -5,14 +5,16 @@ import {
   ImageSourcePropType,
   ImageStyle,
   StyleProp,
+  StyleSheet,
   TouchableNativeFeedback,
   View,
+  ViewStyle,
 } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 export type SoundEffectsCarouselProps = {
   autoPlayReverse?: boolean;
-  style?: StyleProp<ImageStyle>;
+  style?: StyleProp<ImageStyle | ViewStyle>;
   carouselData: { title: ImageSourcePropType }[];
   autoPlay: boolean;
   handleSelected: () => void;
@@ -35,8 +37,7 @@ const SoundEffectsCarousel: FC<SoundEffectsCarouselProps> = props => {
       loop={true}
       autoPlayInterval={0}
       style={{
-        width,
-        height: 132 / 2,
+        ...StyleSheet.flatten(style),
         justifyContent: 'center',
         alignItems: 'center',
       }}
@@ -47,11 +48,11 @@ const SoundEffectsCarousel: FC<SoundEffectsCarouselProps> = props => {
           <TouchableNativeFeedback onPress={handleSelected}>
             <View
               style={{
-                width,
-                height: 66,
                 opacity: currentSelected ? 1 : 0.4,
+                marginHorizontal: 5,
+                ...StyleSheet.flatten(style),
               }}>
-              <Image source={item.title} style={style} />
+              <Image source={item.title} style={style as ImageStyle} />
             </View>
           </TouchableNativeFeedback>
         );
@@ -59,7 +60,7 @@ const SoundEffectsCarousel: FC<SoundEffectsCarouselProps> = props => {
       autoPlay={autoPlay}
       withAnimation={{
         type: 'timing',
-        config: { duration: 15000, easing: Easing.linear },
+        config: { duration: 20000, easing: Easing.linear },
       }}
       autoPlayReverse={autoPlayReverse}
     />

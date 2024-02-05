@@ -11,10 +11,10 @@ import {
   View,
   Image,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
-import SVGNum from '@components/svg-num/SVGNum';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -48,7 +48,7 @@ const DesignScreen = (props: DesignScreenProps) => {
               marginHorizontal: 25,
             }}>
             <Image
-              source={require('../../assets/design.png')}
+              source={require('../../assets/avatar.png')}
               style={{
                 width: 80,
                 height: 80,
@@ -70,16 +70,14 @@ const DesignScreen = (props: DesignScreenProps) => {
                 }}>
                 <Text
                   style={{
-                    fontWeight: 'bold',
-                    fontSize: 32,
+                    ...StyleSheet.flatten(style.welcomeText),
                     color: '#121115',
                   }}>
-                  xxxxx，
+                  Hi Hyuk,
                 </Text>
                 <Text
                   style={{
-                    fontWeight: 'bold',
-                    fontSize: 32,
+                    ...StyleSheet.flatten(style.welcomeText),
                     color: 'rgba(18,17,21,0.5)',
                     width: 32 * 7,
                   }}>
@@ -88,8 +86,7 @@ const DesignScreen = (props: DesignScreenProps) => {
               </View>
               <Text
                 style={{
-                  fontWeight: 'bold',
-                  fontSize: 32,
+                  ...StyleSheet.flatten(style.welcomeText),
                   color: 'rgba(18,17,21,0.5)',
                 }}>
                 see you!
@@ -121,7 +118,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                 justifyContent: 'center',
                 ...(switchStatus === 'off'
                   ? { backgroundColor: 'white' }
-                  : { backgroundColor: '#767676' }),
+                  : { backgroundColor: 'rgba(118,118,118,0.1)' }),
               }}>
               <Text
                 style={{
@@ -147,7 +144,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                 justifyContent: 'center',
                 ...(switchStatus === 'on'
                   ? { backgroundColor: 'white' }
-                  : { backgroundColor: '#767676' }),
+                  : { backgroundColor: 'rgba(118,118,118,0.1)' }),
               }}>
               <Text
                 style={{
@@ -223,6 +220,10 @@ const DesignScreen = (props: DesignScreenProps) => {
                 }}>
                 Scrolling Text
               </Text>
+              <Image
+                source={require('../../assets/design/scroll-text.png')}
+                style={{ width: 39, height: 30, marginTop: 12.5 }}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -292,4 +293,12 @@ const DesignScreen = (props: DesignScreenProps) => {
     </View>
   );
 };
+const style = StyleSheet.create({
+  welcomeText: {
+    fontWeight: 'bold',
+    fontSize: 32,
+    lineHeight: 36,
+    fontFamily: 'DINPro-Bold',
+  },
+});
 export default DesignScreen;

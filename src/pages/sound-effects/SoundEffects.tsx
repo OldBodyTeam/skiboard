@@ -3,17 +3,9 @@ import AudioRecorderPlayerWithWave from '@components/audio-recorder-player/Audio
 import Header from '@components/header/Header';
 import MusicCarousel from '@components/music-carousel/MusicCarousel';
 import MusicPlayer from '@components/music-player/MusicPlayer';
-import { playlistData } from '@components/music-player/assets/playlist';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useState } from 'react';
-import {
-  View,
-  StatusBar,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  Pressable,
-} from 'react-native';
+import { View, StatusBar, SafeAreaView, ScrollView, Text } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import { musicListData } from './utils';
 import SoundEffectsCarousel from '@components/sound-effects-carousel/SoundEffectsCarousel';
@@ -24,6 +16,17 @@ enum TABS {
   MUSIC = 'music',
   SOUND = 'sound',
 }
+export enum MODULENAME {
+  FlowingWater = 'Flowing water',
+  Meteor = 'Meteor',
+  Fluctuate = 'Fluctuate',
+  Energy = 'Energy',
+  StarryStars = 'Starry Stars',
+  WaterDroplets = 'Water droplets',
+  Fireflies = 'Fireflies',
+  Fireworks = 'Fireworks',
+}
+
 type SoundEffectsProps = NativeStackScreenProps<
   RootStackParamList,
   'SoundEffects'
@@ -58,13 +61,18 @@ const SoundEffects = (props: SoundEffectsProps) => {
         [id]: index!,
       };
     });
-    console.log('xxxx', index);
+    console.log('xxxx', id, index);
     setCurrentSelectedLine(id);
   };
   const { width } = useScreenSize();
   const [currentSelected, setCurrentSelected] = useState(TABS.MUSIC);
   const handleSelected = (status: TABS) => {
     setCurrentSelected(status);
+  };
+  const [selectModuleName, setSelectModuleName] = useState<MODULENAME>();
+  const handleMode = (moduleName: MODULENAME) => {
+    console.log(moduleName);
+    setSelectModuleName(moduleName);
   };
   return (
     <View
@@ -81,13 +89,13 @@ const SoundEffects = (props: SoundEffectsProps) => {
           }}>
           <View>
             <Header title="LightGlow Modes" handlePress={back} />
-            <View style={{ marginTop: 25 }}>
+            <View style={{ marginTop: 2 }}>
               <SoundEffectsCarousel
                 autoPlay
                 carouselData={[
                   { title: require('../../assets/sound-effects/music.png') },
                 ]}
-                style={{ width, height: 66 }}
+                style={{ width: width - 10, height: 66 }}
                 handleSelected={() => handleSelected(TABS.MUSIC)}
                 currentSelected={currentSelected === TABS.MUSIC}
               />
@@ -107,7 +115,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
           </View>
 
           {currentSelected === TABS.MUSIC ? (
-            <View>
+            <View style={{ flex: 1 }}>
               <View
                 style={{
                   flex: 1,
@@ -127,7 +135,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
               </View>
               {musicListData.map(item => {
                 return (
-                  <View key={item.index} style={{ marginVertical: 3 }}>
+                  <View key={item.index} style={{ marginVertical: 12 }}>
                     <MusicCarousel
                       carouselData={item.data}
                       autoPlay
@@ -174,6 +182,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 marginHorizontal: 6,
                 marginBottom: 16,
                 overflow: 'hidden',
+                marginTop: 32,
               }}>
               <Text
                 style={{
@@ -210,6 +219,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 20,
                     transform: [{ rotateZ: '-10deg' }],
                   }}
+                  moduleName={MODULENAME.FlowingWater}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -218,6 +230,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 20,
                     transform: [{ rotateZ: '18deg' }],
                   }}
+                  moduleName={MODULENAME.Meteor}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -226,6 +241,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 134 / 2,
                     transform: [{ rotateZ: '-2deg' }],
                   }}
+                  moduleName={MODULENAME.Fluctuate}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -234,6 +252,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 244 / 2,
                     transform: [{ rotateZ: '20deg' }],
                   }}
+                  moduleName={MODULENAME.Energy}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -242,6 +263,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 244 / 2,
                     transform: [{ rotateZ: '-14deg' }],
                   }}
+                  moduleName={MODULENAME.StarryStars}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -250,6 +274,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 394 / 2,
                     transform: [{ rotateZ: '-70deg' }],
                   }}
+                  moduleName={MODULENAME.WaterDroplets}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -258,6 +285,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 394 / 2,
                     transform: [{ rotateZ: '-6deg' }],
                   }}
+                  moduleName={MODULENAME.Fireflies}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
                 <ModeButton
                   style={{
@@ -266,6 +296,9 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     top: 464 / 2,
                     transform: [{ rotateZ: '16deg' }],
                   }}
+                  moduleName={MODULENAME.Fireworks}
+                  handleMode={handleMode}
+                  selectModuleName={selectModuleName}
                 />
               </View>
             </View>

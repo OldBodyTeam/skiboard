@@ -15,7 +15,11 @@ import { useScreenSize } from '@hooks/useScreenSize';
 import ProgressNumber from '@components/progress-number/ProgressNumber';
 import Reverse from '@components/reverse/Reverse';
 import SVGNum from '@components/svg-num/SVGNum';
-
+enum LINE {
+  ONE = 'one',
+  TWO = 'two',
+  THREE = 'three',
+}
 type LightGlowModesProps = NativeStackScreenProps<
   RootStackParamList,
   'LightGlowModes'
@@ -39,7 +43,10 @@ const LightGlowModes = (props: LightGlowModesProps) => {
     three: true,
   });
   const [selectedTitle, setSelectedTitle] = useState('');
-  const handleAutoPlay = (id: string, title: string, index?: number) => {
+  const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
+  const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
+  const handleAutoPlay = (id: LINE, title: string, index?: number) => {
+    console.log(id, index);
     setSelectedInterpolate(() => {
       return {
         one: true,
@@ -49,7 +56,8 @@ const LightGlowModes = (props: LightGlowModesProps) => {
       };
     });
     setSelectedTitle(title);
-    console.log('xxxx', index);
+    setSelectedLine(id);
+    setSelectedLinePosition(index!);
   };
   return (
     <View
@@ -67,8 +75,10 @@ const LightGlowModes = (props: LightGlowModesProps) => {
             carouselData={CarouselOneData}
             autoPlay={selectedInterpolate.one}
             handleAutoPlay={(title, index) =>
-              handleAutoPlay('one', title, index)
+              handleAutoPlay(LINE.ONE, title, index)
             }
+            selectedLine={LINE.ONE === selectedLine}
+            selectedLinePosition={selectedLinePosition}
           />
           <Interpolate
             autoPlayReverse
@@ -76,15 +86,19 @@ const LightGlowModes = (props: LightGlowModesProps) => {
             carouselData={CarouselTwoData}
             autoPlay={selectedInterpolate.two}
             handleAutoPlay={(title, index) =>
-              handleAutoPlay('two', title, index)
+              handleAutoPlay(LINE.TWO, title, index)
             }
+            selectedLine={LINE.TWO === selectedLine}
+            selectedLinePosition={selectedLinePosition}
           />
           <Interpolate
             carouselData={CarouselThreeData}
             autoPlay={selectedInterpolate.three}
             handleAutoPlay={(title, index) =>
-              handleAutoPlay('three', title, index)
+              handleAutoPlay(LINE.THREE, title, index)
             }
+            selectedLine={LINE.THREE === selectedLine}
+            selectedLinePosition={selectedLinePosition}
           />
           <ScrollView
             horizontal={false}

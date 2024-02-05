@@ -45,11 +45,8 @@ const Interpolate: FC<InterpolateProps> = props => {
             <InterpolateItem
               item={item}
               onPress={() => {
-                const position = r.current?.getCurrentIndex();
-                if (typeof index === 'number') {
-                  handleAutoPlay(item.title, position);
-                  r.current?.scrollTo({ index, animated: false });
-                }
+                handleAutoPlay(item.title, index);
+                // r.current?.scrollTo({ index, animated: false });
               }}
               selectedLed={selectedLine && selectedLinePosition === index}
             />

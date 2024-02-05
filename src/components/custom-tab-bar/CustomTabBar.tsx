@@ -1,7 +1,7 @@
 import { TabConfig } from '@pages/home/tab-config';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { customTabBarStyle } from './style';
 const CustomTabBar = ({
   state,
@@ -46,11 +46,24 @@ const CustomTabBar = ({
             onPress={onPress}
             onLongPress={onLongPress}
             style={customTabBarStyle.itemContainer}>
+            {route.name === 'DesignScreen' || route.name === 'LightScreen' ? (
+              <Image
+                source={require('../../assets/arrow-tab.png')}
+                style={customTabBarStyle.arrow}
+              />
+            ) : null}
             <View>
               <Image
                 source={isFocused ? tab?.selectedIcon : tab?.icon}
                 style={customTabBarStyle.imageBlock}
               />
+
+              {/* {route.key === 'DesignScreen' || route.key === 'LightScreen' ? (
+                <Image
+                  source={require('../../assets/arrow-tab.png')}
+                  style={style.arrow}
+                />
+              ) : null} */}
             </View>
           </TouchableOpacity>
         );
@@ -58,4 +71,5 @@ const CustomTabBar = ({
     </View>
   );
 };
+
 export default CustomTabBar;

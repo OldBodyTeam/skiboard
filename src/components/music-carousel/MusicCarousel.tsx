@@ -43,11 +43,11 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
               selected={currentSelectedLine && order === selectedIndex}
               item={item}
               onPress={() => {
-                const index = r.current?.getCurrentIndex();
-                if (index) {
-                  handleAutoPlay(item.title, index);
-                  r.current?.scrollTo({ index, animated: false });
-                }
+                handleAutoPlay(item.title, order);
+                // r.current?.scrollTo({
+                //   index: order,
+                //   animated: false,
+                // });
               }}
             />
           );

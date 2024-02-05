@@ -72,7 +72,7 @@ const Settings = (props: SettingsTextProps) => {
                 overflow: 'hidden',
               }}>
               <Image
-                source={{ uri }}
+                source={uri ? { uri } : require('../../assets/avatar.png')}
                 resizeMode="cover"
                 resizeMethod="scale"
                 style={{ width: 100, height: 100 }}

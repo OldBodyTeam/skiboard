@@ -2,7 +2,8 @@ import PickerModal, {
   PickerModalRef,
 } from '@components/picker-modal/PickerModal';
 import React, { FC, useRef } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
+
 export type PickTimeProps = {
   type: 'AM' | 'PM';
 };
@@ -25,7 +26,7 @@ const PickTime: FC<PickTimeProps> = props => {
           color: 'rgba(255,255,255,0.6)',
           marginRight: 12,
         }}>
-        To
+        {type === 'AM' ? 'From' : 'To'}
       </Text>
       <Pressable onPress={() => modalRef.current?.openModal()}>
         <View
@@ -56,6 +57,10 @@ const PickTime: FC<PickTimeProps> = props => {
             }}>
             {type}
           </Text>
+          <Image
+            source={require('../../assets/music/down-arrow.png')}
+            style={{ width: 9, height: 5 }}
+          />
         </View>
       </Pressable>
       <PickerModal
