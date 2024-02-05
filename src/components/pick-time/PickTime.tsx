@@ -11,10 +11,18 @@ export type PickTimeProps = {
   selectedTimeMode: TIME;
 };
 const PickTime: FC<PickTimeProps> = props => {
-  const { type, selectedTimeMode, handleSelectedTime } = props;
+  const { type, selectedTimeMode } = props;
   const modalRef = useRef<PickerModalRef>(null);
-  const handleCurrentSelectedTime = () => {
+  const [showTime, setShowTime] = useState({
+    currentTime: [0, '00'],
+    time: TIME.AM,
+  });
+  const handleCurrentSelectedTime = (chooseTime: {
+    currentTime: [number, string];
+    time: TIME;
+  }) => {
     modalRef.current?.closeModal();
+    setShowTime(chooseTime);
   };
 
   return (
@@ -51,7 +59,7 @@ const PickTime: FC<PickTimeProps> = props => {
               color: 'white',
               marginRight: 13 / 2,
             }}>
-            6:00
+            {showTime.currentTime.join(':')}
           </Text>
           <Text
             style={{
@@ -59,7 +67,7 @@ const PickTime: FC<PickTimeProps> = props => {
               color: 'rgba(255,255,255,0.6)',
               marginRight: 12,
             }}>
-            {type}
+            {showTime.time}
           </Text>
           <Image
             source={require('../../assets/music/down-arrow.png')}
@@ -71,8 +79,6 @@ const PickTime: FC<PickTimeProps> = props => {
         ref={modalRef}
         type={selectedTimeMode}
         handleCurrentSelectedTime={handleCurrentSelectedTime}
-        handleMode={handleSelectedTime}
-        selectedTimeMode={selectedTimeMode}
       />
     </View>
   );

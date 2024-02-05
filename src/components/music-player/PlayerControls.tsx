@@ -1,8 +1,5 @@
-import TrackPlayer, {
-  isPlaying,
-  useIsPlaying,
-} from 'react-native-track-player';
-import React, { useEffect } from 'react';
+import TrackPlayer, { useIsPlaying } from 'react-native-track-player';
+import React from 'react';
 import { Image, TouchableWithoutFeedback, View } from 'react-native';
 const PlayerControls = () => {
   const { playing } = useIsPlaying();

@@ -33,7 +33,11 @@ const MusicCarouselItem: FC<MusicCarouselItemProps> = props => {
             source={{
               uri: item.artwork,
             }}
-            style={{ width: 41, height: 41, backgroundColor: item.bg }}
+            style={{
+              width: 41,
+              height: 41,
+              backgroundColor: item.bg ?? 'green',
+            }}
           />
         </View>
         <Text

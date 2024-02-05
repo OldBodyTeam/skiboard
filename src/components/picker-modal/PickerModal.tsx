@@ -2,6 +2,7 @@ import React, {
   PropsWithChildren,
   forwardRef,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -15,10 +16,11 @@ import {
 import { BlurView } from 'expo-blur';
 import { Image } from 'react-native-ui-lib';
 import { TIME } from '@pages/music-screen/config';
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 const secondsList = Array(60)
   .fill(1)
   .map((_i, index) => {
-    return { id: index < 10 ? '0' + index : index + '' };
+    return { id: index < 10 ? '0' + index : index + '', num: index };
   });
 
 const AMHoursList = Array(12)
@@ -26,6 +28,7 @@ const AMHoursList = Array(12)
   .map((_i, index) => {
     return {
       id: index < 10 ? '0' + index : index + '',
+      num: index,
     };
   });
 export type PickerModalRef = {
@@ -35,7 +38,7 @@ export type PickerModalRef = {
 export type BlurModalProps = {
   type: TIME;
   handleCurrentSelectedTime: (chooseTime: {
-    currentTime: string;
+    currentTime: [number, string];
     time: TIME;
   }) => void; // 选择当前时间
 };
@@ -59,6 +62,17 @@ const PickerModal = forwardRef<
     },
     [setModalVisible],
   );
+  const hourRef = useRef<ICarouselInstance>(null);
+  const minRef = useRef<ICarouselInstance>(null);
+  const handleSaveOpt = () => {
+    const hours = hourRef.current?.getCurrentIndex();
+    const mins = minRef.current?.getCurrentIndex();
+    handleCurrentSelectedTime({
+      currentTime: [AMHoursList[hours!].num, secondsList[mins!].id],
+      time: selectedTimeMode,
+    });
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -198,17 +212,34 @@ const PickerModal = forwardRef<
               width: '100%',
             }}>
             <View style={{ width: 76 }}>
-              <FlatList
+              <Carousel
+                ref={hourRef}
+                loop={false}
+                autoPlayInterval={0}
+                style={{
+                  height: 78 * 3,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
                 data={AMHoursList}
+                height={78}
+                vertical
                 renderItem={({ item }) => {
                   return (
-                    <View style={{ height: 78 }}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      key={item.id}>
                       <Text style={{ fontSize: 65, color: 'white' }}>
                         {item.id}
                       </Text>
                     </View>
                   );
                 }}
+                autoPlay={false}
               />
             </View>
 
@@ -221,7 +252,36 @@ const PickerModal = forwardRef<
               <Text style={{ fontSize: 65, color: 'white' }}>:</Text>
             </View>
             <View style={{ width: 76 }}>
-              <FlatList
+              <Carousel
+                ref={minRef}
+                loop={false}
+                autoPlayInterval={0}
+                style={{
+                  height: 78 * 3,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                data={secondsList}
+                height={78}
+                vertical
+                renderItem={({ item }) => {
+                  return (
+                    <View
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      key={item.id}>
+                      <Text style={{ fontSize: 65, color: 'white' }}>
+                        {item.id}
+                      </Text>
+                    </View>
+                  );
+                }}
+                autoPlay={false}
+              />
+              {/* <FlatList
                 data={secondsList}
                 renderItem={({ item }) => {
                   return (
@@ -232,16 +292,11 @@ const PickerModal = forwardRef<
                     </View>
                   );
                 }}
-              />
+              /> */}
             </View>
           </View>
           <Pressable
-            onPress={() =>
-              handleCurrentSelectedTime({
-                currentTime: 'xxx',
-                time: selectedTimeMode,
-              })
-            }
+            onPress={handleSaveOpt}
             style={{ position: 'relative', zIndex: 1 }}>
             <View
               style={{

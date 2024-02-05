@@ -18,7 +18,12 @@ const LightList = (props: LightListProps) => {
   };
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ backgroundColor: 'rgba(19, 20, 22, 1)', flex: 1 }}>
+    <View
+      style={{
+        backgroundColor: 'rgba(19, 20, 22, 1)',
+        flex: 1,
+        paddingTop: insets.top,
+      }}>
       <WebView
         source={{ uri: 'http://120.77.9.222/draw-list' }}
         style={{

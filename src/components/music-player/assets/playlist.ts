@@ -42,7 +42,7 @@ function getRandom(min: number, max: number) {
   return Math.round(Math.random() * (max - min)) + min;
 }
 export const playlistData = musicData.map((item, index) => {
-  const roundIndex = getRandom(0, 9);
+  const roundIndex = getRandom(0, 8);
   return {
     title: item,
     artwork: artwork[index],

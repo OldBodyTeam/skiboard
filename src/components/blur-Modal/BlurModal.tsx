@@ -10,6 +10,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 export type BlurModalProps = {
   title?: string;
   content?: string;
+  mode?: 'dark' | 'light';
 };
 export type BlurModalRef = {
   openModal: () => void;
@@ -18,7 +19,7 @@ export type BlurModalRef = {
 const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
   (props, ref) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const { title, content, children } = props;
+    const { title, content, children, mode = 'dark' } = props;
     useImperativeHandle(
       ref,
       () => {
@@ -43,7 +44,7 @@ const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
         />
         <View
           style={{
-            backgroundColor: '#5A5A5A',
+            backgroundColor: mode === 'light' ? 'white' : '#5A5A5A',
             width: width - 105,
             borderRadius: 7,
             marginTop: (height - 140) / 2,
@@ -55,7 +56,7 @@ const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
           }}>
           <Text
             style={{
-              color: 'white',
+              color: mode === 'light' ? 'rgba(0, 0, 0, 1)' : '#white',
               fontSize: 18,
               fontWeight: 'bold',
               marginTop: 24,
@@ -64,7 +65,7 @@ const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
           </Text>
           <Text
             style={{
-              color: '#C5C5C5',
+              color: mode === 'light' ? 'rgba(0, 0, 0, 0.4)' : '#C5C5C5',
               fontSize: 15,
               fontWeight: '400',
               marginTop: 12,
