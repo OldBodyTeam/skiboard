@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, { useEffect } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BootSplash from 'react-native-bootsplash';
@@ -39,7 +39,7 @@ function App(): React.JSX.Element {
           {routeConfig.map(item => (
             <Stack.Screen
               name={item.name}
-              component={item.component}
+              component={item.component as FunctionComponent}
               key={item.name}
             />
           ))}

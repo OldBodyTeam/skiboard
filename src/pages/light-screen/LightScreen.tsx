@@ -109,12 +109,14 @@ const LightScreen = (props: LightScreenProps) => {
               onSwitchChange={(value: boolean) => setSwitchValue(value)}
             />
           </View>
-          <View
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
+              // display: 'flex',
+              // alignItems: 'center',
+              // justifyContent: 'space-between',
+              // flexDirection: 'row',
               flex: 1,
             }}>
             {[
@@ -172,7 +174,7 @@ const LightScreen = (props: LightScreenProps) => {
                 />
               </View>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
         </View>
         <View
           style={{

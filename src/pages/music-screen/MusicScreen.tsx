@@ -27,7 +27,6 @@ type MusicScreenProps = CompositeScreenProps<
 const MusicScreen = (props: MusicScreenProps) => {
   const { navigation } = props;
   const [switchValue, setSwitchValue] = useState<boolean>(false);
-  const [selectedTimeMode, setSelectedTimeMode] = useState<TIME>(TIME.AM);
   return (
     <ImageBackground
       style={{
@@ -69,16 +68,8 @@ const MusicScreen = (props: MusicScreenProps) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <PickTime
-                  type={TIME.AM}
-                  handleSelectedTime={() => console.log(1)}
-                  selectedTimeMode={selectedTimeMode}
-                />
-                <PickTime
-                  type={TIME.PM}
-                  handleSelectedTime={() => console.log(1)}
-                  selectedTimeMode={selectedTimeMode}
-                />
+                <PickTime type={TIME.AM} />
+                <PickTime type={TIME.PM} />
               </View>
             </View>
           </BlurBg>

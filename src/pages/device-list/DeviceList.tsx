@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
 import {
-  SafeAreaView,
   StatusBar,
   Text,
   View,
@@ -11,6 +10,7 @@ import {
 import DeviceListItem from './DeviceListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 type DeviceListProps = NativeStackScreenProps<
   RootStackParamList,
   'DeviceList'
@@ -20,8 +20,10 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
   const handleGoBack = () => {
     navigation.navigate('Home');
   };
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView style={{ backgroundColor: '#000000', flex: 1 }}>
+    <View
+      style={{ backgroundColor: '#000000', flex: 1, marginTop: insets.top }}>
       <StatusBar />
       <View
         style={{
@@ -71,7 +73,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
         )}
         keyExtractor={item => item.index + ''}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 export default DeviceList;

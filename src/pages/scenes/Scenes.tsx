@@ -1,6 +1,6 @@
 import Header from '@components/header/Header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useMemo, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -14,23 +14,37 @@ import {
 import { RootStackParamList } from 'route.config';
 type ScenesTextProps = NativeStackScreenProps<RootStackParamList, 'Scenes'> &
   PropsWithChildren<{ name?: string }>;
-const renderData = [
-  { label: 'Party', icon: require('../../assets/scenes/party.png') },
-  { label: 'Starry', icon: require('../../assets/scenes/starry.png') },
-  { label: 'Birthday', icon: require('../../assets/scenes/birthday.png') },
-  {
-    label: 'Firworks',
-    icon: require('../../assets/scenes/firworks.png'),
-    selectIcon: require('../../assets/scenes/selected.png'),
-  },
-  { label: 'Christmas', icon: require('../../assets/scenes/christmas.png') },
-  { label: 'Sunset', icon: require('../../assets/scenes/sunset.png') },
-];
+
+// Image.prefetch(require('../../assets/scenes/party.png'));
+// Image.prefetch(require('../../assets/scenes/starry.png'));
+// Image.prefetch(require('../../assets/scenes/birthday.png'));
+// Image.prefetch(require('../../assets/scenes/firworks.png'));
+// Image.prefetch(require('../../assets/scenes/christmas.png'));
+// Image.prefetch(require('../../assets/scenes/sunset.png'));
 const Scenes = (props: ScenesTextProps) => {
   const { navigation } = props;
   const back = () => {
     navigation.navigate('Home', { screen: 'MusicScreen' });
   };
+
+  const renderData = useMemo(
+    () => [
+      { label: 'Party', icon: require('../../assets/scenes/party.png') },
+      { label: 'Starry', icon: require('../../assets/scenes/starry.png') },
+      { label: 'Birthday', icon: require('../../assets/scenes/birthday.png') },
+      {
+        label: 'Firworks',
+        icon: require('../../assets/scenes/firworks.png'),
+        selectIcon: require('../../assets/scenes/selected.png'),
+      },
+      {
+        label: 'Christmas',
+        icon: require('../../assets/scenes/christmas.png'),
+      },
+      { label: 'Sunset', icon: require('../../assets/scenes/sunset.png') },
+    ],
+    [],
+  );
   const [selected, setSelected] = useState<
     (typeof renderData)[number]['label'] | undefined
   >();

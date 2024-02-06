@@ -54,7 +54,7 @@ const EditLight = (props: EditLightProps) => {
         backgroundColor: 'rgba(89,56,236,1)',
       }}>
       <WebView
-        source={{ uri: 'http://192.168.199.106:5173/draw' }}
+        source={{ uri: 'http://120.77.9.222/draw' }}
         style={drawStyles.container}
         originWhitelist={['*']}
         scalesPageToFit={false}

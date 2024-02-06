@@ -7,11 +7,11 @@ import { View, Text, Pressable, Image } from 'react-native';
 
 export type PickTimeProps = {
   type: TIME;
-  handleSelectedTime: (timeType: TIME) => void;
-  selectedTimeMode: TIME;
+  // handleSelectedTime: (timeType: TIME) => void;
+  // selectedTimeMode: TIME;
 };
 const PickTime: FC<PickTimeProps> = props => {
-  const { type, selectedTimeMode } = props;
+  const { type } = props;
   const modalRef = useRef<PickerModalRef>(null);
   const [showTime, setShowTime] = useState({
     currentTime: [0, '00'],
@@ -77,7 +77,7 @@ const PickTime: FC<PickTimeProps> = props => {
       </Pressable>
       <PickerModal
         ref={modalRef}
-        type={selectedTimeMode}
+        // type={selectedTimeMode}
         handleCurrentSelectedTime={handleCurrentSelectedTime}
       />
     </View>

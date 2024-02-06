@@ -5,14 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {
-  FlatList,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Image } from 'react-native-ui-lib';
 import { TIME } from '@pages/music-screen/config';
@@ -36,7 +29,7 @@ export type PickerModalRef = {
   closeModal: () => void;
 };
 export type BlurModalProps = {
-  type: TIME;
+  // type: TIME;
   handleCurrentSelectedTime: (chooseTime: {
     currentTime: [number, string];
     time: TIME;
