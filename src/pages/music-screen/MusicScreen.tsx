@@ -44,35 +44,38 @@ const MusicScreen = (props: MusicScreenProps) => {
           bottom={32}
         />
         <View style={{ marginTop: 28, paddingHorizontal: 5 }}>
-          <BlurBg borderRadius={30} width={'100%'}>
-            <View style={{ backgroundColor: 'transparent', padding: 22 }}>
-              <View
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                }}>
-                <View>
-                  <Text style={{ color: 'white', fontSize: 22 }}>Schedute</Text>
-                </View>
-                <Switch
-                  switchValue={switchValue}
-                  onSwitchChange={setSwitchValue}
-                />
+          <View
+            style={{
+              backgroundColor: 'rgba(52, 53, 54, 0.3)',
+              padding: 22,
+              borderRadius: 30,
+            }}>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+              }}>
+              <View>
+                <Text style={{ color: 'white', fontSize: 22 }}>Schedute</Text>
               </View>
-              <View
-                style={{
-                  marginTop: 22,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <PickTime type={TIME.AM} />
-                <PickTime type={TIME.PM} />
-              </View>
+              <Switch
+                switchValue={switchValue}
+                onSwitchChange={setSwitchValue}
+              />
             </View>
-          </BlurBg>
+            <View
+              style={{
+                marginTop: 22,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <PickTime type={TIME.AM} />
+              <PickTime type={TIME.PM} />
+            </View>
+          </View>
         </View>
         <View
           style={{

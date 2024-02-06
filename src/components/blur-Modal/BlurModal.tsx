@@ -56,7 +56,7 @@ const BlurModal = forwardRef<BlurModalRef, PropsWithChildren<BlurModalProps>>(
           }}>
           <Text
             style={{
-              color: mode === 'light' ? 'rgba(0, 0, 0, 1)' : '#white',
+              color: mode === 'light' ? 'rgba(0, 0, 0, 1)' : 'white',
               fontSize: 18,
               fontWeight: 'bold',
               marginTop: 24,

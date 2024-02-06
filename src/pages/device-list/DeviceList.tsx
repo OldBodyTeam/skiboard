@@ -23,7 +23,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
   const insets = useSafeAreaInsets();
   return (
     <View
-      style={{ backgroundColor: '#000000', flex: 1, marginTop: insets.top }}>
+      style={{ backgroundColor: '#000000', flex: 1, paddingTop: insets.top }}>
       <StatusBar />
       <View
         style={{
