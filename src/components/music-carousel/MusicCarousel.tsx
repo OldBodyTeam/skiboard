@@ -1,13 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Dimensions, StyleProp, ViewStyle } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { View } from 'react-native-ui-lib';
 import MusicCarouselItem from './MusicCarouselItem';
 import { Easing } from 'react-native-reanimated';
+import TrackPlayer, { Track } from 'react-native-track-player';
+import { playlistData } from '@components/music-player/assets/playlist';
 export type MusicCarouselProps = {
   autoPlayReverse?: boolean;
   style?: StyleProp<ViewStyle>;
-  carouselData: { title: string; artwork: string }[];
+  carouselData: typeof playlistData;
   autoPlay: boolean;
   handleAutoPlay: (title: string, index?: number) => void;
   selectedIndex: number;
@@ -23,6 +25,15 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
     currentSelectedLine,
   } = props;
   const r = React.useRef<ICarouselInstance>(null);
+  useEffect(() => {
+    const getStatus = async () => {
+      await TrackPlayer.getPlaybackState();
+      TrackPlayer.pause();
+    };
+    return () => {
+      getStatus();
+    };
+  }, []);
   return (
     <View>
       <Carousel
@@ -44,6 +55,8 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
               item={item}
               onPress={() => {
                 handleAutoPlay(item.title, order);
+                TrackPlayer.setQueue([item] as Track[]);
+                TrackPlayer.play();
                 // r.current?.scrollTo({
                 //   index: order,
                 //   animated: false,

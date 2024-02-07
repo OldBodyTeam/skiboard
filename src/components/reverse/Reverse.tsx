@@ -5,8 +5,8 @@ const Reverse = () => {
   return (
     <View
       style={{
-        width: 82,
-        height: 31,
+        width: 110,
+        height: 42,
         borderRadius: 24,
         backgroundColor: 'rgba(233, 202, 244, 1)',
         borderWidth: 1,
@@ -18,9 +18,9 @@ const Reverse = () => {
       }}>
       <TouchableOpacity
         style={{
-          width: 29,
-          height: 29,
-          borderRadius: 29,
+          width: 39,
+          height: 39,
+          borderRadius: 39,
           backgroundColor: 'black',
           display: 'flex',
           alignItems: 'center',
@@ -28,44 +28,22 @@ const Reverse = () => {
         }}>
         <Image
           source={require('../../assets/progress-number/left.png')}
-          style={{ width: 18, height: 17 }}
+          style={{ width: 24, height: 23 }}
         />
       </TouchableOpacity>
-      <View
+      <Image
+        source={require('../../assets/progress-number/arrow.png')}
         style={{
-          position: 'relative',
-          marginHorizontal: 3,
-          width: 15,
-          height: 9,
-        }}>
-        <Image
-          source={require('../../assets/progress-number/arrow-left.png')}
-          style={{
-            width: 9,
-            height: 9,
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: 2,
-          }}
-        />
-        <Image
-          source={require('../../assets/progress-number/arrow-right.png')}
-          style={{
-            width: 9,
-            height: 9,
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            zIndex: 1,
-          }}
-        />
-      </View>
+          width: 45 / 2,
+          height: 29 / 2,
+        }}
+      />
+
       <TouchableOpacity
         style={{
-          width: 29,
-          height: 29,
-          borderRadius: 29,
+          width: 39,
+          height: 39,
+          borderRadius: 39,
           backgroundColor: 'rgba(233, 182, 233, 1)',
           display: 'flex',
           alignItems: 'center',
@@ -73,7 +51,7 @@ const Reverse = () => {
         }}>
         <Image
           source={require('../../assets/progress-number/right.png')}
-          style={{ width: 18, height: 17 }}
+          style={{ width: 24, height: 23 }}
         />
       </TouchableOpacity>
     </View>

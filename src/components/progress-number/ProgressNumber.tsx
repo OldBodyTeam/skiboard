@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import ItemText from './ItemText';
-const END_POSITION = 65 / 2;
+const END_POSITION = 53;
 const ProgressNumber = () => {
   const oldValue = useSharedValue(0);
   const position = useSharedValue(0);
@@ -21,7 +21,7 @@ const ProgressNumber = () => {
     .onUpdate(e => {
       if (position.value >= 0 && position.value <= END_POSITION * 4) {
         position.value = oldValue.value + e.translationX;
-        const index = Math.round(position.value / END_POSITION);
+        const index = Math.round(position.value / 44);
         positionValue.value = index;
       }
     })
@@ -58,22 +58,15 @@ const ProgressNumber = () => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value }],
   }));
-  // const animatedTextStyle = useAnimatedStyle(() => ({
-  //   color: interpolateColor(
-  //     positionValue.value,
-  //     [0, 1],
-  //     ['white', 'black', 'white'],
-  //   ),
-  // }));
 
   return (
     <ImageBackground
       source={require('../../assets/progress-number/bg.png')}
       style={{
-        width: 368 / 2,
-        height: 62 / 2,
+        width: 602 / 2,
+        height: 84 / 2,
         position: 'relative',
-        paddingHorizontal: 16,
+        paddingHorizontal: 36 / 2,
       }}>
       <View
         style={{
@@ -83,27 +76,21 @@ const ProgressNumber = () => {
           alignItems: 'center',
           flexDirection: 'row',
           top: 0,
-          left: 12,
+          left: 0,
           zIndex: 2,
+          paddingHorizontal: 18,
         }}>
         {[0, 1, 2, 3, 4].map(v => {
           return (
             <View
               key={v}
               style={{
-                width: 65 / 2,
-                height: 65 / 2,
+                width: 53,
+                height: 42,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
               <ItemText position={v} positionValue={positionValue} />
-              {/* <Animated.Text
-                style={[
-                  { fontSize: 14, color: 'white' },
-                  v === positionValue.value ? animatedTextStyle : {},
-                ]}>
-                {v}
-              </Animated.Text> */}
             </View>
           );
         })}
@@ -112,7 +99,7 @@ const ProgressNumber = () => {
         <Animated.View style={[styles.container, animatedStyle]}>
           <ImageBackground
             source={require('../../assets/progress-number/slider.png')}
-            style={{ width: 65 / 2, height: 40 }}
+            style={{ width: 106 / 2, height: 110 / 2 }}
           />
         </Animated.View>
       </GestureDetector>
@@ -122,9 +109,9 @@ const ProgressNumber = () => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: 12,
+    left: 18,
     zIndex: 1,
-    top: -4.5,
+    top: -6,
   },
 });
 export default ProgressNumber;

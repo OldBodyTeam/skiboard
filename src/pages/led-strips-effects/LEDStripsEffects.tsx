@@ -1,19 +1,14 @@
+import CoverCard from '@components/cover-card/CoverCard';
 import Header from '@components/header/Header';
 import Interpolate from '@components/interpolate/Interpolate';
-import ProgressNumber from '@components/progress-number/ProgressNumber';
-import Reverse from '@components/reverse/Reverse';
-import ScrollSelected from '@components/scroll-selected/ScrollSelected';
-import SVGNum from '@components/svg-num/SVGNum';
-import { useScreenSize } from '@hooks/useScreenSize';
 import {
   CarouselOneData,
   CarouselTwoData,
   CarouselThreeData,
-  scrollData,
 } from '@pages/light-glow-modes/utils';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import { View, StatusBar, SafeAreaView, ScrollView, Text } from 'react-native';
+import { View, StatusBar, SafeAreaView, ScrollView } from 'react-native';
 import { RootStackParamList } from 'route.config';
 enum LINE {
   ONE = 'one',
@@ -36,7 +31,6 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
   useEffect(() => {
     ScrollViewRef.current?.scrollTo({ y: -43, animated: true });
   }, []);
-  const { width } = useScreenSize();
   const [selectedInterpolate, setSelectedInterpolate] = useState({
     one: true,
     two: true,
@@ -104,112 +98,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
-            <View
-              style={{
-                position: 'absolute',
-                left: 17,
-                top: 36,
-                transform: [{ rotateZ: '6deg' }],
-                backgroundColor: 'rgba(179, 180, 180, 1)',
-                width: width - 34,
-                height: 597 / 2,
-                borderRadius: 33,
-                zIndex: -10,
-              }}
-            />
-            <View
-              style={{
-                position: 'absolute',
-                left: 17,
-                top: 36,
-                transform: [{ rotateZ: '12deg' }],
-                backgroundColor: 'rgba(65, 66, 66, 1)',
-                width: width - 34,
-                height: 597 / 2,
-                borderRadius: 33,
-                zIndex: -20,
-              }}
-            />
-            <View
-              style={{
-                width: width - 34,
-                height: 597 / 2,
-                borderRadius: 33,
-                backgroundColor: 'white',
-                paddingHorizontal: 20,
-                paddingTop: 24,
-                paddingBottom: 26,
-                marginHorizontal: 17,
-                position: 'relative',
-                marginTop: 36,
-                zIndex: 1,
-              }}>
-              <ScrollSelected scrollData={scrollData} title={selectedTitle} />
-              <View
-                style={{
-                  position: 'absolute',
-                  zIndex: 10,
-                  right: 10,
-                  top: 160,
-                  width: 44,
-                  height: 44,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <View
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: 44,
-                    height: 44,
-                  }}>
-                  <SVGNum num={1} />
-                </View>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 11,
-                    color: 'rgba(51, 51, 51, 0.3)',
-                  }}>
-                  1 <Text style={{ color: 'rgba(51, 51, 51, 1)' }}>of 7</Text>
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 46,
-                  justifyContent: 'space-between',
-                }}>
-                <View>
-                  <Text
-                    style={{
-                      color: '#333333',
-                      fontWeight: 'bold',
-                      height: 14,
-                      lineHeight: 17,
-                      marginBottom: 16,
-                    }}>
-                    Reverse
-                  </Text>
-                  <Reverse />
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      color: '#333333',
-                      fontWeight: 'bold',
-                      height: 14,
-                      lineHeight: 17,
-                      marginBottom: 16,
-                    }}>
-                    Speed
-                  </Text>
-                  <ProgressNumber />
-                </View>
-              </View>
-            </View>
+            <CoverCard selectedTitle={selectedTitle} />
           </ScrollView>
         </ScrollView>
       </SafeAreaView>

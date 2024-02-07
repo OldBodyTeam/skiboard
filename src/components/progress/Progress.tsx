@@ -72,20 +72,25 @@ const Progress: FC<ProgressProps> = props => {
         }}
         thumbStyle={{
           backgroundColor: 'transparent',
-          width: 0,
-          height: 0,
+          width: 100,
+          height: 50,
           borderWidth: 0,
+          shadowColor: 'transparent',
+          shadowRadius: 0,
+          elevation: 0,
         }}
         activeThumbStyle={{
           width: 0,
           height: 0,
           borderWidth: 0,
           overflow: 'hidden',
+          backgroundColor: 'transparent',
+          elevation: 0,
         }}
         minimumTrackTintColor="yellow"
         maximumTrackTintColor="rgba(118, 118, 118, 0.1)"
         onValueChange={handleValueChange}
-        useGap
+        thumbTintColor="transparent"
       />
     </View>
   );
