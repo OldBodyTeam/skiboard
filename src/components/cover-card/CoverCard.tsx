@@ -114,7 +114,7 @@ const CoverCard: FC<CoverCardProps> = props => {
                 fontWeight: 'bold',
                 height: 14,
                 lineHeight: 17,
-                marginBottom: 15 / 2,
+                marginBottom: 20,
                 marginTop: 31 / 2,
               }}>
               Speed

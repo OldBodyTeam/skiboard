@@ -19,6 +19,7 @@ import SoundEffectsCarousel from '@components/sound-effects-carousel/SoundEffect
 import { useScreenSize } from '@hooks/useScreenSize';
 import SensitivityProgress from '@components/sensitivity-progress/SensitivityProgress';
 import ModeButton from './components/mode-button/ModeButton';
+import Waveform from '@components/audio-recorder-player/Wave';
 enum TABS {
   MUSIC = 'music',
   SOUND = 'sound',
@@ -123,7 +124,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
           </View>
 
           {currentSelected === TABS.MUSIC ? (
-            <View style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}>
               <View
                 style={{
                   flex: 1,
@@ -177,12 +178,11 @@ const SoundEffects = (props: SoundEffectsProps) => {
                   Select artiste you love
                 </Text>
               </View>
-              {/* <AudioRecorderPlayerWithWave /> */}
               <MusicPlayer />
-            </View>
+            </ScrollView>
           ) : null}
           {currentSelected === TABS.SOUND ? (
-            <View
+            <ScrollView
               style={{
                 flex: 1,
                 backgroundColor: 'white',
@@ -202,6 +202,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 Microphone
               </Text>
               <AudioRecorderPlayerWithWave />
+              {/* <Waveform /> */}
               <Text
                 style={{
                   fontWeight: '500',
@@ -309,7 +310,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                   selectModuleName={selectModuleName}
                 />
               </View>
-            </View>
+            </ScrollView>
           ) : null}
           {/* </View> */}
         </ScrollView>

@@ -8,43 +8,34 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import type {
   AudioSet,
-  PlayBackType,
+  // PlayBackType,
   RecordBackType,
 } from 'react-native-audio-recorder-player';
 import {
-  Dimensions,
+  // Dimensions,
   PermissionsAndroid,
   Platform,
-  SafeAreaView,
   ScrollView,
-  StyleSheet,
+  // SafeAreaView,
+  // ScrollView,
+  // StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {
-  Canvas,
-  Fill,
-  Patch,
-  Path,
-  Skia,
-  vec,
-} from '@shopify/react-native-skia';
-import dayjs from 'dayjs';
+  useSharedValue,
+  // useAnimatedProps,
+  withTiming,
+} from 'react-native-reanimated';
+// import { Svg, Path, Rect } from 'react-native-svg';
+// import { useScreenSize } from '@hooks/useScreenSize';
+import Wave from './Wave';
+import { coverVoiceToHeight } from './utils';
+const initVoicePosition = [{ x: 0, y: coverVoiceToHeight(0, 0, 100, 7.5, 6) }];
+// const AnimatedPath = Animated.createAnimatedComponent(Path);
+// const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const path = Platform.select({ ios: undefined, android: undefined });
-const topPath = Skia.Path.Make();
-const bottomPath = Skia.Path.Make();
-topPath.moveTo(0, 150);
-// topPath.lineTo(30, 150 + 10);
-// topPath.lineTo(30, 150 + 10);
-// topPath.lineTo(60, 150 + 40);
-// topPath.lineTo(90, 150 + 30);
-// topPath.lineTo(120, 150 + 100);
-bottomPath.moveTo(0, 150);
-// bottomPath.lineTo(30, 150 - 10);
-// bottomPath.lineTo(60, 150 - 40);
-// bottomPath.lineTo(90, 150 - 30);
-// bottomPath.lineTo(120, 150 - 100);
 
 const AudioRecorderPlayerWithWave = () => {
   const audioRecorderPlayer = useRef<AudioRecorderPlayer>(
@@ -55,15 +46,16 @@ const AudioRecorderPlayerWithWave = () => {
     currentPositionSec: 0,
     currentDurationSec: 0,
   });
-  const [a, setA] = useState(0);
+  const [currentWidth, setCurrentWidth] = useState(60);
+  const [points, setPoints] = useState<{ x: number; y: number }[]>([
+    ...initVoicePosition,
+  ]);
   useEffect(() => {
     if (!audioRecorderPlayer.current) {
       audioRecorderPlayer.current = new AudioRecorderPlayer();
     }
-    audioRecorderPlayer.current.setSubscriptionDuration(0.1);
+    audioRecorderPlayer.current.setSubscriptionDuration(1);
   }, []);
-  const [currentWidth, setCurrentWidth] = useState(1);
-  const [yAxis, setYAxis] = useState(0);
   const onStartRecord = async (): Promise<void> => {
     if (Platform.OS === 'android') {
       try {
@@ -106,32 +98,10 @@ const AudioRecorderPlayerWithWave = () => {
 
     console.log('audioSet', audioSet);
 
-    const uri = await audioRecorderPlayer.current.startRecorder(
-      path,
-      audioSet,
-      true,
-    );
-    // topPath.lineTo(30, 150 + 10);
-    // topPath.lineTo(30, 150 + 10);
-    // topPath.lineTo(60, 150 + 40);
-    // topPath.lineTo(90, 150 + 30);
-    // topPath.lineTo(120, 150 + 100);
+    await audioRecorderPlayer.current.startRecorder(path, audioSet, true);
 
     audioRecorderPlayer.current.addRecordBackListener((e: RecordBackType) => {
-      console.log(e);
       const xAxis = Math.floor(e.currentPosition / 1000);
-      setCurrentWidth(xAxis);
-      //   topPath.lineTo(xAxis * 30, Math.floor(150 - 30));
-      //   bottomPath.lineTo(xAxis * 30, Math.floor(150 + 30));
-      //   topPath.lineTo(30, 150 + 10);
-      //   topPath.lineTo(30, 150 + 10);
-      //   topPath.lineTo(60, 150 + 40);
-      //   topPath.lineTo(90, 150 + 30);
-      //   topPath.lineTo(120, 150 + 100);
-      //   topPath.lineTo(xAxis * 30, 150);
-      //   topPath.lineTo(0, 150);
-      //   bottomPath.lineTo(xAxis * 30, 150);
-      //   bottomPath.lineTo(0, 150);
       setAudioState(prev => {
         return {
           ...prev,
@@ -142,21 +112,16 @@ const AudioRecorderPlayerWithWave = () => {
       });
     });
 
-    console.log(audioState);
-    console.log(uri);
+    // console.log(audioState);
+    // console.log(uri);
   };
   const onStopRecord = async (): Promise<void> => {
-    const result = await audioRecorderPlayer.current.stopRecorder();
+    await audioRecorderPlayer.current.stopRecorder();
     audioRecorderPlayer.current.removeRecordBackListener();
-    // setAudioState(prev => {
-    //   return { ...prev, recordMetering: 0, currentDurationSec: 0 };
-    // });
-    topPath.lineTo(currentWidth, 150);
-    topPath.lineTo(0, 150);
-    bottomPath.lineTo(currentWidth, 150);
-    bottomPath.lineTo(0, 150);
-    topPath.close();
-    console.log(result);
+    setAudioState(prev => {
+      return { ...prev, recordMetering: 0, currentDurationSec: 0 };
+    });
+    setPoints([...initVoicePosition]);
   };
   useEffect(() => {
     return () => {
@@ -164,41 +129,101 @@ const AudioRecorderPlayerWithWave = () => {
       audioRecorderPlayer.current.removePlayBackListener();
     };
   }, []);
+  const animatedValue = useSharedValue(0);
+
+  useEffect(() => {
+    animatedValue.value = withTiming(100, { duration: 5000 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const scrollRef = useRef<any>(null);
+  const timer = useRef<any>(null);
+
+  useEffect(() => {
+    if (audioState.currentDurationSec) {
+      const audioStateRecordMetering =
+        // 50 - audioState.recordMetering >= 100
+        //   ? 100
+        //   : 50 - audioState.recordMetering;
+        100 + audioState.recordMetering <= 50
+          ? 50
+          : 100 + audioState.recordMetering >= 80
+          ? 80
+          : 100 + audioState.recordMetering;
+      // -50 -> 50  -50 150
+      // -25 -> 75  -25 125
+      // 0 -> 100    0  100
+      // 25 -> 125
+      // 50 -> 150
+      // console.log('----->', audioState.recordMetering);
+      let rate = 50;
+      const xAxis = audioState.currentDurationSec * rate;
+      rate = xAxis > 5000 ? Math.ceil(xAxis / 5000) * rate : rate;
+      setCurrentWidth(xAxis);
+      setPoints(prev => {
+        return [
+          ...prev,
+          {
+            x: xAxis,
+            y: coverVoiceToHeight(xAxis, 0, audioStateRecordMetering, 7.5, 16),
+          },
+        ];
+      });
+      timer.current = setTimeout(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+        clearTimeout(timer.current);
+      }, 100);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioState.currentDurationSec]);
 
   return (
     <>
       <TouchableOpacity onPress={onStartRecord}>
-        <Text style={{ color: 'white', fontSize: 30 }}>点我录音</Text>
+        <Text style={{ color: 'black', fontSize: 30 }}>点我录音</Text>
       </TouchableOpacity>
-      {/* <TouchableOpacity onPress={onStopRecord}>
-        <Text style={{ color: 'white', fontSize: 30 }}>停止录音</Text>
+      <TouchableOpacity onPress={onStopRecord}>
+        <Text style={{ color: 'black', fontSize: 30 }}>停止录音</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          topPath.lineTo(100, 150);
-        }}>
-        <Text style={{ color: 'white', fontSize: 30 }}>停止录音</Text>
-      </TouchableOpacity>
-      <ScrollView horizontal style={{ width: 400, height: 300 }}>
-        <Canvas style={{ width: 400, height: 300, backgroundColor: 'white' }}> */}
-      {/* <Path
-            path={topPath}
-            style="stroke"
-            strokeWidth={2}
-            color="red"
-            strokeJoin="round"
-            strokeCap="round"
-            fillType={'evenOdd'}
-          /> */}
-      {/* <Path path={topPath} color="lightblue" fillType="evenOdd" />
-          <Path path={bottomPath} color="lightblue" fillType="evenOdd" />
-          <Path path="M 10 80 Q 52.5 10, 95 80 T 180 80" color="black" />
-        </Canvas>
-      </ScrollView>
-      <Text style={{ color: 'white', fontSize: 30 }}>
+      <View style={{ width: '100%', height: 300 }}>
+        <ScrollView
+          style={{
+            flex: 1,
+          }}
+          horizontal
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}
+          ref={scrollRef}>
+          <View
+            style={{
+              width: currentWidth,
+              height: 300,
+              position: 'relative',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Wave
+              width={currentWidth}
+              height={150}
+              points={points}
+              color="blue"
+            />
+            <Wave
+              width={currentWidth}
+              height={150}
+              points={points}
+              color="blue"
+              placement="top"
+            />
+          </View>
+        </ScrollView>
+      </View>
+
+      <Text style={{ color: 'black', fontSize: 30 }}>
         {audioState.currentDurationSec ?? 0}
+        {audioState.recordMetering}
       </Text>
-      <Text style={{ color: 'white', fontSize: 30 }}>{a ?? 0}</Text> */}
     </>
   );
 };

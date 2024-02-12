@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, ImageBackground, Text } from 'react-native';
+import { Image, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -8,44 +8,57 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { View } from 'react-native-ui-lib';
-const END_POSITION = 65 / 2;
+const END_POSITION = 89 / 2;
+const blockNum = 4;
+const leftDistance = 105;
 const SensitivityProgress = () => {
-  const oldValue = useSharedValue(0);
-  const position = useSharedValue(105);
+  const oldValue = useSharedValue(leftDistance);
+  const position = useSharedValue(leftDistance);
   const positionValue = useSharedValue(0);
   const handleSelected = (index: number) => {
     console.log(index);
   };
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
-      position.value = oldValue.value + e.translationX;
-      const index = Math.round(position.value / END_POSITION);
-      positionValue.value = index;
+      if (
+        position.value >= leftDistance &&
+        position.value <=
+          END_POSITION * blockNum + leftDistance + positionValue.value * 1
+      ) {
+        position.value = oldValue.value + e.translationX;
+        const index = Math.round(
+          (position.value - leftDistance) / END_POSITION,
+        );
+        positionValue.value = index;
+      }
     })
     .onEnd(e => {
-      const index = Math.round(position.value / END_POSITION);
+      const index = Math.round(
+        (position.value - leftDistance - positionValue.value * 1) /
+          END_POSITION,
+      );
       if (index < 0) {
-        position.value = withTiming(0, { duration: 100 });
-        oldValue.value = withTiming(0);
+        position.value = withTiming(leftDistance, { duration: 100 });
+        oldValue.value = withTiming(leftDistance);
         positionValue.value = 0;
         runOnJS(handleSelected)(0);
         return;
       }
-      if (index > 4) {
-        position.value = withTiming(END_POSITION * 4, { duration: 100 });
-        oldValue.value = withTiming(END_POSITION * 4);
-        positionValue.value = 4;
-        runOnJS(handleSelected)(4);
+      if (index > blockNum) {
+        position.value = withTiming(END_POSITION * blockNum, { duration: 100 });
+        oldValue.value = withTiming(END_POSITION * blockNum);
+        positionValue.value = blockNum;
+        runOnJS(handleSelected)(blockNum);
         return;
       }
       positionValue.value = index;
       runOnJS(handleSelected)(index);
       if (e.translationX > 0) {
-        const distance = END_POSITION * index;
+        const distance = END_POSITION * index + leftDistance + index * 1;
         position.value = withTiming(distance, { duration: 100 });
         oldValue.value = withTiming(distance);
       } else {
-        const distance = END_POSITION * index;
+        const distance = END_POSITION * index + leftDistance + index * 1;
         position.value = withTiming(distance, {
           duration: 100,
         });
@@ -86,8 +99,8 @@ const SensitivityProgress = () => {
           alignItems: 'center',
           flexDirection: 'row',
           top: 0,
-          left: 115 / 2,
-          zIndex: 2,
+          left: leftDistance / 2,
+          zIndex: 20,
           height: 44,
         }}>
         <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
@@ -102,20 +115,21 @@ const SensitivityProgress = () => {
               }}>
               <View
                 style={{
-                  width: 70 / 2,
                   height: 40,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  width: 89 / 2,
                 }}>
-                <Text>{v + 1}</Text>
-                {/* <ItemText position={v} positionValue={positionValue} /> */}
-                {/* <Animated.Text
-                style={[
-                  { fontSize: 14, color: 'white' },
-                  v === positionValue.value ? animatedTextStyle : {},
-                ]}>
-                {v}
-              </Animated.Text> */}
+                <Text
+                  style={{
+                    fontSize: 15,
+                    lineHeight: 18,
+                    // color: '#1D2122',
+                    color: 'red',
+                    fontWeight: 'bold',
+                  }}>
+                  {v + 1}
+                </Text>
               </View>
               <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
             </View>
@@ -155,7 +169,7 @@ const SensitivityProgress = () => {
                 width: 54,
                 borderRadius: 22,
               },
-              //   animatedStyle,
+              // animatedSliderStyle,
             ]}
           />
         </GestureDetector>
