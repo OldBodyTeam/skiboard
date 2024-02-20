@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { WavePath } from './worklets';
-
+import * as d3 from 'd3';
 export interface WaveProps {
   placement?: string;
   speed?: number;
@@ -41,15 +41,24 @@ const Wave: FC<WaveProps> = props => {
   }, [path.value]);
   // console.log('******** points *********');
   // console.log(points);
-
+  const line = d3
+    .line()
+    .x(function (d, i) {
+      return i;
+    })
+    .y(function (d, i) {
+      return 50 * Math.sin(i / 50) + d[1];
+    });
+  const a = line(points.map(v => [v.x, v.y]))!;
   useEffect(() => {
     if (points.length > 2) {
       const pathSVG = WavePath(points).getPoints().build(width, height);
       loop.value = withTiming(0, { duration: 1000 }, () => {
-        path.value = pathSVG;
+        path.value = a;
       });
     }
     return () => cancelAnimation(loop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height, loop, path, points, width]);
 
   return (

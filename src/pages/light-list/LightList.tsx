@@ -4,6 +4,7 @@ import { View } from 'react-native-ui-lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useWebViewUrl } from '@hooks/useWebviewUrl';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
 const LightList = (props: LightListProps) => {
@@ -17,6 +18,7 @@ const LightList = (props: LightListProps) => {
     );
   };
   const insets = useSafeAreaInsets();
+  const uri = useWebViewUrl('draw-list');
   return (
     <View
       style={{
@@ -25,7 +27,9 @@ const LightList = (props: LightListProps) => {
         paddingTop: insets.top,
       }}>
       <WebView
-        source={{ uri: 'http://120.77.9.222/draw-list' }}
+        source={{
+          uri,
+        }}
         style={{
           flex: 1,
           paddingTop: insets.top,

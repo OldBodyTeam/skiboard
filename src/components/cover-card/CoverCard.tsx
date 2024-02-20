@@ -1,3 +1,4 @@
+import ClickProgressNumber from '@components/progress-number/ClickProgressNumber';
 import ProgressNumber from '@components/progress-number/ProgressNumber';
 import Reverse from '@components/reverse/Reverse';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
@@ -120,7 +121,8 @@ const CoverCard: FC<CoverCardProps> = props => {
               Speed
             </Text>
           </View>
-          <ProgressNumber />
+          {/* <ProgressNumber /> */}
+          <ClickProgressNumber />
         </View>
       </View>
     </>

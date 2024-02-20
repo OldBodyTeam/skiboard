@@ -12,7 +12,8 @@ import BootSplash from 'react-native-bootsplash';
 import { RootStackParamList, routeConfig } from './route.config';
 import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { RecoilRoot } from 'recoil';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -32,19 +33,23 @@ function App(): React.JSX.Element {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Login">
-          {routeConfig.map(item => (
-            <Stack.Screen
-              name={item.name}
-              component={item.component as FunctionComponent}
-              key={item.name}
-            />
-          ))}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <RecoilRoot>
+        <RootSiblingParent>
+          <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName="Login">
+              {routeConfig.map(item => (
+                <Stack.Screen
+                  name={item.name}
+                  component={item.component as FunctionComponent}
+                  key={item.name}
+                />
+              ))}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </RootSiblingParent>
+      </RecoilRoot>
     </GestureHandlerRootView>
   );
 }

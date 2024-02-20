@@ -1,9 +1,14 @@
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import Header from '@components/header/Header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ClientRequest } from '@services/client';
+import { UserAvatarDto } from '@services/data-contracts';
+import { userInfoState } from '@stores/login/login.atom';
+import { window } from 'd3';
 import React, { PropsWithChildren, useRef, useState } from 'react';
 import {
   Image,
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -14,6 +19,8 @@ import {
   View,
 } from 'react-native';
 import { Asset, launchImageLibrary } from 'react-native-image-picker';
+import { useRecoilState } from 'recoil';
+import RNFetchBlob from 'rn-fetch-blob';
 import { RootStackParamList } from 'route.config';
 const pageInfo = [
   { label: 'HOME' },
@@ -29,13 +36,64 @@ type SettingsTextProps = NativeStackScreenProps<
 const Settings = (props: SettingsTextProps) => {
   const { navigation } = props;
   const [uri, setUri] = useState<Asset['uri']>();
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const handleAvatar = async () => {
-    const { didCancel, assets } = await launchImageLibrary({
-      selectionLimit: 1,
-      mediaType: 'photo',
-    });
-    if (!didCancel && assets && assets[0].uri) {
-      setUri(assets[0].uri);
+    try {
+      const { didCancel, assets } = await launchImageLibrary({
+        selectionLimit: 1,
+        mediaType: 'photo',
+      });
+      if (!didCancel && assets && assets[0].uri) {
+        const ImageUri = assets[0].uri;
+        setUri(ImageUri);
+        // const response = await fetch(ImageUri);
+        // const fileBlob = await RNFetchBlob.fs.readFile(ImageUri, 'base64');
+        // const blob = await response.blob(assets[0].type!, -1);
+        // const a = await response.blob();
+
+        // const file = new File([a], assets[0].fileName, {
+        //   type: assets[0].type!,
+        //   lastModified: Date.now(),
+        // });
+        // const data = new FormData();
+        // data.append('file', {
+        //   uri: ImageUri,
+        //   type: assets[0].type,
+        //   name: assets[0].fileName,
+        // });
+        // console.log(data);
+        const data = new FormData();
+        data.append('file', {
+          name: assets[0].fileName,
+          uri:
+            Platform.OS === 'android'
+              ? ImageUri
+              : ImageUri.replace('file://', ''),
+        });
+        console.log(data);
+        const client = await ClientRequest();
+        const requestData = await client.userControllerModifyAvatar(
+          userInfo!.id,
+          data as any,
+        );
+        console.log(requestData);
+        setUserInfo(requestData.data.data);
+        // var reader = new FileReader();
+        // reader.onload = async () => {
+        //   // const client = await ClientRequest();
+        //   const data = new FormData();
+        //   data.append('file', reader.result);
+
+        //   console.log(reader.result);
+        // };
+        // reader.readAsDataURL(blob);
+        // const data = new FormData();
+        // data.append('file', blob);
+
+        // console.log(requestData);
+      }
+    } catch (e) {
+      console.log(JSON.stringify(e));
     }
   };
   const back = () => {

@@ -3,18 +3,64 @@ import React, { PropsWithChildren } from 'react';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 // import type { PropsWithChildren } from 'react';
 import { registerStyles } from './style';
-import WebView from 'react-native-webview';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { RootStackParamList } from 'route.config';
+import { ClientRequest } from '@services/client';
+import Toast from 'react-native-root-toast';
+import { isAxiosError } from 'axios';
+import { useWebViewUrl } from '@hooks/useWebviewUrl';
 type RegisterProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
   PropsWithChildren<{ name?: string }>;
+type Params = {
+  username: string;
+  password: string;
+  type: 'route' | 'request';
+  goPage: string;
+  email: string;
+};
 const Register = (props: RegisterProps) => {
   const { navigation } = props;
-  const handleNavigation = () => {
+  const goLoginPage = () => {
     navigation.navigate('Login');
   };
+  const register = async (params: Omit<Params, 'type' | 'goPage'>) => {
+    try {
+      const client = await ClientRequest();
+      await client.authControllerRegister({
+        email: params.email,
+        password: params.password,
+        username: params.username,
+      });
+      goLoginPage();
+    } catch (e) {
+      if (isAxiosError(e)) {
+        // console.log(JSON.stringify(e));
+      }
+      Toast.show('登录失败', {
+        position: Toast.positions.CENTER,
+        delay: 0,
+        animation: true,
+        duration: Toast.durations.SHORT,
+      });
+    }
+  };
+  const handleNavigation = async (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data) as Params;
+    switch (data.type) {
+      case 'request':
+        register(data);
+        return;
+      case 'route':
+      default:
+        goLoginPage();
+    }
+  };
+  const uri = useWebViewUrl('register');
   return (
     <WebView
-      source={{ uri: 'http://120.77.9.222/register' }}
+      source={{
+        uri,
+      }}
       style={registerStyles.container}
       originWhitelist={['*']}
       scalesPageToFit={false}

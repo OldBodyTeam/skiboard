@@ -16,6 +16,8 @@ import {
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '@stores/login/login.atom';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -25,6 +27,7 @@ type DesignScreenProps = CompositeScreenProps<
 const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
+  const [userInfo] = useRecoilState(userInfoState);
   return (
     <ImageBackground
       style={{
@@ -51,7 +54,7 @@ const DesignScreen = (props: DesignScreenProps) => {
               height: 80,
             }}>
             <Image
-              source={require('../../assets/avatar.png')}
+              source={{ uri: userInfo?.avatar }}
               style={{
                 width: 80,
                 height: 80,
@@ -77,7 +80,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                     ...StyleSheet.flatten(style.welcomeText),
                     color: '#121115',
                   }}>
-                  Hi Hyuk,
+                  Hi {userInfo?.username},
                 </Text>
                 <Text
                   style={{

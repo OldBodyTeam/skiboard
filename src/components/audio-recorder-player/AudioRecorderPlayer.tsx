@@ -28,11 +28,12 @@ import {
   // useAnimatedProps,
   withTiming,
 } from 'react-native-reanimated';
+import LottieView from 'lottie-react-native';
 // import { Svg, Path, Rect } from 'react-native-svg';
 // import { useScreenSize } from '@hooks/useScreenSize';
-import Wave from './Wave';
-import { coverVoiceToHeight } from './utils';
-const initVoicePosition = [{ x: 0, y: coverVoiceToHeight(0, 0, 100, 7.5, 6) }];
+// import Wave from './Wave';
+// import { coverVoiceToHeight } from './utils';
+// const initVoicePosition = [{ x: 0, y: coverVoiceToHeight(0, 0, 100, 7.5, 6) }];
 // const AnimatedPath = Animated.createAnimatedComponent(Path);
 // const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const path = Platform.select({ ios: undefined, android: undefined });
@@ -46,15 +47,16 @@ const AudioRecorderPlayerWithWave = () => {
     currentPositionSec: 0,
     currentDurationSec: 0,
   });
-  const [currentWidth, setCurrentWidth] = useState(60);
-  const [points, setPoints] = useState<{ x: number; y: number }[]>([
-    ...initVoicePosition,
-  ]);
+  const [isPlay, setIsplay] = useState(false);
+  // const [points, setPoints] = useState<{ x: number; y: number }[]>([
+  //   ...initVoicePosition,
+  // ]);
   useEffect(() => {
     if (!audioRecorderPlayer.current) {
       audioRecorderPlayer.current = new AudioRecorderPlayer();
     }
     audioRecorderPlayer.current.setSubscriptionDuration(1);
+    onStartRecord();
   }, []);
   const onStartRecord = async (): Promise<void> => {
     if (Platform.OS === 'android') {
@@ -102,6 +104,7 @@ const AudioRecorderPlayerWithWave = () => {
 
     audioRecorderPlayer.current.addRecordBackListener((e: RecordBackType) => {
       const xAxis = Math.floor(e.currentPosition / 1000);
+      setIsplay(true);
       setAudioState(prev => {
         return {
           ...prev,
@@ -116,12 +119,13 @@ const AudioRecorderPlayerWithWave = () => {
     // console.log(uri);
   };
   const onStopRecord = async (): Promise<void> => {
+    setIsplay(false);
     await audioRecorderPlayer.current.stopRecorder();
     audioRecorderPlayer.current.removeRecordBackListener();
     setAudioState(prev => {
       return { ...prev, recordMetering: 0, currentDurationSec: 0 };
     });
-    setPoints([...initVoicePosition]);
+    // setPoints([...initVoicePosition]);
   };
   useEffect(() => {
     return () => {
@@ -135,96 +139,67 @@ const AudioRecorderPlayerWithWave = () => {
     animatedValue.value = withTiming(100, { duration: 5000 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const scrollRef = useRef<any>(null);
-  const timer = useRef<any>(null);
+  // const scrollRef = useRef<any>(null);
+  // const timer = useRef<any>(null);
 
-  useEffect(() => {
-    if (audioState.currentDurationSec) {
-      const audioStateRecordMetering =
-        // 50 - audioState.recordMetering >= 100
-        //   ? 100
-        //   : 50 - audioState.recordMetering;
-        100 + audioState.recordMetering <= 50
-          ? 50
-          : 100 + audioState.recordMetering >= 80
-          ? 80
-          : 100 + audioState.recordMetering;
-      // -50 -> 50  -50 150
-      // -25 -> 75  -25 125
-      // 0 -> 100    0  100
-      // 25 -> 125
-      // 50 -> 150
-      // console.log('----->', audioState.recordMetering);
-      let rate = 50;
-      const xAxis = audioState.currentDurationSec * rate;
-      rate = xAxis > 5000 ? Math.ceil(xAxis / 5000) * rate : rate;
-      setCurrentWidth(xAxis);
-      setPoints(prev => {
-        return [
-          ...prev,
-          {
-            x: xAxis,
-            y: coverVoiceToHeight(xAxis, 0, audioStateRecordMetering, 7.5, 16),
-          },
-        ];
-      });
-      timer.current = setTimeout(() => {
-        scrollRef.current?.scrollToEnd({ animated: true });
-        clearTimeout(timer.current);
-      }, 100);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioState.currentDurationSec]);
+  // useEffect(() => {
+  //   if (audioState.currentDurationSec) {
+  //     const audioStateRecordMetering =
+  //       // 50 - audioState.recordMetering >= 100
+  //       //   ? 100
+  //       //   : 50 - audioState.recordMetering;
+  //       100 + audioState.recordMetering <= 50
+  //         ? 50
+  //         : 100 + audioState.recordMetering >= 80
+  //         ? 80
+  //         : 100 + audioState.recordMetering;
+  // -50 -> 50  -50 150
+  // -25 -> 75  -25 125
+  // 0 -> 100    0  100
+  // 25 -> 125
+  // 50 -> 150
+  // console.log('----->', audioState.recordMetering);
+  // let rate = 1;
+  // const xAxis = audioState.currentDurationSec * rate;
+  // rate = xAxis > 5000 ? Math.ceil(xAxis / 5000) * rate : rate;
+  // setCurrentWidth(xAxis);
+  // setPoints(prev => {
+  //   return [
+  //     ...prev,
+  //     {
+  //       x: xAxis,
+  //       y: audioStateRecordMetering,
+  //     },
+  //   ];
+  // });
+  // timer.current = setTimeout(() => {
+  //   scrollRef.current?.scrollToEnd({ animated: true });
+  //   clearTimeout(timer.current);
+  // }, 100);
+  // }
+
+  // }, [audioState.currentDurationSec]);
 
   return (
-    <>
-      <TouchableOpacity onPress={onStartRecord}>
-        <Text style={{ color: 'black', fontSize: 30 }}>点我录音</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onStopRecord}>
-        <Text style={{ color: 'black', fontSize: 30 }}>停止录音</Text>
-      </TouchableOpacity>
-      <View style={{ width: '100%', height: 300 }}>
-        <ScrollView
-          style={{
-            flex: 1,
-          }}
-          horizontal
-          contentContainerStyle={{
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-          }}
-          ref={scrollRef}>
-          <View
-            style={{
-              width: currentWidth,
-              height: 300,
-              position: 'relative',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Wave
-              width={currentWidth}
-              height={150}
-              points={points}
-              color="blue"
-            />
-            <Wave
-              width={currentWidth}
-              height={150}
-              points={points}
-              color="blue"
-              placement="top"
-            />
-          </View>
-        </ScrollView>
-      </View>
+    // <>
+    //   <TouchableOpacity onPress={onStartRecord}>
+    //     <Text style={{ color: 'black', fontSize: 30 }}>点我录音</Text>
+    //   </TouchableOpacity>
+    //   <TouchableOpacity onPress={onStopRecord}>
+    //     <Text style={{ color: 'black', fontSize: 30 }}>停止录音</Text>
+    //   </TouchableOpacity>
+    <LottieView
+      source={isPlay ? require('./data2.json') : require('./data.json')}
+      autoPlay
+      loop
+      style={{ width: '100%', height: 134 }}
+    />
 
-      <Text style={{ color: 'black', fontSize: 30 }}>
-        {audioState.currentDurationSec ?? 0}
-        {audioState.recordMetering}
-      </Text>
-    </>
+    //   <Text style={{ color: 'black', fontSize: 30 }}>
+    //     {audioState.currentDurationSec ?? 0}
+    //     {audioState.recordMetering}
+    //   </Text>
+    // </>
   );
 };
 export default AudioRecorderPlayerWithWave;

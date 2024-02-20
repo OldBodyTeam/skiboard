@@ -20,6 +20,7 @@ import { useScreenSize } from '@hooks/useScreenSize';
 import SensitivityProgress from '@components/sensitivity-progress/SensitivityProgress';
 import ModeButton from './components/mode-button/ModeButton';
 import Waveform from '@components/audio-recorder-player/Wave';
+import ClickSensitivityProgress from '@components/sensitivity-progress/ClickSensitivityProgress';
 enum TABS {
   MUSIC = 'music',
   SOUND = 'sound',
@@ -214,7 +215,8 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 }}>
                 Sensitivity
               </Text>
-              <SensitivityProgress />
+              {/* <SensitivityProgress /> */}
+              <ClickSensitivityProgress />
               <View
                 style={{
                   position: 'relative',

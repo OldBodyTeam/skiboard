@@ -3,17 +3,72 @@ import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { loginStyles } from './style';
 import { RootStackParamList } from 'route.config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ClientRequest } from '@services/client';
+import Toast from 'react-native-root-toast';
+import { isAxiosError } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '@stores/login/login.atom';
+import { useWebViewUrl } from '@hooks/useWebviewUrl';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
   PropsWithChildren<{ name?: string }>;
+type Params = {
+  usernameOrEmail: string;
+  password: string;
+  type: 'route' | 'request';
+  goPage: string;
+};
 const Login = (props: LoginProps) => {
   const { navigation } = props;
-  const handleNavigation = (event: WebViewMessageEvent) => {
-    const data = JSON.parse(event.nativeEvent.data);
-    navigation.navigate(data.goPage);
+  const [_, setUserInfo] = useRecoilState(userInfoState);
+  const getUserInfo = async (userId: string) => {
+    const client = await ClientRequest();
+    const { data } = await client.userControllerUser(userId);
+    setUserInfo(data.data);
   };
+  const login = async (params: Omit<Params, 'type' | 'goPage'>) => {
+    try {
+      const client = await ClientRequest();
+      const requestData = await client.authControllerLogin({
+        email_name: params.usernameOrEmail,
+        password: params.password,
+      });
+      const token = requestData.data.data?.access_token ?? '';
+      await AsyncStorage.setItem('access_token', token);
+      await getUserInfo(requestData.data.data?.userId ?? '');
+      navigation.navigate('Home', { screen: 'DesignScreen' });
+    } catch (e) {
+      if (isAxiosError(e)) {
+        console.log(JSON.stringify(e));
+      }
+      Toast.show('登录失败', {
+        position: Toast.positions.CENTER,
+        delay: 0,
+        animation: true,
+        duration: Toast.durations.SHORT,
+      });
+    }
+  };
+  const goRegisterPage = () => {
+    navigation.navigate('Register');
+  };
+  const handleNavigation = async (event: WebViewMessageEvent) => {
+    const data = JSON.parse(event.nativeEvent.data) as Params;
+    switch (data.type) {
+      case 'request':
+        login(data);
+        return;
+      case 'route':
+      default:
+        goRegisterPage();
+    }
+  };
+  const uri = useWebViewUrl('login');
   return (
     <WebView
-      source={{ uri: 'http://120.77.9.222/login' }}
+      source={{
+        uri,
+      }}
       style={loginStyles.container}
       originWhitelist={['*']}
       scalesPageToFit={false}

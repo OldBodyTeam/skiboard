@@ -1,3 +1,4 @@
+import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren } from 'react';
 import { View } from 'react-native';
@@ -20,6 +21,7 @@ const ScrollText = (props: ScrollTextProps) => {
     );
   };
   const insets = useSafeAreaInsets();
+  const uri = useWebViewUrl('scroll-text');
   return (
     <View
       style={{
@@ -28,7 +30,7 @@ const ScrollText = (props: ScrollTextProps) => {
         paddingTop: insets.top,
       }}>
       <WebView
-        source={{ uri: 'http://120.77.9.222/scroll-text' }}
+        source={{ uri }}
         style={{ flex: 1, backgroundColor: 'rgba(19, 20, 22, 1)' }}
         originWhitelist={['*']}
         scalesPageToFit={false}

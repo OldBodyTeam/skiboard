@@ -16,6 +16,7 @@ import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pressable, Text, TextInput } from 'react-native';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
+import { useWebViewUrl } from '@hooks/useWebviewUrl';
 
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
@@ -46,6 +47,7 @@ const EditLight = (props: EditLightProps) => {
   };
   const webRef = useRef<any>(null);
   const [title, setTitle] = useState('Smiling Face');
+  const uri = useWebViewUrl('draw');
   return (
     <View
       style={{
@@ -54,7 +56,7 @@ const EditLight = (props: EditLightProps) => {
         backgroundColor: 'rgba(89,56,236,1)',
       }}>
       <WebView
-        source={{ uri: 'http://120.77.9.222/draw' }}
+        source={{ uri }}
         style={drawStyles.container}
         originWhitelist={['*']}
         scalesPageToFit={false}
