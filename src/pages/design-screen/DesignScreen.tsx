@@ -58,7 +58,7 @@ const DesignScreen = (props: DesignScreenProps) => {
               style={{
                 width: 80,
                 height: 80,
-                borderRadius: 0,
+                borderRadius: 80,
                 marginRight: 15,
               }}
             />

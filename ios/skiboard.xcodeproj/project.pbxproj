@@ -51,8 +51,8 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-skiboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-skiboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = skiboard/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-skiboard-skiboardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard-skiboardTests.release.xcconfig"; path = "Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests.release.xcconfig"; sourceTree = "<group>"; };
-		9D323E270EB14BA28E781200 /* FuturaLT-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaLT-ExtraBold.ttf"; path = "../assets/fonts/FuturaLT-ExtraBold.ttf"; sourceTree = "<group>"; };
-		A7C718F314A041508C5E45BC /* DINPro-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DINPro-Bold.otf"; path = "../assets/fonts/DINPro-Bold.otf"; sourceTree = "<group>"; };
+		9D323E270EB14BA28E781200 /* FuturaLT-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaLT-ExtraBold.ttf"; path = "../assets/fonts/FuturaLT-ExtraBold.ttf"; sourceTree = "<group>"; };
+		A7C718F314A041508C5E45BC /* DINPro-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DINPro-Bold.otf"; path = "../assets/fonts/DINPro-Bold.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-skiboard-skiboardTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -101,7 +101,6 @@
 				9D323E270EB14BA28E781200 /* FuturaLT-ExtraBold.ttf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* skiboard */ = {

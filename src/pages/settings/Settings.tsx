@@ -2,13 +2,10 @@ import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import Header from '@components/header/Header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
-import { UserAvatarDto } from '@services/data-contracts';
 import { userInfoState } from '@stores/login/login.atom';
-import { window } from 'd3';
-import React, { PropsWithChildren, useRef, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import {
   Image,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -19,8 +16,8 @@ import {
   View,
 } from 'react-native';
 import { Asset, launchImageLibrary } from 'react-native-image-picker';
+import Toast from 'react-native-root-toast';
 import { useRecoilState } from 'recoil';
-import RNFetchBlob from 'rn-fetch-blob';
 import { RootStackParamList } from 'route.config';
 const pageInfo = [
   { label: 'HOME' },
@@ -46,51 +43,26 @@ const Settings = (props: SettingsTextProps) => {
       if (!didCancel && assets && assets[0].uri) {
         const ImageUri = assets[0].uri;
         setUri(ImageUri);
-        // const response = await fetch(ImageUri);
-        // const fileBlob = await RNFetchBlob.fs.readFile(ImageUri, 'base64');
-        // const blob = await response.blob(assets[0].type!, -1);
-        // const a = await response.blob();
-
-        // const file = new File([a], assets[0].fileName, {
-        //   type: assets[0].type!,
-        //   lastModified: Date.now(),
-        // });
-        // const data = new FormData();
-        // data.append('file', {
-        //   uri: ImageUri,
-        //   type: assets[0].type,
-        //   name: assets[0].fileName,
-        // });
-        // console.log(data);
         const data = new FormData();
         data.append('file', {
           name: assets[0].fileName,
-          uri:
-            Platform.OS === 'android'
-              ? ImageUri
-              : ImageUri.replace('file://', ''),
+          uri: ImageUri,
+          type: assets[0].type,
         });
-        console.log(data);
+        console.log(data, ImageUri);
         const client = await ClientRequest();
         const requestData = await client.userControllerModifyAvatar(
           userInfo!.id,
           data as any,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            transformRequest: () => {
+              return data;
+            },
+          },
         );
-        console.log(requestData);
-        setUserInfo(requestData.data.data);
-        // var reader = new FileReader();
-        // reader.onload = async () => {
-        //   // const client = await ClientRequest();
-        //   const data = new FormData();
-        //   data.append('file', reader.result);
-
-        //   console.log(reader.result);
-        // };
-        // reader.readAsDataURL(blob);
-        // const data = new FormData();
-        // data.append('file', blob);
-
-        // console.log(requestData);
+        const newUserInfo = requestData.data.data;
+        setUserInfo(newUserInfo);
       }
     } catch (e) {
       console.log(JSON.stringify(e));
@@ -101,6 +73,31 @@ const Settings = (props: SettingsTextProps) => {
   };
   const modalEditRef = useRef<BlurModalRef>(null);
   const [username, setUsername] = useState('Hyuk Design');
+  useEffect(() => {
+    setUsername(userInfo?.username ?? '');
+    setUri(userInfo?.avatar);
+  }, [userInfo]);
+  const handleModifyUsername = async () => {
+    try {
+      modalEditRef.current?.closeModal();
+      const client = await ClientRequest();
+      if (!userInfo?.id) {
+        return;
+      }
+      const result = await client.userControllerModifyUsername(userInfo.id, {
+        username,
+      });
+      const newUserInfo = result.data.data;
+      setUserInfo(newUserInfo);
+    } catch (e) {
+      Toast.show('修改用户名失败', {
+        position: Toast.positions.CENTER,
+        delay: 0,
+        animation: true,
+        duration: Toast.durations.SHORT,
+      });
+    }
+  };
   return (
     <View
       style={{
@@ -253,7 +250,7 @@ const Settings = (props: SettingsTextProps) => {
           </View>
           <TouchableHighlight
             style={{ flex: 1, marginTop: 12 }}
-            onPress={() => modalEditRef.current?.closeModal()}>
+            onPress={handleModifyUsername}>
             <View
               style={{
                 display: 'flex',

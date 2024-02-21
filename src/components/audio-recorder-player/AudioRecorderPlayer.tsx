@@ -104,7 +104,7 @@ const AudioRecorderPlayerWithWave = () => {
 
     audioRecorderPlayer.current.addRecordBackListener((e: RecordBackType) => {
       const xAxis = Math.floor(e.currentPosition / 1000);
-      setIsplay(true);
+      setIsplay((e.currentMetering ?? -60) > -40);
       setAudioState(prev => {
         return {
           ...prev,
@@ -192,7 +192,7 @@ const AudioRecorderPlayerWithWave = () => {
       source={isPlay ? require('./data2.json') : require('./data.json')}
       autoPlay
       loop
-      style={{ width: '100%', height: 134 }}
+      style={{ width: '100%', height: 84 }}
     />
 
     //   <Text style={{ color: 'black', fontSize: 30 }}>

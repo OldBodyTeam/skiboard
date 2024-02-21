@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
 import { View } from 'react-native-ui-lib';
 const Reverse = () => {
+  const [reverse, setReverse] = useState(false);
   return (
     <View
       style={{
@@ -21,11 +22,12 @@ const Reverse = () => {
           width: 39,
           height: 39,
           borderRadius: 39,
-          backgroundColor: 'black',
+          backgroundColor: !reverse ? 'black' : 'rgba(233, 182, 233, 1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-        }}>
+        }}
+        onPress={() => setReverse(false)}>
         <Image
           source={require('../../assets/progress-number/left.png')}
           style={{ width: 24, height: 23 }}
@@ -44,11 +46,12 @@ const Reverse = () => {
           width: 39,
           height: 39,
           borderRadius: 39,
-          backgroundColor: 'rgba(233, 182, 233, 1)',
+          backgroundColor: reverse ? 'black' : 'rgba(233, 182, 233, 1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-        }}>
+        }}
+        onPress={() => setReverse(true)}>
         <Image
           source={require('../../assets/progress-number/right.png')}
           style={{ width: 24, height: 23 }}

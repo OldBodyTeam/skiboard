@@ -5,7 +5,6 @@ import Switch from '@components/switch/Switch';
 import React, { PropsWithChildren, useState } from 'react';
 import {
   StatusBar,
-  ScrollView,
   View,
   TouchableOpacity,
   Image,
@@ -18,6 +17,7 @@ import { RootStackParamList } from 'route.config';
 import { TabParamList } from '@pages/home/tab-config';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ScrollView } from 'react-native-gesture-handler';
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>

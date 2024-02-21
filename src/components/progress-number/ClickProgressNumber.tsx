@@ -14,7 +14,7 @@ const ClickProgressNumber = () => {
         position: 'relative',
         paddingHorizontal: 36 / 2,
         borderRadius: 42,
-        borderColor: 'red',
+        borderColor: '#BFBFBF',
         borderWidth: 1,
         width: '100%',
       }}>

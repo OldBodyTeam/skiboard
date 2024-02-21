@@ -27,13 +27,13 @@ const SVGNum: FC<SVGNumProps> = props => {
           d={[...pathLine].slice(0).join(' ')}
           id="circular"
           stroke="rgba(51, 51, 51, 0.30)"
-          stroke-width="10"
+          // stroke-width={10}
         />
         <Path
           d={[...pathLine].slice(0, num).join(' ')}
           id="circular"
           stroke="rgba(250, 231, 22, 1)"
-          stroke-width="10"
+          // stroke-width={10}
         />
       </G>
     </Svg>

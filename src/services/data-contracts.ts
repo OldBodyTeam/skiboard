@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* tslint:disable */
 /*
  * ---------------------------------------------------------------
@@ -22,8 +21,8 @@ export interface CreateUserDto {
 }
 
 export interface UserAvatarDto {
-  /** @format binary */
-  file: File;
+  /** @format FormData */
+  file: FormData;
 }
 
 export interface UsernameDto {
