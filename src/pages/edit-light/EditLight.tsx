@@ -6,10 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-// import WebView, {
-//   WebViewMessageEvent,
-//   WebViewProps,
-// } from 'react-native-webview';
+import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { drawStyles } from './style';
 import { View } from 'react-native-ui-lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,14 +18,7 @@ import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { ClientRequest } from '@services/client';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
-import { createWebView } from '@webview-bridge/react-native';
-import { appBridge } from './utils';
-import { WebViewMessageEvent } from 'react-native-webview';
 import useToast from '@hooks/useToast';
-export const { WebView } = createWebView({
-  bridge: appBridge,
-  debug: true, // Enable console.log visibility in the native WebView
-});
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
 const EditLight = (props: EditLightProps) => {

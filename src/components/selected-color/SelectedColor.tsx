@@ -13,9 +13,7 @@ const SelectedColor = () => {
   const distanceMove = width - 5 * 2 - 16 * 2 - 10 * 2 - 30;
   const position = useSharedValue(0);
   const oldValue = useSharedValue(0);
-  const handleSelected = (index: number) => {
-    console.log('------>', index);
-  };
+  const handleSelected = (_index: number) => {};
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
       if (position.value >= 0 && position.value <= distanceMove) {
@@ -37,9 +35,7 @@ const SelectedColor = () => {
     transform: [{ translateX: position.value }],
   }));
   return (
-    <View
-      style={{ flex: 1, height: 60, marginBottom: 12 }}
-      onLayout={e => console.log(e.nativeEvent.layout.width)}>
+    <View style={{ flex: 1, height: 60, marginBottom: 12 }}>
       <LinearGradient
         colors={[
           '#D96A6D',

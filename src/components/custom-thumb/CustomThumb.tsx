@@ -8,7 +8,6 @@ function CustomThumb({
   positionStyle,
   currentColor,
 }: RenderThumbProps) {
-  console.log(positionStyle);
   const animatedStyle = useAnimatedStyle(() => ({
     // borderColor: adaptiveColor.value,
     backgroundColor: currentColor.value,

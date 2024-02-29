@@ -14,9 +14,7 @@ const ProgressNumber = () => {
   const oldValue = useSharedValue(0);
   const position = useSharedValue(0);
   const positionValue = useSharedValue(0);
-  const handleSelected = (index: number) => {
-    console.log(index);
-  };
+  const handleSelected = (_index: number) => {};
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
       if (position.value >= 0 && position.value <= END_POSITION * 4) {

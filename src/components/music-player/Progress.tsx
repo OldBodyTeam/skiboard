@@ -5,7 +5,6 @@ import { Slider, Text, View } from 'react-native-ui-lib';
 
 const MusicPlayerProgress = () => {
   const { position, duration } = useProgress();
-  // console.log('&&&&', position, duration);
   return (
     <View style={styles.container}>
       <Slider

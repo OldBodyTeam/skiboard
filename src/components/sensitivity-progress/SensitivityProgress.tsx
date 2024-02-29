@@ -15,9 +15,7 @@ const SensitivityProgress = () => {
   const oldValue = useSharedValue(leftDistance);
   const position = useSharedValue(leftDistance);
   const positionValue = useSharedValue(0);
-  const handleSelected = (index: number) => {
-    console.log(index);
-  };
+  const handleSelected = (_index: number) => {};
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
       if (

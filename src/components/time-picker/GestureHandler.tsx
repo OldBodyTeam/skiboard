@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
-  withDecay,
   withTiming,
 } from 'react-native-reanimated';
-import {
-  Gesture,
-  GestureDetector,
-  PanGestureHandler,
-} from 'react-native-gesture-handler';
-import { usePanGestureHandler } from 'react-native-redash';
-
-import { ITEM_HEIGHT } from './Constants';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 interface GestureHandlerProps {
   value: SharedValue<number>;
@@ -22,7 +14,7 @@ interface GestureHandlerProps {
   defaultValue: number;
 }
 const END_POSITION = 20;
-const GestureHandler = ({ value, max, defaultValue }: GestureHandlerProps) => {
+const GestureHandler = (_props: GestureHandlerProps) => {
   const onLeft = useSharedValue(true);
   const position = useSharedValue(0);
   const pan = Gesture.Pan()
@@ -42,9 +34,6 @@ const GestureHandler = ({ value, max, defaultValue }: GestureHandlerProps) => {
         onLeft.value = true;
       }
     });
-  useEffect(() => {
-    console.log(position.value);
-  }, [position.value]);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: position.value }],
   }));

@@ -11,7 +11,6 @@ const ClickSensitivityProgress = () => {
   const canUseWidth = useMemo(() => {
     return (width - 6 * 2 - 10 * 2 - 8 * 2 - 20 * 2) / 5;
   }, [width]);
-  console.log(canUseWidth);
   const [selectedIndex, setSelectedIndex] = useState(1);
   return (
     <View

@@ -3,10 +3,6 @@ import React from 'react';
 import { Image, TouchableWithoutFeedback, View } from 'react-native';
 const PlayerControls = () => {
   const { playing } = useIsPlaying();
-  //   useEffect(async () => {
-  //     const tracks = await TrackPlayer.getQueue();
-  //     console.log(`First title: ${tracks[0].title}`);
-  //   }, []);
   return (
     <TouchableWithoutFeedback
       onPress={playing ? TrackPlayer.pause : TrackPlayer.play}>
