@@ -14,6 +14,7 @@ import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { RecoilRoot } from 'recoil';
+// import { ClientRequest } from '@services/client';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -22,23 +23,23 @@ function App(): React.JSX.Element {
       StatusBar.setTranslucent(true);
     }
 
-    const init = async () => {
-      // async () => {};
-    };
-    init().finally(async () => {
-      await BootSplash.hide({ fade: true });
-      console.debug('BootSplash has been hidden successfully');
-    });
+    // const init = async () => {
+    //   // async () => {};
+    // };
+    // init().finally(async () => {
+    //   await BootSplash.hide({ fade: true });
+    //   console.debug('BootSplash has been hidden successfully');
+    // });
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <RecoilRoot>
+    <RecoilRoot>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <RootSiblingParent>
           <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
             <Stack.Navigator
               screenOptions={{ headerShown: false }}
-              initialRouteName="Login">
+              initialRouteName="Auth">
               {routeConfig.map(item => (
                 <Stack.Screen
                   name={item.name}
@@ -49,8 +50,8 @@ function App(): React.JSX.Element {
             </Stack.Navigator>
           </NavigationContainer>
         </RootSiblingParent>
-      </RecoilRoot>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </RecoilRoot>
   );
 }
 

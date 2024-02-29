@@ -1,3 +1,4 @@
+import Auth from '@pages/auth/Auth';
 import BleManager from '@pages/ble-manager/BleManager';
 import ColorPickerPage from '@pages/color-picker/ColorPicker';
 import DeviceList from '@pages/device-list/DeviceList';
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   LightGlowModes: any;
   SoundEffects: any;
   LEDStripsEffects: any;
+  Auth: any;
 };
 const routeConfig = [
   {
@@ -84,6 +86,10 @@ const routeConfig = [
   {
     name: 'LEDStripsEffects',
     component: LEDStripsEffects,
+  },
+  {
+    name: 'Auth',
+    component: Auth,
   },
 ] as const;
 export { routeConfig };

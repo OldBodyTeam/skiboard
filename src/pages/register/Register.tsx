@@ -36,7 +36,7 @@ const Register = (props: RegisterProps) => {
       if (isAxiosError(e)) {
         // console.log(JSON.stringify(e));
       }
-      Toast.show('登录失败', {
+      Toast.show('注册失败', {
         position: Toast.positions.CENTER,
         delay: 0,
         animation: true,
@@ -56,6 +56,7 @@ const Register = (props: RegisterProps) => {
     }
   };
   const uri = useWebViewUrl('register');
+  console.log(uri);
   return (
     <WebView
       source={{

@@ -11,6 +11,7 @@ import DeviceListItem from './DeviceListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 type DeviceListProps = NativeStackScreenProps<
   RootStackParamList,
   'DeviceList'
@@ -21,6 +22,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
     navigation.navigate('Home');
   };
   const insets = useSafeAreaInsets();
+
   return (
     <View
       style={{ backgroundColor: '#000000', flex: 1, paddingTop: insets.top }}>

@@ -28,6 +28,10 @@ const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   const [userInfo] = useRecoilState(userInfoState);
+  // () => navigation.navigate('EditLight')
+  const handleCollection = async () => {
+    navigation.navigate('EditLight');
+  };
   return (
     <ImageBackground
       style={{
@@ -241,9 +245,7 @@ const DesignScreen = (props: DesignScreenProps) => {
             marginTop: 5,
             marginHorizontal: 5,
           }}>
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => navigation.navigate('EditLight')}>
+          <TouchableOpacity style={{ flex: 1 }} onPress={handleCollection}>
             <View
               style={{
                 height: 444 / 2,

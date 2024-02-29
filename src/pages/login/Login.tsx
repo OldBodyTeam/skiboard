@@ -50,7 +50,8 @@ const Login = (props: LoginProps) => {
     }
   };
   const goRegisterPage = () => {
-    navigation.navigate('Register');
+    console.log('goRegisterPage');
+    navigation.push('Register');
   };
   const handleNavigation = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data) as Params;

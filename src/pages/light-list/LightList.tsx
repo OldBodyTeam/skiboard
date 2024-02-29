@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useRef } from 'react';
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { View } from 'react-native-ui-lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -6,9 +6,20 @@ import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
-import { Text, TouchableHighlight } from 'react-native';
+import { ScrollView, Text, TouchableHighlight } from 'react-native';
+import { ClientRequest } from '@services/client';
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '@stores/login/login.atom';
+// import { createWebView, useBridge } from '@webview-bridge/react-native';
+import { appBridge } from '@pages/edit-light/utils';
+// import { WebViewMessageEvent } from 'react-native-webview';
+// export const { WebView } = createWebView({
+//   bridge: appBridge,
+//   debug: true, // Enable console.log visibility in the native WebView
+// });
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
+
 const LightList = (props: LightListProps) => {
   const { navigation } = props;
   const handleRoute = (data: { goPage: any; screen: string }) => {
@@ -17,18 +28,61 @@ const LightList = (props: LightListProps) => {
       data.screen ? { screen: data.screen } : {},
     );
   };
+  const insets = useSafeAreaInsets();
+  const uri = useWebViewUrl('draw-list');
+  const [userInfo] = useRecoilState(userInfoState);
+  const webRef = useRef<any>(null);
   const modalDeleteRef = useRef<BlurModalRef>(null);
-  const handleDelete = () => {
-    console.log('delete');
+  const getCollectionList = async () => {
+    try {
+      const client = await ClientRequest();
+      const responseData = await client.collectionControllerGetCollectionList(
+        userInfo?.id ?? '',
+      );
+      const collection = responseData.data.data;
+      const buildPostData = {
+        type: 'setCollection',
+        webData: collection,
+      };
+      setTimeout(() => {
+        const injected = `
+          window.postMessage(${JSON.stringify(buildPostData)}, window.origin);
+          true;
+        `;
+        webRef.current?.injectJavaScript(injected);
+      }, 1000);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const [deleteInfo, setDeleteInfo] = useState<{
+    collectionId: string;
+    frameIndex: number;
+  }>();
+  const handleDelete = async () => {
+    try {
+      const client = await ClientRequest();
+      await client.collectionControllerDeleteCollection(
+        deleteInfo?.collectionId ?? '',
+      );
+      await getCollectionList();
+      modalDeleteRef.current?.closeModal();
+    } catch (e) {}
   };
   const handleNavigation = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data) as {
-      type: 'delete' | 'route';
+      type: 'delete' | 'route' | 'go-detail';
       route: { goPage: string; screen: string };
+      deleteInfo: { collectionId: string; frameIndex: number };
+      collectionId: string;
     };
     switch (data.type) {
+      case 'go-detail':
+        navigation.navigate('EditLight', { collectionId: data.collectionId });
+        return;
       case 'delete':
         modalDeleteRef.current?.openModal();
+        setDeleteInfo(data.deleteInfo);
         return;
       case 'route':
       default:
@@ -36,8 +90,22 @@ const LightList = (props: LightListProps) => {
     }
     console.log(data);
   };
-  const insets = useSafeAreaInsets();
-  const uri = useWebViewUrl('draw-list');
+
+  // const { setCollectionInfo } = useBridge(appBridge);
+  // const handleEdit = () => {
+  //   modalEditRef.current?.closeModal();
+  //   const code = `
+  //     window.getDrawTitle(${title});
+  //     `;
+  //   setTimeout(() => {
+  //     webRef.current?.injectJavaScript(code);
+  //   }, 1000);
+  // };
+  // const [collectionList, setCollectionList] = useState<string>('');
+  useEffect(() => {
+    getCollectionList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <View
       style={{
@@ -45,6 +113,7 @@ const LightList = (props: LightListProps) => {
         flex: 1,
         paddingTop: insets.top,
       }}>
+      {/* <ScrollView style={{ flex: 1 }}> */}
       <WebView
         source={{
           uri,
@@ -63,7 +132,15 @@ const LightList = (props: LightListProps) => {
         scrollEnabled={false}
         hideKeyboardAccessoryView
         onMessage={handleNavigation}
+        ref={webRef}
+        javaScriptEnabledAndroid
+        // javaScriptEnabled
+        // javaScriptEnabledAndroid
+        // injectedJavaScriptObject={{ collectionList }}
+        // injectedJavaScriptBeforeContentLoaded={`window.getCollectionList(${collectionList});true;`}
       />
+      {/* </ScrollView> */}
+
       <BlurModal
         ref={modalDeleteRef}
         title="Remove Device"
