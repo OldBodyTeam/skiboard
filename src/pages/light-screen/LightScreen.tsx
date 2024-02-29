@@ -1,5 +1,4 @@
 import CoverImage from '@components/cover-image/CoverImage';
-import CustomThumb from '@components/custom-thumb/CustomThumb';
 import Progress from '@components/progress/Progress';
 import Switch from '@components/switch/Switch';
 import React, { PropsWithChildren, useState } from 'react';
@@ -11,13 +10,13 @@ import {
   Text,
   ImageBackground,
 } from 'react-native';
-import ColorPicker, { HueSlider } from 'reanimated-color-picker';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import { RootStackParamList } from 'route.config';
 import { TabParamList } from '@pages/home/tab-config';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView } from 'react-native-gesture-handler';
+import SelectedColor from '@components/selected-color/SelectedColor';
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -38,11 +37,7 @@ const LightScreen = (props: LightScreenProps) => {
     setProgress(num);
   };
   console.log(progress);
-  const onSelectColor = ({ hex }: { hex: string }) => {
-    // do something with the selected color.
-    console.log(hex);
-    setSelected(-1);
-  };
+
   return (
     <ImageBackground
       style={{
@@ -82,20 +77,7 @@ const LightScreen = (props: LightScreenProps) => {
             padding: 16,
             position: 'relative',
           }}>
-          <View style={{ flex: 1 }}>
-            <ColorPicker value="red" onComplete={onSelectColor}>
-              <HueSlider
-                style={{
-                  borderRadius: 60,
-                  marginBottom: 10,
-                }}
-                boundedThumb
-                sliderThickness={60}
-                thumbColor="#FFFFFF"
-                renderThumb={CustomThumb}
-              />
-            </ColorPicker>
-          </View>
+          <SelectedColor />
           <View
             style={{
               display: 'flex',

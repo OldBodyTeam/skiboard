@@ -24,6 +24,7 @@ import { userInfoState } from '@stores/login/login.atom';
 import { createWebView } from '@webview-bridge/react-native';
 import { appBridge } from './utils';
 import { WebViewMessageEvent } from 'react-native-webview';
+import useToast from '@hooks/useToast';
 export const { WebView } = createWebView({
   bridge: appBridge,
   debug: true, // Enable console.log visibility in the native WebView
@@ -35,48 +36,56 @@ const EditLight = (props: EditLightProps) => {
   const [userInfo] = useRecoilState(userInfoState);
   const { navigation, route } = props;
   const { collectionId } = route.params || {};
+  const showToast = useToast();
   const createCollection = async (data: {
     name: string;
     serverData: { selected: boolean; frame: number[][] };
   }) => {
-    const client = await ClientRequest();
-    client.collectionControllerCreate(userInfo?.id ?? '', {
-      name: data.name,
-      frameList: JSON.stringify(data.serverData) as any,
-    });
+    try {
+      const client = await ClientRequest();
+      client.collectionControllerCreate(userInfo?.id ?? '', {
+        name: data.name,
+        frameList: JSON.stringify(data.serverData) as any,
+      });
+      navigation.push('LightList');
+      showToast('创建成功');
+    } catch (e) {
+      showToast('创建失败');
+    }
   };
   const updateCollection = async (data: {
     name: string;
     serverData?: { selected: boolean; frame: number[][] };
   }) => {
-    console.log(
-      Object.assign(
-        {
-          name: data.name,
-        },
-        data?.serverData
-          ? { frameList: JSON.stringify(data.serverData) as any }
-          : undefined,
-      ),
-    );
-    const client = await ClientRequest();
-    await client.collectionControllerModifyCollection(
-      collectionId,
-      Object.assign(
-        {
-          name: data.name,
-        },
-        data?.serverData
-          ? { frameList: JSON.stringify(data.serverData) as any }
-          : undefined,
-      ),
-    );
+    try {
+      const client = await ClientRequest();
+      await client.collectionControllerModifyCollection(
+        collectionId,
+        Object.assign(
+          {
+            name: data.name,
+          },
+          data?.serverData
+            ? { frameList: JSON.stringify(data.serverData) as any }
+            : undefined,
+        ),
+      );
+      navigation.push('LightList');
+      showToast('更新成功');
+    } catch (e) {
+      showToast('更新失败');
+    }
   };
   const deleteFrameInCollection = async (data: { frameIndex: number }) => {
-    const client = await ClientRequest();
-    await client.collectionControllerDeleteFrameList(collectionId, {
-      position: data.frameIndex,
-    });
+    try {
+      const client = await ClientRequest();
+      await client.collectionControllerDeleteFrameList(collectionId, {
+        position: data.frameIndex,
+      });
+      showToast('删除成功');
+    } catch (e) {
+      showToast('删除失败');
+    }
   };
   const copyFrameInCollection = async (data: { frameIndex: number }) => {
     const client = await ClientRequest();
