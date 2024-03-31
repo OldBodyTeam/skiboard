@@ -55,7 +55,9 @@ const SelectedColor = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}>
         <GestureDetector gesture={panGesture}>
-          <Animated.View style={[styles.container, animatedStyle]} />
+          <Animated.View style={[styles.content, animatedStyle]}>
+            <View style={styles.container} />
+          </Animated.View>
         </GestureDetector>
       </LinearGradient>
     </View>
@@ -69,6 +71,13 @@ const styles = StyleSheet.create({
     borderWidth: 6,
     borderColor: 'white',
     borderRadius: 30,
+  },
+  content: {
+    backgroundColor: 'transparent',
+    height: 60,
+    width: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default SelectedColor;

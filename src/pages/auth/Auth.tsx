@@ -17,7 +17,7 @@ const Auth = (props: AuthProps) => {
         const userId = (data.data as any).data.sub;
         const userInfoData = await client.userControllerUser(userId);
         setUserInfo(userInfoData.data.data);
-        navigation.navigate('Home', { screen: 'DesignScreen' });
+        navigation.replace('Home', { screen: 'DesignScreen' });
       } catch (e) {
         navigation.replace('Login');
       }

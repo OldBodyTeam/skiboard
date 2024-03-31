@@ -45,6 +45,9 @@ function App(): React.JSX.Element {
                   name={item.name}
                   component={item.component as FunctionComponent}
                   key={item.name}
+                  options={
+                    item.name === 'Home' ? { gestureEnabled: false } : {}
+                  }
                 />
               ))}
             </Stack.Navigator>

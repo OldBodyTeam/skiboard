@@ -78,7 +78,7 @@ const LightList = (props: LightListProps) => {
     };
     switch (data.type) {
       case 'go-detail':
-        navigation.navigate('EditLight', { collectionId: data.collectionId });
+        navigation.push('EditLight', { collectionId: data.collectionId });
         return;
       case 'delete':
         modalDeleteRef.current?.openModal();

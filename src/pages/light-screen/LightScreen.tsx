@@ -50,8 +50,8 @@ const LightScreen = (props: LightScreenProps) => {
         <CoverImage
           type="light"
           marginTop={80}
-          handleNavigationPerson={() => navigation.navigate('Settings')}
-          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          handleNavigationPerson={() => navigation.push('Settings')}
+          handleNavigationDevice={() => navigation.push('DeviceList')}
           bottom={53}>
           <View style={{ marginTop: 137 / 2, marginLeft: 25 }}>
             <Text
@@ -167,7 +167,7 @@ const LightScreen = (props: LightScreenProps) => {
           }}>
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate('LightGlowModes')}>
+            onPress={() => navigation.push('LightGlowModes')}>
             <View
               style={{
                 height: 322 / 2,
@@ -198,7 +198,7 @@ const LightScreen = (props: LightScreenProps) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ flex: 1, marginLeft: 5 }}
-            onPress={() => navigation.navigate('SoundEffects')}>
+            onPress={() => navigation.push('SoundEffects')}>
             <View
               style={{
                 height: 322 / 2,

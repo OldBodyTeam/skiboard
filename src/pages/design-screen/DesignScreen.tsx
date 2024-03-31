@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Dimensions,
   StyleSheet,
   ImageBackground,
 } from 'react-native';
@@ -28,9 +27,9 @@ const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   const [userInfo] = useRecoilState(userInfoState);
-  // () => navigation.navigate('EditLight')
+  // () => navigation.push('EditLight')
   const handleCollection = async () => {
-    navigation.navigate('EditLight');
+    navigation.push('EditLight');
   };
   return (
     <ImageBackground
@@ -44,8 +43,8 @@ const DesignScreen = (props: DesignScreenProps) => {
         <CoverImage
           type="design"
           marginTop={92}
-          handleNavigationPerson={() => navigation.navigate('Settings')}
-          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          handleNavigationPerson={() => navigation.push('Settings')}
+          handleNavigationDevice={() => navigation.push('DeviceList')}
           bottom={32}>
           <View
             style={{
@@ -138,7 +137,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                     ? { color: 'black', fontWeight: '600' }
                     : { color: '#ffffff' }),
                 }}>
-                Off
+                {switchStatus === 'off' ? 'Auto-Brake Off' : 'Off'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -164,7 +163,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                     ? { color: 'black', fontWeight: '600' }
                     : { color: '#ffffff' }),
                 }}>
-                On
+                {switchStatus === 'on' ? 'Auto-Brake On' : 'On'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -184,7 +183,7 @@ const DesignScreen = (props: DesignScreenProps) => {
               borderRadius: 30,
               flex: 1,
             }}
-            onPress={() => navigation.navigate('LightList')}>
+            onPress={() => navigation.push('LightList')}>
             <View
               style={{
                 flex: 1,
@@ -208,7 +207,7 @@ const DesignScreen = (props: DesignScreenProps) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('ScrollText')}
+            onPress={() => navigation.push('ScrollText')}
             style={{
               width: '33.149171%',
               height: '100%',
@@ -272,7 +271,7 @@ const DesignScreen = (props: DesignScreenProps) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ flex: 1, marginLeft: 5 }}
-            onPress={() => navigation.navigate('LightList')}>
+            onPress={() => navigation.push('LightList')}>
             <View
               style={{
                 height: 444 / 2,

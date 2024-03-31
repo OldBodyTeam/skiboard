@@ -162,7 +162,7 @@ const Settings = (props: SettingsTextProps) => {
               return (
                 <TouchableOpacity
                   key={v.label}
-                  onPress={() => navigation.navigate('Home')}>
+                  onPress={() => navigation.push('Home')}>
                   <View
                     style={{
                       borderColor: 'rgba(216, 216, 216, 0.2)',
@@ -184,7 +184,7 @@ const Settings = (props: SettingsTextProps) => {
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity onPress={() => navigation.push('Home')}>
               <View
                 style={{
                   borderColor: 'rgba(216, 216, 216, 0.2)',
@@ -197,7 +197,7 @@ const Settings = (props: SettingsTextProps) => {
                   style={{
                     fontSize: 44,
                     fontWeight: '600',
-                    color: '#F9DD58',
+                    color: 'rgba(249, 221, 88, 1)',
                     lineHeight: 53,
                     fontFamily: 'FuturaLT-ExtraBold',
                   }}>

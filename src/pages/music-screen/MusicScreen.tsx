@@ -38,8 +38,8 @@ const MusicScreen = (props: MusicScreenProps) => {
       <ScrollView>
         <CoverImage
           type="music"
-          handleNavigationPerson={() => navigation.navigate('Settings')}
-          handleNavigationDevice={() => navigation.navigate('DeviceList')}
+          handleNavigationPerson={() => navigation.push('Settings')}
+          handleNavigationDevice={() => navigation.push('DeviceList')}
           marginTop={-50}
           bottom={32}
         />
@@ -86,7 +86,7 @@ const MusicScreen = (props: MusicScreenProps) => {
           }}>
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => navigation.navigate('LEDStripsEffects')}>
+            onPress={() => navigation.push('LEDStripsEffects')}>
             <View
               style={{
                 height: 322 / 2,
@@ -113,7 +113,7 @@ const MusicScreen = (props: MusicScreenProps) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ flex: 1, marginLeft: 5 }}
-            onPress={() => navigation.navigate('Scenes')}>
+            onPress={() => navigation.push('Scenes')}>
             <View
               style={{
                 height: 322 / 2,

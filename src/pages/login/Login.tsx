@@ -36,7 +36,7 @@ const Login = (props: LoginProps) => {
       const token = requestData.data.data?.access_token ?? '';
       await AsyncStorage.setItem('access_token', token);
       await getUserInfo(requestData.data.data?.userId ?? '');
-      navigation.navigate('Home', { screen: 'DesignScreen' });
+      navigation.push('Home', { screen: 'DesignScreen' });
     } catch (e) {
       if (isAxiosError(e)) {
         console.log(JSON.stringify(e));

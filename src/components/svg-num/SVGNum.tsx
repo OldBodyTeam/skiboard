@@ -19,21 +19,21 @@ const SVGNum: FC<SVGNumProps> = props => {
       <G
         id="page"
         stroke="none"
-        stroke-width="10"
+        strokeWidth={6}
         fill="none"
-        fill-rule="evenodd"
-        stroke-linecap="round">
+        fillRule="evenodd"
+        strokeLinecap="round">
         <Path
           d={[...pathLine].slice(0).join(' ')}
           id="circular"
           stroke="rgba(51, 51, 51, 0.30)"
-          // stroke-width={10}
+          strokeWidth={6}
         />
         <Path
           d={[...pathLine].slice(0, num).join(' ')}
           id="circular"
           stroke="rgba(250, 231, 22, 1)"
-          // stroke-width={10}
+          strokeWidth={6}
         />
       </G>
     </Svg>
