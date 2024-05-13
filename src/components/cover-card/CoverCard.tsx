@@ -2,15 +2,29 @@ import ClickProgressNumber from '@components/progress-number/ClickProgressNumber
 import Reverse from '@components/reverse/Reverse';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
 import SVGNum from '@components/svg-num/SVGNum';
+import { led } from '@config/led';
+import useBLE from '@hooks/useBLE';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { scrollData } from '@pages/light-glow-modes/utils';
-import React, { FC } from 'react';
+import { BLEConfig } from '@utils/ble';
+import { findIndex } from 'lodash';
+import React, { FC, useEffect } from 'react';
 import { Text, View } from 'react-native';
 export type CoverCardProps = { selectedTitle: string };
 const CoverCard: FC<CoverCardProps> = props => {
   const { selectedTitle } = props;
+  const { bleWrite } = useBLE();
+  useEffect(() => {
+    if (selectedTitle) {
+      bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
+    }
+  }, [bleWrite, selectedTitle]);
   const { width } = useScreenSize();
   const height = 720 / 2;
+  const index =
+    findIndex(scrollData, v => v.title === selectedTitle) === -1
+      ? 1
+      : findIndex(scrollData, v => v.title === selectedTitle);
   return (
     <>
       <View
@@ -96,7 +110,7 @@ const CoverCard: FC<CoverCardProps> = props => {
                   width: 44,
                   height: 44,
                 }}>
-                <SVGNum num={1} />
+                <SVGNum num={index} />
               </View>
               <Text
                 style={{
@@ -104,7 +118,8 @@ const CoverCard: FC<CoverCardProps> = props => {
                   fontSize: 11,
                   color: 'rgba(51, 51, 51, 0.3)',
                 }}>
-                1 <Text style={{ color: 'rgba(51, 51, 51, 1)' }}>of 7</Text>
+                {index}
+                <Text style={{ color: 'rgba(51, 51, 51, 1)' }}>of 7</Text>
               </Text>
             </View>
           </View>

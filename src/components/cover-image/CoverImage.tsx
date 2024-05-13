@@ -1,4 +1,11 @@
-import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
+import useBLE from '@hooks/useBLE';
+import React, {
+  FC,
+  useEffect,
+  useState,
+  PropsWithChildren,
+  useMemo,
+} from 'react';
 import {
   Dimensions,
   Image,
@@ -53,6 +60,11 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
     const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
     setHeight(img.height * ratio);
   }, [type]);
+  const { getBLEBatteryPower } = useBLE();
+  const [batteryPower, setBatteryPower] = useState('100');
+  getBLEBatteryPower().then(data => {
+    setBatteryPower(data ?? '0');
+  });
   return (
     <View>
       <ImageBackground
@@ -94,7 +106,13 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <Text style={{ fontSize: 14, color: '#FF7B79' }}>20%</Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: parseInt(batteryPower, 10) <= 20 ? '#FF7B79' : 'green',
+                }}>
+                {parseInt(batteryPower, 10)}%
+              </Text>
               <View
                 style={{
                   width: 27,
@@ -107,9 +125,10 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
                 }}>
                 <View
                   style={{
-                    width: 10,
+                    width: (parseInt(batteryPower, 10) / 100) * 27,
                     height: '100%',
-                    backgroundColor: '#FF7B79',
+                    backgroundColor:
+                      parseInt(batteryPower, 10) <= 20 ? '#FF7B79' : 'green',
                   }}
                 />
               </View>

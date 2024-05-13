@@ -1,6 +1,6 @@
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import {
   Image,
   ImageBackground,
@@ -18,6 +18,8 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import PickTime from '@components/pick-time/PickTime';
 import { TIME } from './config';
+import { BLEConfig } from '@utils/ble';
+import useBLE from '@hooks/useBLE';
 
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
@@ -27,6 +29,12 @@ type MusicScreenProps = CompositeScreenProps<
 const MusicScreen = (props: MusicScreenProps) => {
   const { navigation } = props;
   const [switchValue, setSwitchValue] = useState<boolean>(false);
+  const { bleWrite } = useBLE();
+  useEffect(() => {
+    bleWrite(
+      switchValue ? BLEConfig.musicScreen.open : BLEConfig.musicScreen.close,
+    );
+  }, [bleWrite, switchValue]);
   return (
     <ImageBackground
       style={{

@@ -2,9 +2,8 @@
  * Sample BLE React Native App
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Text,
@@ -13,73 +12,100 @@ import {
   NativeEventEmitter,
   Platform,
   PermissionsAndroid,
-  FlatList,
   TouchableHighlight,
-  Pressable,
   Image,
 } from 'react-native';
-
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { Buffer } from 'buffer';
-const SECONDS_TO_SCAN_FOR = 3;
-const SERVICE_UUIDS: string[] = [];
-const ALLOW_DUPLICATES = true;
-const buffer = Buffer.from('tést');
-console.log(buffer);
 import BleManager, {
   BleDisconnectPeripheralEvent,
   BleManagerDidUpdateValueForCharacteristicEvent,
   BleScanCallbackType,
   BleScanMatchMode,
   BleScanMode,
+  BleState,
   Peripheral,
 } from 'react-native-ble-manager';
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
-
+import { Toast } from 'react-native-ui-lib';
+import Video from 'react-native-video';
+import { useMemoizedFn, useMount } from 'ahooks';
+import { useRecoilState } from 'recoil';
+import videoMp4 from './connected.mp4';
+import { deviceInfoState } from '@stores/device/device.atom';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from 'route.config';
+import { useTranslation } from 'react-i18next';
+import { Logger } from '@utils/log';
 declare module 'react-native-ble-manager' {
-  // enrich local contract with custom state properties needed by App.tsx
   interface Peripheral {
     connected?: boolean;
     connecting?: boolean;
+    serviceUUIDs?: string[];
+    characteristicUUIDs?: string[];
+    id: string;
   }
 }
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const BleManagerBlock = () => {
-  const [isScanning, setIsScanning] = useState(false);
+const SECONDS_TO_SCAN_FOR = 0;
+const SERVICE_UUIDS: string[] = [];
+const ALLOW_DUPLICATES = true;
+enum BleDeviceStatus {
+  isScanning = 'isScanning',
+  prepareConnect = 'prepareConnect',
+  connecting = 'connecting',
+  connected = 'connected',
+}
+type BleManagerBlockProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Register'
+>;
+const BleManagerBlock: FC<BleManagerBlockProps> = props => {
+  const [userOpt, setUserOpt] = useState<BleDeviceStatus>(
+    BleDeviceStatus.isScanning,
+  );
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral['id'], Peripheral>(),
   );
+  const [canUseDevice, setCanUseDevice] = useState<Set<string>>(new Set());
 
-  //console.debug('peripherals map updated', [...peripherals.entries()]);
-
-  const startScan = () => {
-    if (!isScanning) {
-      // reset found peripherals before scan
-      setPeripherals(new Map<Peripheral['id'], Peripheral>());
-
-      try {
-        console.debug('[startScan] starting scan...');
-        setIsScanning(true);
-        BleManager.scan(SERVICE_UUIDS, SECONDS_TO_SCAN_FOR, ALLOW_DUPLICATES, {
-          matchMode: BleScanMatchMode.Sticky,
-          scanMode: BleScanMode.LowLatency,
-          callbackType: BleScanCallbackType.AllMatches,
-        })
-          .then(() => {
-            console.debug('[startScan] scan promise returned successfully.');
-          })
-          .catch((err: any) => {
-            console.error('[startScan] ble scan returned in error', err);
-          });
-      } catch (error) {
-        console.error('[startScan] ble scan error thrown', error);
+  const startScan = useMemoizedFn(() => {
+    BleManager.checkState().then((state: BleState) => {
+      if (state !== BleState.On) {
+        Logger('当前蓝牙不可用' + state);
+        return;
       }
-    }
-  };
+      if (userOpt === BleDeviceStatus.isScanning) {
+        // reset found peripherals before scan
+        Logger('1');
+        setPeripherals(new Map<Peripheral['id'], Peripheral>());
+
+        try {
+          console.debug('[startScan] starting scan...');
+          BleManager.scan(
+            SERVICE_UUIDS,
+            SECONDS_TO_SCAN_FOR,
+            ALLOW_DUPLICATES,
+            {
+              matchMode: BleScanMatchMode.Sticky,
+              scanMode: BleScanMode.LowLatency,
+              callbackType: BleScanCallbackType.AllMatches,
+            },
+          )
+            .then(() => {
+              console.debug('[startScan] scan promise returned successfully.');
+            })
+            .catch((err: any) => {
+              console.error('[startScan] ble scan returned in error', err);
+            });
+        } catch (error) {
+          console.error('[startScan] ble scan error thrown', error);
+        }
+      }
+    });
+  });
 
   const handleStopScan = () => {
-    setIsScanning(false);
+    setUserOpt(BleDeviceStatus.connected);
     console.debug('[handleStopScan] scan is stopped.');
   };
 
@@ -112,27 +138,24 @@ const BleManagerBlock = () => {
   };
 
   const handleDiscoverPeripheral = (peripheral: Peripheral) => {
-    console.debug('[handleDiscoverPeripheral] new BLE peripheral=', peripheral);
-    if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
-    } else {
+    console.debug(
+      '[handleDiscoverPeripheral] new BLE peripheral=',
+      peripheral.name,
+    );
+    if (peripheral.name?.startsWith('Wagli') && peripheral.id) {
       setPeripherals(map => {
         return new Map(map.set(peripheral.id, peripheral));
+      });
+      setUserOpt(BleDeviceStatus.prepareConnect);
+      setCanUseDevice(prev => {
+        prev.add(peripheral.id);
+        return new Set(prev);
       });
     }
   };
 
   const togglePeripheralConnection = async (peripheral: Peripheral) => {
-    if (peripheral && peripheral.connected) {
-      try {
-        await BleManager.disconnect(peripheral.id);
-      } catch (error) {
-        console.error(
-          `[togglePeripheralConnection][${peripheral.id}] error when trying to disconnect device.`,
-          error,
-        );
-      }
-    } else {
+    if (!peripheral.connected) {
       await connectPeripheral(peripheral);
     }
   };
@@ -180,7 +203,7 @@ const BleManagerBlock = () => {
           }
           return map;
         });
-
+        await BleManager.stopScan();
         await BleManager.connect(peripheral.id);
         console.debug(`[connectPeripheral][${peripheral.id}] connected.`);
 
@@ -203,42 +226,24 @@ const BleManagerBlock = () => {
           `[connectPeripheral][${peripheral.id}] retrieved peripheral services`,
           peripheralData,
         );
+        const serviceUUIDs = peripheralData.characteristics?.map(
+          v => v.service,
+        );
+        const characteristicUUIDs = peripheralData.characteristics?.map(
+          v => v.characteristic,
+        );
 
         const rssi = await BleManager.readRSSI(peripheral.id);
         console.debug(
           `[connectPeripheral][${peripheral.id}] retrieved current RSSI value: ${rssi}.`,
         );
 
-        if (peripheralData.characteristics) {
-          for (let characteristic of peripheralData.characteristics) {
-            if (characteristic.descriptors) {
-              for (let descriptor of characteristic.descriptors) {
-                try {
-                  let data = await BleManager.readDescriptor(
-                    peripheral.id,
-                    characteristic.service,
-                    characteristic.characteristic,
-                    descriptor.uuid,
-                  );
-                  console.debug(
-                    `[connectPeripheral][${peripheral.id}] ${characteristic.service} ${characteristic.characteristic} ${descriptor.uuid} descriptor read as:`,
-                    data,
-                  );
-                } catch (error) {
-                  console.error(
-                    `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
-                    error,
-                  );
-                }
-              }
-            }
-          }
-        }
-
         setPeripherals(map => {
           let p = map.get(peripheral.id);
           if (p) {
             p.rssi = rssi;
+            p.serviceUUIDs = serviceUUIDs;
+            p.characteristicUUIDs = characteristicUUIDs;
             return new Map(map.set(p.id, p));
           }
           return map;
@@ -259,7 +264,11 @@ const BleManagerBlock = () => {
   useEffect(() => {
     try {
       BleManager.start({ showAlert: false })
-        .then(() => console.debug('BleManager started.'))
+        .then(() => {
+          console.debug('BleManager started.');
+          // 开始扫描
+          startScan();
+        })
         .catch((error: any) =>
           console.error('BeManager could not be started.', error),
         );
@@ -296,6 +305,7 @@ const BleManagerBlock = () => {
         listener.remove();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAndroidPermissions = () => {
@@ -340,69 +350,84 @@ const BleManagerBlock = () => {
       });
     }
   };
-
-  const renderItem = ({ item }: { item: Peripheral }) => {
-    const backgroundColor = item.connected ? '#069400' : Colors.white;
-    return (
-      <TouchableHighlight
-        underlayColor="#0082FC"
-        onPress={() => togglePeripheralConnection(item)}>
-        <View style={[styles.row, { backgroundColor }]}>
-          <Text style={styles.peripheralName}>
-            {/* completeLocalName (item.name) & shortAdvertisingName (advertising.localName) may not always be the same */}
-            {item.name} - {item?.advertising?.localName}
-            {item.connecting && ' - Connecting...'}
-          </Text>
-          <Text style={styles.rssi}>RSSI: {item.rssi}</Text>
-          <Text style={styles.peripheralId}>{item.id}</Text>
-        </View>
-      </TouchableHighlight>
-    );
+  const [deviceInfo, setDeviceInfo] = useState<Peripheral>();
+  const [_, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
+  const handleConnectedBLE = async () => {
+    // 当前取第一个可操作蓝牙
+    const device = Array.from(canUseDevice).at(0)!;
+    const info = peripherals.get(device)!;
+    await togglePeripheralConnection(info);
+    setDeviceInfo(info);
+    setGlobalDeviceInfo(info);
+    // 数据共享到系统中
   };
+  const { navigation } = props;
+  useEffect(() => {
+    Logger(deviceInfo?.connected);
+    if (deviceInfo?.connected) {
+      // 路由跳转
+      navigation.replace('Home', { screen: 'DesignScreen' });
+    }
+  }, [deviceInfo?.connected, navigation]);
+
+  const { t } = useTranslation();
 
   return (
     <View style={styles.body}>
       <StatusBar />
-      <SafeAreaView style={styles.body}>
-        <Pressable style={styles.scanButton} onPress={startScan}>
-          <Text style={styles.scanButtonText}>
-            {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.scanButton} onPress={retrieveConnected}>
-          <Text style={styles.scanButtonText}>
-            {'Retrieve connected peripherals'}
-          </Text>
-        </Pressable>
-
-        {Array.from(peripherals.values()).length === 0 && (
-          <View style={styles.row}>
-            <Text style={styles.noPeripherals}>
-              No Peripherals, press "Scan Bluetooth" above.
+      {userOpt === BleDeviceStatus.isScanning ? (
+        <View
+          style={{
+            alignItems: 'center',
+            flex: 1,
+            marginHorizontal: 83 / 2,
+            position: 'absolute',
+            left: 0,
+            bottom: 175 / 2,
+          }}>
+          <View
+            style={{
+              backgroundColor: 'rgba(253, 222, 49, 1)',
+              height: 52,
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderRadius: 104,
+              flexDirection: 'row',
+              paddingHorizontal: 19,
+            }}>
+            <Image
+              source={require('../../assets/robot.png')}
+              style={{ width: 57 / 2, height: 23 }}
+            />
+            <Text style={{ color: '#131416', fontSize: 13 }}>
+              {t('ble-intro')}
             </Text>
           </View>
-        )}
-
-        <FlatList
-          data={Array.from(peripherals.values())}
-          contentContainerStyle={{ rowGap: 12 }}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      </SafeAreaView>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 8,
-          left: 5,
-          right: 5,
-          backgroundColor: '#FDFDFD',
-          borderRadius: 30,
-          paddingVertical: 28,
-          paddingHorizontal: 24,
-        }}>
-        <TouchableHighlight
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 155 / 2,
+            }}>
+            <Text style={{ color: '#FDFDFD', fontSize: 16 }}>
+              {t('ble-search')}…
+            </Text>
+          </View>
+        </View>
+      ) : (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 8,
+            left: 5,
+            right: 5,
+            backgroundColor: '#F6F5F6',
+            borderRadius: 30,
+            paddingVertical: 28,
+            paddingHorizontal: 24,
+          }}>
+          {/* <TouchableHighlight
           style={{
             overflow: 'hidden',
             position: 'absolute',
@@ -416,131 +441,62 @@ const BleManagerBlock = () => {
               height: 24,
             }}
           />
-        </TouchableHighlight>
-        <Text
-          style={{
-            fontSize: 28,
-            fontWeight: 'bold',
-            color: '#000000',
-            textAlign: 'center',
-          }}>
-          Wagii Lumii
-        </Text>
-        <View style={{ marginVertical: 32, height: 212 }} />
-        <TouchableHighlight style={{ flex: 1, overflow: 'hidden' }}>
-          <View
+        </TouchableHighlight> */}
+          <Text
             style={{
-              backgroundColor: 'rgba(215, 220, 225, 0.43)',
-              height: 50,
-              borderRadius: 8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              fontSize: 28,
+              fontWeight: 'bold',
+              color: '#000000',
+              textAlign: 'center',
             }}>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-                color: '#333333',
-              }}>
-              Connect
-            </Text>
+            Wagii Lumii
+          </Text>
+          <View style={{ marginVertical: 32, height: 212 }}>
+            <Video
+              source={videoMp4}
+              paused={false}
+              repeat={true}
+              muted
+              style={{ flex: 1 }}
+            />
           </View>
-        </TouchableHighlight>
-      </View>
+          <TouchableHighlight
+            style={{ flex: 1, overflow: 'hidden' }}
+            onPress={handleConnectedBLE}>
+            <View
+              style={{
+                backgroundColor: 'rgba(215, 220, 225, 0.43)',
+                height: 50,
+                borderRadius: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: '#333333',
+                }}>
+                {deviceInfo?.connected
+                  ? t('ble-connected')
+                  : deviceInfo?.connecting
+                  ? t('ble-connecting')
+                  : t('ble-connect')}
+              </Text>
+            </View>
+          </TouchableHighlight>
+        </View>
+      )}
     </View>
   );
 };
 
-const boxShadow = {
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5,
-};
-
 const styles = StyleSheet.create({
-  engine: {
-    position: 'absolute',
-    right: 10,
-    bottom: 0,
-    color: Colors.black,
-  },
-  scanButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    backgroundColor: '#0a398a',
-    margin: 10,
-    borderRadius: 12,
-    ...boxShadow,
-  },
-  scanButtonText: {
-    fontSize: 20,
-    letterSpacing: 0.25,
-    color: Colors.white,
-  },
   body: {
-    backgroundColor: '#0082FC',
     flex: 1,
     position: 'relative',
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-  peripheralName: {
-    fontSize: 16,
-    textAlign: 'center',
-    padding: 10,
-  },
-  rssi: {
-    fontSize: 12,
-    textAlign: 'center',
-    padding: 2,
-  },
-  peripheralId: {
-    fontSize: 12,
-    textAlign: 'center',
-    padding: 2,
-    paddingBottom: 20,
-  },
-  row: {
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 20,
-    ...boxShadow,
-  },
-  noPeripherals: {
-    margin: 10,
-    textAlign: 'center',
-    color: Colors.white,
+    backgroundColor: 'rgba(19, 20, 22, 1)',
   },
 });
 

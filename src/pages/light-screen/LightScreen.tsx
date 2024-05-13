@@ -1,7 +1,7 @@
 import CoverImage from '@components/cover-image/CoverImage';
 import Progress from '@components/progress/Progress';
 import Switch from '@components/switch/Switch';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import {
   StatusBar,
   View,
@@ -17,6 +17,11 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView } from 'react-native-gesture-handler';
 import SelectedColor from '@components/selected-color/SelectedColor';
+import { Buffer } from 'buffer';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import { lightScreen } from '@config/light-screen';
+const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#FF8A5E', '#60AEE6'];
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -28,15 +33,37 @@ const LightScreen = (props: LightScreenProps) => {
   const [selected, setSelected] = useState(-1);
   const [switchValue, setSwitchValue] = useState<boolean>(false);
   const handleSelectedColor = (currentOptIndex: number) => {
-    if (switchValue) {
+    if (switchValue && currentOptIndex !== 11) {
       setSelected(currentOptIndex);
+      const writeData = data[currentOptIndex].slice(1);
+      bleWrite(BLEConfig.lightScreen[writeData as keyof typeof lightScreen]);
+    } else if (currentOptIndex === 11) {
+      bleWrite(BLEConfig.lightScreen.random);
     }
   };
   const [progress, setProgress] = useState(0);
   const handleProgressChange = (num: number) => {
     setProgress(num);
   };
-  console.log(progress);
+  const { bleWrite } = useBLE();
+  useEffect(() => {
+    if (typeof progress === 'number') {
+      bleWrite(`57ee02${progress}61`);
+    }
+  }, [bleWrite, progress]);
+
+  useEffect(() => {
+    bleWrite(
+      switchValue
+        ? BLEConfig.lightScreen.openLight
+        : BLEConfig.lightScreen.closeLight,
+    );
+  }, [bleWrite, switchValue]);
+
+  const handleSelected = (color: string) => {
+    console.log(color);
+    bleWrite(BLEConfig.lightScreen[color as keyof typeof lightScreen]);
+  };
 
   return (
     <ImageBackground
@@ -77,7 +104,7 @@ const LightScreen = (props: LightScreenProps) => {
             padding: 16,
             position: 'relative',
           }}>
-          <SelectedColor />
+          <SelectedColor handleSelected={handleSelected} />
           <View
             style={{
               display: 'flex',
@@ -101,14 +128,7 @@ const LightScreen = (props: LightScreenProps) => {
               // flexDirection: 'row',
               flex: 1,
             }}>
-            {[
-              '#FFFFFF',
-              '#FACF00',
-              '#00FEFC',
-              '#FF8A5E',
-              '#FF8A5E',
-              '#60AEE6',
-            ].map((color, index) => {
+            {data.map((color, index) => {
               return (
                 <TouchableOpacity
                   onPress={() => handleSelectedColor(index)}

@@ -1,6 +1,9 @@
 import Header from '@components/header/Header';
+import { sense } from '@config/sense';
+import useBLE from '@hooks/useBLE';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { PropsWithChildren, useMemo, useState } from 'react';
+import { BLEConfig } from '@utils/ble';
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -48,6 +51,12 @@ const Scenes = (props: ScenesTextProps) => {
   const [selected, setSelected] = useState<
     (typeof renderData)[number]['label'] | undefined
   >();
+  const { bleWrite } = useBLE();
+  useEffect(() => {
+    if (selected) {
+      bleWrite(BLEConfig.sense[selected as keyof typeof sense]);
+    }
+  }, [bleWrite, selected]);
   return (
     <View
       style={{

@@ -17,6 +17,9 @@ import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
+import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -27,6 +30,7 @@ const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   const [userInfo] = useRecoilState(userInfoState);
+  const { bleWrite } = useBLE();
   // () => navigation.push('EditLight')
   const handleCollection = async () => {
     navigation.push('EditLight');
@@ -72,12 +76,14 @@ const DesignScreen = (props: DesignScreenProps) => {
                 alignItems: 'flex-start',
                 justifyContent: 'center',
               }}>
-              <View
+              <AutoSizeText
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
+                  ...StyleSheet.flatten(style.welcomeText),
+                  color: 'rgba(18,17,21,0.5)',
+                }}
+                fontSize={32}
+                numberOfLines={1}
+                mode={ResizeTextMode.max_lines}>
                 <Text
                   style={{
                     ...StyleSheet.flatten(style.welcomeText),
@@ -89,18 +95,27 @@ const DesignScreen = (props: DesignScreenProps) => {
                   style={{
                     ...StyleSheet.flatten(style.welcomeText),
                     color: 'rgba(18,17,21,0.5)',
-                    width: 32 * 7,
                   }}>
                   nice to
                 </Text>
-              </View>
-              <Text
+              </AutoSizeText>
+              <AutoSizeText
+                style={{
+                  ...StyleSheet.flatten(style.welcomeText),
+                  color: 'rgba(18,17,21,0.5)',
+                }}
+                fontSize={32}
+                numberOfLines={1}
+                mode={ResizeTextMode.max_lines}>
+                see you!
+              </AutoSizeText>
+              {/* <Text
                 style={{
                   ...StyleSheet.flatten(style.welcomeText),
                   color: 'rgba(18,17,21,0.5)',
                 }}>
                 see you!
-              </Text>
+              </Text> */}
             </View>
           </View>
         </CoverImage>
@@ -118,7 +133,10 @@ const DesignScreen = (props: DesignScreenProps) => {
           }}>
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => setSwitchStatus('off')}>
+            onPress={async () => {
+              await bleWrite(BLEConfig.designScreen.closeLight);
+              setSwitchStatus('off');
+            }}>
             <View
               style={{
                 flex: 1,
@@ -143,7 +161,10 @@ const DesignScreen = (props: DesignScreenProps) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => setSwitchStatus('on')}>
+            onPress={async () => {
+              await bleWrite(BLEConfig.designScreen.openLight);
+              setSwitchStatus('on');
+            }}>
             <View
               style={{
                 flex: 1,

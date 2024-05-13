@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import React, { useEffect, useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
 import { View } from 'react-native-ui-lib';
 const Reverse = () => {
   const [reverse, setReverse] = useState(false);
+  const { bleWrite } = useBLE();
+  useEffect(() => {
+    bleWrite(reverse ? BLEConfig.led.reverseRight : BLEConfig.led.reverseLeft);
+  }, [bleWrite, reverse]);
   return (
     <View
       style={{

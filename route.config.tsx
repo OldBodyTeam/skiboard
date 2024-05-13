@@ -13,6 +13,7 @@ import Scenes from '@pages/scenes/Scenes';
 import ScrollText from '@pages/scroll-text/ScrollText';
 import Settings from '@pages/settings/Settings';
 import SoundEffects from '@pages/sound-effects/SoundEffects';
+import TestBLE from '@pages/test-ble/TestBLE';
 export type RootStackParamList = {
   Login: any;
   Register: any;
@@ -90,6 +91,10 @@ const routeConfig = [
   {
     name: 'Auth',
     component: Auth,
+  },
+  {
+    name: 'TestBLE',
+    component: TestBLE,
   },
 ] as const;
 export { routeConfig };

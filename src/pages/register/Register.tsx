@@ -24,6 +24,7 @@ const Register = (props: RegisterProps) => {
     navigation.navigate('Login');
   };
   const register = async (params: Omit<Params, 'type' | 'goPage'>) => {
+    console.log('params', params);
     try {
       const client = await ClientRequest();
       await client.authControllerRegister({
@@ -34,7 +35,7 @@ const Register = (props: RegisterProps) => {
       goLoginPage();
     } catch (e) {
       if (isAxiosError(e)) {
-        // console.log(JSON.stringify(e));
+        console.log(JSON.stringify(e.message));
       }
       Toast.show('注册失败', {
         position: Toast.positions.CENTER,

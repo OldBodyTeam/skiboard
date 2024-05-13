@@ -1,6 +1,7 @@
 import CoverCard from '@components/cover-card/CoverCard';
 import Header from '@components/header/Header';
 import Interpolate from '@components/interpolate/Interpolate';
+import useBLE from '@hooks/useBLE';
 import {
   CarouselOneData,
   CarouselTwoData,
@@ -39,6 +40,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
   const [selectedTitle, setSelectedTitle] = useState('');
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
+
   const handleAutoPlay = (id: LINE, title: string, index?: number) => {
     console.log(id, index);
     setSelectedInterpolate(() => {

@@ -1,5 +1,5 @@
 import { useScreenSize } from '@hooks/useScreenSize';
-import React from 'react';
+import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,12 +8,24 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-const SelectedColor = () => {
+const data = [
+  '#D96A6D',
+  '#E6B46A',
+  '#A2E770',
+  '#82E3E0',
+  '#6371E3',
+  '#9965EA',
+  '#CA61E8',
+];
+const SelectedColor: FC<{ handleSelected: (data: string) => void }> = props => {
   const { width } = useScreenSize();
   const distanceMove = width - 5 * 2 - 16 * 2 - 10 * 2 - 30;
   const position = useSharedValue(0);
   const oldValue = useSharedValue(0);
-  const handleSelected = (_index: number) => {};
+  const handleSelected = (index: number) => {
+    const currentIndex = Math.floor(100 / data.length / Math.abs(index));
+    props.handleSelected(data[currentIndex].slice(1));
+  };
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
       if (position.value >= 0 && position.value <= distanceMove) {
@@ -37,15 +49,7 @@ const SelectedColor = () => {
   return (
     <View style={{ flex: 1, height: 60, marginBottom: 12 }}>
       <LinearGradient
-        colors={[
-          '#D96A6D',
-          '#E6B46A',
-          '#A2E770',
-          '#82E3E0',
-          '#6371E3',
-          '#9965EA',
-          '#CA61E8',
-        ]}
+        colors={data}
         style={{
           flex: 1,
           borderRadius: 60,

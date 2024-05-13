@@ -1,0 +1,18 @@
+const lightScreen = {
+  openLight: '57ee020161',
+  closeLight: '57ee020061',
+  D96A6D: '57ee04D96A6D61',
+  E6B46A: '57ee04E6B46A61',
+  A2E770: '57ee04A2E77061',
+  '82E3E0': '57ee0482E3E061',
+  '6371E3': '57ee046371E361',
+  '9965EA': '57ee049965EA61',
+  CA61E8: '57ee04CA61E861',
+  FFFFFF: '57ee04FFFFFF61',
+  FACF00: '57ee04FACF0061',
+  '00FEFC': '57ee0400FEFC61',
+  FF8A5E: '57ee04FF8A5E61',
+  '60AEE6': '57ee0460AEE661',
+  random: '57ee021061',
+};
+export { lightScreen };

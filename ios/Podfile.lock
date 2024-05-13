@@ -99,6 +99,7 @@ PODS:
     - lottie-ios (~> 4.4.0)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - MultiplatformBleAdapter (0.2.0)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -973,6 +974,11 @@ PODS:
     - React-debug
   - react-native-ble-manager (11.3.2):
     - React-Core
+  - react-native-ble-plx (3.1.2):
+    - glog
+    - MultiplatformBleAdapter (= 0.2.0)
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - react-native-blur (4.3.2):
     - React-Core
   - react-native-image-picker (7.1.0):
@@ -990,6 +996,11 @@ PODS:
   - react-native-track-player (4.0.1):
     - React-Core
     - SwiftAudioEx (= 1.0.0)
+  - react-native-video (5.2.1):
+    - React-Core
+    - react-native-video/Video (= 5.2.1)
+  - react-native-video/Video (5.2.1):
+    - React-Core
   - react-native-webview (13.8.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1169,7 +1180,7 @@ PODS:
     - React-Core
   - RNBootSplash (5.4.1):
     - React-Core
-  - RNCAsyncStorage (1.22.3):
+  - RNCAsyncStorage (1.23.0):
     - React-Core
   - RNCMaskedView (0.3.1):
     - React-Core
@@ -1178,6 +1189,8 @@ PODS:
   - RNGestureHandler (2.15.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+  - RNLocalize (3.1.0):
     - React-Core
   - RNReanimated (3.7.1):
     - glog
@@ -1257,11 +1270,13 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-ble-manager (from `../node_modules/react-native-ble-manager`)
+  - react-native-ble-plx (from `../node_modules/react-native-ble-plx`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../node_modules/@shopify/react-native-skia`)"
   - react-native-track-player (from `../node_modules/react-native-track-player`)
+  - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1291,6 +1306,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1310,6 +1326,7 @@ SPEC REPOS:
     - fmt
     - libevent
     - lottie-ios
+    - MultiplatformBleAdapter
     - OpenSSL-Universal
     - SocketRocket
     - SwiftAudioEx
@@ -1390,6 +1407,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-ble-manager:
     :path: "../node_modules/react-native-ble-manager"
+  react-native-ble-plx:
+    :path: "../node_modules/react-native-ble-plx"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-image-picker:
@@ -1400,6 +1419,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@shopify/react-native-skia"
   react-native-track-player:
     :path: "../node_modules/react-native-track-player"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-nativeconfig:
@@ -1458,6 +1479,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNLocalize:
+    :path: "../node_modules/react-native-localize"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1495,6 +1518,7 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: ef1be1f90d54255f08e09d767950e43714661178
   lottie-react-native: b24edb4537f3cb3259c0ec512ed899d14e6e96d3
+  MultiplatformBleAdapter: b1fddd0d499b96b607e00f0faa8e60648343dc1d
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
@@ -1518,11 +1542,13 @@ SPEC CHECKSUMS:
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 7c35cd53a22d0be04d3f26f7881c7fb7dd230216
   react-native-ble-manager: 3d2ee00ef5f23151619036f89291600668ec3760
+  react-native-ble-plx: c040d0123518e121bf4cda02061bf72644f68d15
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
   react-native-image-picker: e8f292d7d7f04778cfd0fa91466ac66acea96b1a
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-skia: 64430410d3a7b106d02220f543855dbfee3641ff
   react-native-track-player: 97d76dbbd35f27cc709e5f04540615e54264b3f9
+  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   react-native-webview: 05fa0e766f1c408e8c293cbcb84b2c199711cfd1
   React-nativeconfig: 1166714a4f7ea57a0df5c2cb44fbc70f98d580f9
   React-NativeModulesApple: 726664e9829eb5eed8170241000e46ead269a05f
@@ -1548,10 +1574,11 @@ SPEC CHECKSUMS:
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNAudioRecorderPlayer: f790fc1afb118552ae6285d60adde52ee6b5d9ef
   RNBootSplash: eff8239c4f795ce42a0604873aef3733aac0dedd
-  RNCAsyncStorage: 10591b9e0a91eaffee14e69b3721009759235125
+  RNCAsyncStorage: e31a32913b3b5d8a42621be993a8f51c34073f1f
   RNCMaskedView: 090213d32d8b3bb83a4dcb7d12c18f0152591906
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
   RNGestureHandler: 67fb54b3e6ca338a8044e85cd6f340265aa41091
+  RNLocalize: e8694475db034bf601e17bd3dfa8986565e769eb
   RNReanimated: 15a855719335a6b655a214531e86d806edfd49da
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
