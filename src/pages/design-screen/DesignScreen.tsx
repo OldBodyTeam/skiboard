@@ -20,6 +20,7 @@ import { userInfoState } from '@stores/login/login.atom';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
+import { useTranslation } from 'react-i18next';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -35,6 +36,7 @@ const DesignScreen = (props: DesignScreenProps) => {
   const handleCollection = async () => {
     navigation.push('EditLight');
   };
+  const { t } = useTranslation();
   return (
     <ImageBackground
       style={{
@@ -219,7 +221,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   fontSize: 14,
                   color: '#ffffff',
                 }}>
-                My Effects
+                {t('effect')}
               </Text>
               <Image
                 source={require('../../assets/design/love.png')}
@@ -249,7 +251,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   fontSize: 14,
                   color: '#ffffff',
                 }}>
-                Scrolling Text
+                {t('scroll-text')}
               </Text>
               <Image
                 source={require('../../assets/design/scroll-text.png')}
@@ -282,7 +284,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   color: '#ffffff',
                   marginBottom: 43 / 2,
                 }}>
-                Custom Design
+                {t('custom-design')}
               </Text>
               <Image
                 source={require('../../assets/design/shan-dian.png')}
@@ -309,7 +311,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                   color: '#ffffff',
                   marginBottom: 68 / 2,
                 }}>
-                Creative Patterns
+                {t('creative-patterns')}
               </Text>
               <Image
                 source={require('../../assets/design/kun.png')}

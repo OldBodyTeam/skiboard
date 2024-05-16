@@ -21,6 +21,7 @@ import { Buffer } from 'buffer';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { lightScreen } from '@config/light-screen';
+import { useTranslation } from 'react-i18next';
 const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#FF8A5E', '#60AEE6'];
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
@@ -64,6 +65,7 @@ const LightScreen = (props: LightScreenProps) => {
     console.log(color);
     bleWrite(BLEConfig.lightScreen[color as keyof typeof lightScreen]);
   };
+  const { t } = useTranslation();
 
   return (
     <ImageBackground
@@ -204,7 +206,7 @@ const LightScreen = (props: LightScreenProps) => {
                   color: '#ffffff',
                   marginVertical: 52 / 2,
                 }}>
-                LightGlow Modes
+                {t('lightGlow-modes')}
               </Text>
               <Image
                 source={require('../../assets/light/flush.png')}
@@ -233,7 +235,7 @@ const LightScreen = (props: LightScreenProps) => {
                   color: '#ffffff',
                   marginVertical: 52 / 2,
                 }}>
-                Sound Effects
+                {t('sound-effects')}
               </Text>
               <Image
                 source={require('../../assets/light/music.png')}

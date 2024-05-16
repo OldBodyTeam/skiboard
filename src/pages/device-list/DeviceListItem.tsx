@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { useScreenSize } from '@hooks/useScreenSize';
+import { useTranslation } from 'react-i18next';
 export type DeviceListItemProps = {
   device: any;
 };
@@ -31,6 +32,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
     modalEditRef.current?.closeModal();
   };
   const { width } = useScreenSize();
+  const { t } = useTranslation();
   return (
     <>
       <TouchableHighlight onPress={handleConnectDevice} style={{ flex: 1 }}>
@@ -166,8 +168,8 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
       </TouchableHighlight>
       <BlurModal
         ref={modalDeleteRef}
-        title="Remove Device"
-        content="Confirm device removal">
+        title={t('Remove-Device')}
+        content={t('Confirm-device-removal')}>
         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 12 }}>
           <TouchableHighlight
             style={{ flex: 1 }}
@@ -181,7 +183,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
               }}>
               <Text
                 style={{ fontWeight: 'bold', fontSize: 16, color: '#ffffff' }}>
-                Cancel
+                {t('cancel')}
               </Text>
             </View>
           </TouchableHighlight>
@@ -195,17 +197,20 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
               }}>
               <Text
                 style={{ color: '#FCE500', fontWeight: 'bold', fontSize: 16 }}>
-                Confirm
+                {t('confirm')}
               </Text>
             </View>
           </TouchableHighlight>
         </View>
       </BlurModal>
-      <BlurModal ref={modalEditRef} title="Rename" content="Change Device Name">
+      <BlurModal
+        ref={modalEditRef}
+        title={t('Rename')}
+        content={t('Change-Device-Name')}>
         <View style={{ display: 'flex', marginTop: 8, width: '100%' }}>
           <View style={{ paddingLeft: 21, paddingRight: 21, width: '100%' }}>
             <TextInput
-              placeholder="Enter device name"
+              placeholder={t('Enter-device-name')}
               style={{
                 height: 36,
                 backgroundColor: '#262626',
@@ -229,7 +234,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
               }}>
               <Text
                 style={{ color: '#FCE500', fontWeight: 'bold', fontSize: 16 }}>
-                Confirm
+                {t('confirm')}
               </Text>
             </View>
           </TouchableHighlight>

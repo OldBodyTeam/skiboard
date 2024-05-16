@@ -3,7 +3,14 @@ import Header from '@components/header/Header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
 import { userInfoState } from '@stores/login/login.atom';
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   SafeAreaView,
@@ -19,12 +26,7 @@ import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-root-toast';
 import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
-const pageInfo = [
-  { label: 'HOME' },
-  { label: 'GUIDE' },
-  { label: 'ABOUT' },
-  { label: 'BLOG' },
-];
+
 type SettingsTextProps = NativeStackScreenProps<
   RootStackParamList,
   'Settings'
@@ -98,6 +100,16 @@ const Settings = (props: SettingsTextProps) => {
       });
     }
   };
+  const { t } = useTranslation();
+  const pageInfo = useMemo(
+    () => [
+      { label: t('HOME') },
+      { label: t('GUIDE') },
+      { label: t('ABOUT') },
+      { label: t('BLOG') },
+    ],
+    [t],
+  );
   return (
     <View
       style={{
@@ -201,7 +213,7 @@ const Settings = (props: SettingsTextProps) => {
                     lineHeight: 53,
                     fontFamily: 'FuturaLT-ExtraBold',
                   }}>
-                  STORY
+                  {t('STORY')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -230,7 +242,10 @@ const Settings = (props: SettingsTextProps) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <BlurModal ref={modalEditRef} title="Rename" content="Change  Username">
+      <BlurModal
+        ref={modalEditRef}
+        title={t('Rename')}
+        content={t('Change-Username')}>
         <View style={{ display: 'flex', marginTop: 8, width: '100%' }}>
           <View style={{ paddingLeft: 21, paddingRight: 21, width: '100%' }}>
             <TextInput
@@ -260,7 +275,7 @@ const Settings = (props: SettingsTextProps) => {
               }}>
               <Text
                 style={{ color: '#FCE500', fontWeight: 'bold', fontSize: 16 }}>
-                Confirm
+                {t('confirm')}
               </Text>
             </View>
           </TouchableHighlight>

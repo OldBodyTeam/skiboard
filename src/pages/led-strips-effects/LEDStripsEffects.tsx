@@ -1,7 +1,6 @@
 import CoverCard from '@components/cover-card/CoverCard';
 import Header from '@components/header/Header';
 import Interpolate from '@components/interpolate/Interpolate';
-import useBLE from '@hooks/useBLE';
 import {
   CarouselOneData,
   CarouselTwoData,
@@ -9,6 +8,7 @@ import {
 } from '@pages/light-glow-modes/utils';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, StatusBar, SafeAreaView, ScrollView } from 'react-native';
 import { RootStackParamList } from 'route.config';
 enum LINE {
@@ -42,7 +42,6 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
 
   const handleAutoPlay = (id: LINE, title: string, index?: number) => {
-    console.log(id, index);
     setSelectedInterpolate(() => {
       return {
         one: true,
@@ -55,6 +54,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
     setSelectedLine(id);
     setSelectedLinePosition(index!);
   };
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -65,7 +65,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView style={{ flex: 1 }}>
-          <Header title="LED Strips Effects" handlePress={back} />
+          <Header title={t('LED-Strips-Effects')} handlePress={back} />
           <Interpolate
             style={{ marginTop: 20 }}
             carouselData={CarouselOneData}
@@ -100,7 +100,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
-            <CoverCard selectedTitle={selectedTitle} />
+            <CoverCard selectedTitle={selectedTitle} mode="led" />
           </ScrollView>
         </ScrollView>
       </SafeAreaView>

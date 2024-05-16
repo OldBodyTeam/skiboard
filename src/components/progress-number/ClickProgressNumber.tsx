@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { ImageBackground, Pressable, View } from 'react-native';
 import ItemText from './ItemText';
 import { useSharedValue } from 'react-native-reanimated';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { led } from '@config/led';
-const ClickProgressNumber = () => {
+import { glow } from '@config/glow';
+const ClickProgressNumber: FC<{ mode: 'glow' | 'led' }> = props => {
+  const { mode } = props;
   const positionValue = useSharedValue(0);
   const [showIndex, setShowIndex] = useState(0);
   const { bleWrite } = useBLE();
   useEffect(() => {
-    bleWrite(BLEConfig.led[String(showIndex) as keyof typeof led]);
-  }, [bleWrite, showIndex]);
+    if (mode === 'led') {
+      bleWrite(BLEConfig.led[String(showIndex) as keyof typeof led]);
+    } else if (mode === 'glow') {
+      bleWrite(BLEConfig.glow[String(showIndex) as keyof typeof glow]);
+    }
+  }, [bleWrite, mode, showIndex]);
   return (
     <View
       //   source={require('../../assets/progress-number/bg.png')}

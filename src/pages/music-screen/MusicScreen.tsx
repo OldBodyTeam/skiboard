@@ -20,6 +20,7 @@ import PickTime from '@components/pick-time/PickTime';
 import { TIME } from './config';
 import { BLEConfig } from '@utils/ble';
 import useBLE from '@hooks/useBLE';
+import { useTranslation } from 'react-i18next';
 
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
@@ -35,6 +36,7 @@ const MusicScreen = (props: MusicScreenProps) => {
       switchValue ? BLEConfig.musicScreen.open : BLEConfig.musicScreen.close,
     );
   }, [bleWrite, switchValue]);
+  const { t } = useTranslation();
   return (
     <ImageBackground
       style={{
@@ -66,7 +68,9 @@ const MusicScreen = (props: MusicScreenProps) => {
                 flexDirection: 'row',
               }}>
               <View>
-                <Text style={{ color: 'white', fontSize: 22 }}>Schedute</Text>
+                <Text style={{ color: 'white', fontSize: 22 }}>
+                  {t('schedute')}
+                </Text>
               </View>
               <Switch
                 switchValue={switchValue}
@@ -111,7 +115,7 @@ const MusicScreen = (props: MusicScreenProps) => {
                   color: '#ffffff',
                   marginBottom: 66 / 2,
                 }}>
-                LED Strips Effects
+                {t('LED-Strips-Effects')}
               </Text>
               <Image
                 source={require('../../assets/music/led.png')}
@@ -138,7 +142,7 @@ const MusicScreen = (props: MusicScreenProps) => {
                   color: '#ffffff',
                   marginBottom: 45 / 2,
                 }}>
-                Scenes
+                {t('scenes')}
               </Text>
               <Image
                 source={require('../../assets/music/scenes.png')}

@@ -11,6 +11,7 @@ import DeviceListItem from './DeviceListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 type DeviceListProps = NativeStackScreenProps<
   RootStackParamList,
@@ -22,7 +23,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
     navigation.navigate('Home');
   };
   const insets = useSafeAreaInsets();
-
+  const { t } = useTranslation();
   return (
     <View
       style={{ backgroundColor: '#000000', flex: 1, paddingTop: insets.top }}>
@@ -60,7 +61,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
         </View>
 
         <Text style={{ color: 'white', fontWeight: '600', fontSize: 20 }}>
-          Devices
+          {t('devices-list')}
         </Text>
       </View>
       <FlatList

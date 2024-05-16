@@ -1,4 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import { sensitivity } from '@config/sensitivity';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -11,7 +14,13 @@ const ClickSensitivityProgress = () => {
   const canUseWidth = useMemo(() => {
     return (width - 6 * 2 - 10 * 2 - 8 * 2 - 20 * 2) / 5;
   }, [width]);
+  const { bleWrite } = useBLE();
   const [selectedIndex, setSelectedIndex] = useState(1);
+  useEffect(() => {
+    bleWrite(
+      BLEConfig.sensitivity[String(selectedIndex) as keyof typeof sensitivity],
+    );
+  }, [bleWrite, selectedIndex]);
   return (
     <View
       style={{

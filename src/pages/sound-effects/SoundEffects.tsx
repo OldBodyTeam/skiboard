@@ -16,11 +16,11 @@ import {
 import { RootStackParamList } from 'route.config';
 import { musicListData } from './utils';
 import SoundEffectsCarousel from '@components/sound-effects-carousel/SoundEffectsCarousel';
-import { useScreenSize } from '@hooks/useScreenSize';
-import SensitivityProgress from '@components/sensitivity-progress/SensitivityProgress';
 import ModeButton from './components/mode-button/ModeButton';
-import Waveform from '@components/audio-recorder-player/Wave';
 import ClickSensitivityProgress from '@components/sensitivity-progress/ClickSensitivityProgress';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import { useTranslation } from 'react-i18next';
 enum TABS {
   MUSIC = 'music',
   SOUND = 'sound',
@@ -70,19 +70,19 @@ const SoundEffects = (props: SoundEffectsProps) => {
         [id]: index!,
       };
     });
-    console.log('xxxx', id, index);
     setCurrentSelectedLine(id);
   };
-  const { width } = useScreenSize();
   const [currentSelected, setCurrentSelected] = useState(TABS.MUSIC);
   const handleSelected = (status: TABS) => {
     setCurrentSelected(status);
   };
+  const { bleWrite } = useBLE();
   const [selectModuleName, setSelectModuleName] = useState<MODULENAME>();
   const handleMode = (moduleName: MODULENAME) => {
-    console.log(moduleName);
     setSelectModuleName(moduleName);
+    bleWrite(BLEConfig.sensitivity[moduleName]);
   };
+  const { t } = useTranslation();
   return (
     <ImageBackground
       style={{
@@ -98,7 +98,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
             flex: 1,
           }}>
           <View>
-            <Header title="LightGlow Modes" handlePress={back} />
+            <Header title={t('lightGlow-modes')} handlePress={back} />
             <View style={{ marginTop: 2 }}>
               <SoundEffectsCarousel
                 autoPlay
@@ -140,7 +140,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     textAlign: 'center',
                     color: 'white',
                   }}>
-                  Calibrating your music taste
+                  {t('Calibrating-your-music-taste')}
                 </Text>
               </View>
               {musicListData.map(item => {
@@ -176,7 +176,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                     fontFamily: 'Helvetica',
                     color: 'white',
                   }}>
-                  Select artiste you love
+                  {t('love')}
                 </Text>
               </View>
               <MusicPlayer />
@@ -200,7 +200,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                   marginLeft: 20,
                   marginTop: 20,
                 }}>
-                Microphone
+                {t('Microphone')}
               </Text>
               <AudioRecorderPlayerWithWave />
               {/* <Waveform /> */}
@@ -213,7 +213,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                   marginLeft: 20,
                   marginTop: 20,
                 }}>
-                Sensitivity
+                {t('Sensitivity')}
               </Text>
               {/* <SensitivityProgress /> */}
               <ClickSensitivityProgress />

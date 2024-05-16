@@ -1,8 +1,10 @@
 import PickerModal, {
   PickerModalRef,
 } from '@components/picker-modal/PickerModal';
+import useBLE from '@hooks/useBLE';
 import { TIME } from '@pages/music-screen/config';
 import React, { FC, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable, Image } from 'react-native';
 
 export type PickTimeProps = {
@@ -12,6 +14,7 @@ export type PickTimeProps = {
 };
 const PickTime: FC<PickTimeProps> = props => {
   const { type } = props;
+  const { bleWrite } = useBLE();
   const modalRef = useRef<PickerModalRef>(null);
   const [showTime, setShowTime] = useState({
     currentTime: [0, '00'],
@@ -23,8 +26,19 @@ const PickTime: FC<PickTimeProps> = props => {
   }) => {
     modalRef.current?.closeModal();
     setShowTime(chooseTime);
+    const { time, currentTime } = chooseTime;
+    /**
+     * 57 - 时间段 - 长度 - 小时 - 分钟 - 61
+     * 上午 57ab03082461
+     * 下午 57ac03144561
+     */
+    bleWrite(
+      `57${time === TIME.AM ? 'ab' : 'ac'}03${
+        currentTime[0] < 10 ? '0' + currentTime[0] : currentTime[0]
+      }${currentTime[1]}61`,
+    );
   };
-
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -67,7 +81,7 @@ const PickTime: FC<PickTimeProps> = props => {
               color: 'rgba(255,255,255,0.6)',
               marginRight: 12,
             }}>
-            {showTime.time}
+            {showTime.time === TIME.AM ? t('am') : t('pm')}
           </Text>
           <Image
             source={require('../../assets/music/down-arrow.png')}

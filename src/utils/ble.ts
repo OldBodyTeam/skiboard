@@ -1,8 +1,11 @@
+import { editLight } from '@config/edit-light';
+import { glow } from '@config/glow';
 import { led } from '@config/led';
 import { lightScreen } from '@config/light-screen';
 import { musicScreen } from '@config/music-screen';
 import { scrollText } from '@config/scroll-text';
 import { sense } from '@config/sense';
+import { sensitivity } from '@config/sensitivity';
 
 const BLEConfig = {
   designScreen: {
@@ -14,5 +17,8 @@ const BLEConfig = {
   musicScreen,
   sense,
   led,
+  glow,
+  sensitivity,
+  editLight,
 };
 export { BLEConfig };

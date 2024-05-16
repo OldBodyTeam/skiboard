@@ -4,91 +4,97 @@
 // 流水 Flowing water
 // 拉幕 Curtain
 // 幻彩 Rainbow
+
+import { t } from 'i18next';
+
 // 追光 Chasing
 const scrollData = [
   {
-    title: 'Marquee',
+    title: t('Marquee'),
     icon: require('../../assets/light-glow-modes/Marquee.png'),
   },
   {
-    title: 'Meteor',
+    title: t('Meteor'),
     icon: require('../../assets/light-glow-modes/Meteor.png'),
   },
-  { title: 'Laser', icon: require('../../assets/light-glow-modes/Laser.png') },
   {
-    title: 'Flowing water',
+    title: t('Laser'),
+    icon: require('../../assets/light-glow-modes/Laser.png'),
+  },
+  {
+    title: t('Flowing water'),
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: 'Curtain',
+    title: t('Curtain'),
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
   {
-    title: 'Rainbow',
+    title: t('Rainbow'),
     icon: require('../../assets/light-glow-modes/Rainbow.png'),
   },
   {
-    title: 'Chasing',
+    title: t('Chasing'),
     icon: require('../../assets/light-glow-modes/Chasing.png'),
   },
 ];
 const CarouselOneData = [
   {
-    title: 'Marquee',
+    title: t('Marquee'),
     icon: require('../../assets/light-glow-modes/Marquee.png'),
   },
   {
-    title: 'Meteor',
+    title: t('Meteor'),
     icon: require('../../assets/light-glow-modes/Meteor.png'),
   },
-  { title: 'Laser', icon: require('../../assets/light-glow-modes/Laser.png') },
+  { title: t('Laser', icon: require('../../assets/light-glow-modes/Laser.png') },
   {
-    title: 'Flowing water',
+    title: t('Flowing water'),
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: 'Curtain',
+    title: t('Curtain'),
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
 ];
 const CarouselTwoData = [
   {
-    title: 'Rainbow',
+    title: t('Rainbow'),
     icon: require('../../assets/light-glow-modes/Rainbow.png'),
   },
   {
-    title: 'Chasing',
+    title: t('Chasing'),
     icon: require('../../assets/light-glow-modes/Chasing.png'),
   },
   {
-    title: 'Marquee',
+    title: t('Marquee'),
     icon: require('../../assets/light-glow-modes/Marquee.png'),
   },
   {
-    title: 'Meteor',
+    title: t('Meteor'),
     icon: require('../../assets/light-glow-modes/Meteor.png'),
   },
-  { title: 'Laser', icon: require('../../assets/light-glow-modes/Laser.png') },
+  { title: t('Laser'), icon: require('../../assets/light-glow-modes/Laser.png') },
 ];
 const CarouselThreeData = [
   {
-    title: 'Flowing water',
+    title: t('Flowing water'),
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: 'Curtain',
+    title: t('Curtain'),
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
   {
-    title: 'Rainbow',
+    title: t('Rainbow'),
     icon: require('../../assets/light-glow-modes/Rainbow.png'),
   },
   {
-    title: 'Chasing',
+    title: t('Chasing'),
     icon: require('../../assets/light-glow-modes/Chasing.png'),
   },
   {
-    title: 'Marquee',
+    title: t('Marquee'),
     icon: require('../../assets/light-glow-modes/Marquee.png'),
   },
 ];

@@ -2,6 +2,7 @@ import ClickProgressNumber from '@components/progress-number/ClickProgressNumber
 import Reverse from '@components/reverse/Reverse';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
 import SVGNum from '@components/svg-num/SVGNum';
+import { glow } from '@config/glow';
 import { led } from '@config/led';
 import useBLE from '@hooks/useBLE';
 import { useScreenSize } from '@hooks/useScreenSize';
@@ -9,22 +10,28 @@ import { scrollData } from '@pages/light-glow-modes/utils';
 import { BLEConfig } from '@utils/ble';
 import { findIndex } from 'lodash';
 import React, { FC, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
-export type CoverCardProps = { selectedTitle: string };
+export type CoverCardProps = { selectedTitle: string; mode: 'glow' | 'led' };
 const CoverCard: FC<CoverCardProps> = props => {
-  const { selectedTitle } = props;
+  const { selectedTitle, mode } = props;
   const { bleWrite } = useBLE();
   useEffect(() => {
     if (selectedTitle) {
-      bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
+      if (mode === 'led') {
+        bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
+      } else if (mode === 'glow') {
+        bleWrite(BLEConfig.glow[selectedTitle as keyof typeof glow]);
+      }
     }
-  }, [bleWrite, selectedTitle]);
+  }, [bleWrite, mode, selectedTitle]);
   const { width } = useScreenSize();
   const height = 720 / 2;
   const index =
     findIndex(scrollData, v => v.title === selectedTitle) === -1
       ? 1
       : findIndex(scrollData, v => v.title === selectedTitle);
+  const { t } = useTranslation();
   return (
     <>
       <View
@@ -84,7 +91,7 @@ const CoverCard: FC<CoverCardProps> = props => {
                 height: 14,
                 lineHeight: 17,
               }}>
-              Reverse
+              {t('Reverse')}
             </Text>
           </View>
           <View
@@ -93,7 +100,7 @@ const CoverCard: FC<CoverCardProps> = props => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Reverse />
+            <Reverse mode={mode} />
 
             <View
               style={{
@@ -133,11 +140,11 @@ const CoverCard: FC<CoverCardProps> = props => {
                 marginBottom: 20,
                 marginTop: 31 / 2,
               }}>
-              Speed
+              {t('Speed')}
             </Text>
           </View>
           {/* <ProgressNumber /> */}
-          <ClickProgressNumber />
+          <ClickProgressNumber mode={mode} />
         </View>
       </View>
     </>

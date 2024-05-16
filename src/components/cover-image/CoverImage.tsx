@@ -1,11 +1,6 @@
 import useBLE from '@hooks/useBLE';
-import React, {
-  FC,
-  useEffect,
-  useState,
-  PropsWithChildren,
-  useMemo,
-} from 'react';
+import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   Image,
@@ -65,6 +60,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
   getBLEBatteryPower().then(data => {
     setBatteryPower(data ?? '0');
   });
+  const { t } = useTranslation();
   return (
     <View>
       <ImageBackground
@@ -99,7 +95,9 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
               backgroundColor: '#000000',
               paddingHorizontal: 16,
             }}>
-            <Text style={{ fontSize: 14, color: 'white' }}>Connected</Text>
+            <Text style={{ fontSize: 14, color: 'white' }}>
+              {t('ble-Connected')}
+            </Text>
             <View
               style={{
                 display: 'flex',

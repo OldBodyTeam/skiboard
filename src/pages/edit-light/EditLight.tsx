@@ -19,12 +19,17 @@ import { ClientRequest } from '@services/client';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import useToast from '@hooks/useToast';
+import { useMemoizedFn } from 'ahooks';
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import { editLight } from '@config/edit-light';
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
 const EditLight = (props: EditLightProps) => {
   const modalEditRef = useRef<BlurModalRef>(null);
   const [userInfo] = useRecoilState(userInfoState);
   const { navigation, route } = props;
+  const { bleWrite } = useBLE();
   const { collectionId } = route.params || {};
   const showToast = useToast();
   const createCollection = async (data: {
@@ -83,6 +88,10 @@ const EditLight = (props: EditLightProps) => {
       position: data.frameIndex,
     });
   };
+  const handlePlayDrawSpeed = useMemoizedFn((data: { speed: number }) => {
+    const { speed } = data;
+    bleWrite(BLEConfig.editLight[speed as keyof typeof editLight]);
+  });
   const handleNavigation = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data) as {
       type:
@@ -90,7 +99,8 @@ const EditLight = (props: EditLightProps) => {
         | 'route'
         | 'modify-name'
         | 'delete-frame'
-        | 'copy-frame';
+        | 'copy-frame'
+        | 'speed';
       [p: string]: any;
     };
     console.log(data);
@@ -109,6 +119,9 @@ const EditLight = (props: EditLightProps) => {
         return;
       case 'copy-frame':
         collectionId ? copyFrameInCollection(data as any) : undefined;
+        return;
+      case 'speed':
+        handlePlayDrawSpeed(data);
         return;
       case 'route':
       default:

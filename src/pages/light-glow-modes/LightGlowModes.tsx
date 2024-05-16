@@ -8,6 +8,7 @@ import { CarouselOneData, CarouselThreeData, CarouselTwoData } from './utils';
 import { useScreenSize } from '@hooks/useScreenSize';
 
 import CoverCard from '@components/cover-card/CoverCard';
+import { useTranslation } from 'react-i18next';
 enum LINE {
   ONE = 'one',
   TWO = 'two',
@@ -52,6 +53,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
     setSelectedLine(id);
     setSelectedLinePosition(index!);
   };
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -62,7 +64,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView style={{ flex: 1 }}>
-          <Header title="LightGlow Modes" handlePress={back} />
+          <Header title={t('lightGlow-modes')} handlePress={back} />
           <Interpolate
             style={{ marginTop: 20 }}
             carouselData={CarouselOneData}
@@ -97,7 +99,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
-            <CoverCard selectedTitle={selectedTitle} />
+            <CoverCard selectedTitle={selectedTitle} mode="glow" />
           </ScrollView>
         </ScrollView>
       </SafeAreaView>

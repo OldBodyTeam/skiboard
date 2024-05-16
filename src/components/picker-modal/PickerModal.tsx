@@ -10,6 +10,7 @@ import { BlurView } from 'expo-blur';
 import { Image } from 'react-native-ui-lib';
 import { TIME } from '@pages/music-screen/config';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
+import { useTranslation } from 'react-i18next';
 const secondsList = Array(60)
   .fill(1)
   .map((_i, index) => {
@@ -65,7 +66,7 @@ const PickerModal = forwardRef<
       time: selectedTimeMode,
     });
   };
-
+  const { t } = useTranslation();
   return (
     <Modal
       animationType="fade"
@@ -175,7 +176,7 @@ const PickerModal = forwardRef<
                   justifyContent: 'center',
                   marginRight: 19 / 2,
                 }}>
-                <Text style={{ color: 'white' }}>AM</Text>
+                <Text style={{ color: 'white' }}>{t('am')}</Text>
               </View>
             </Pressable>
             <Pressable onPress={() => handleMode(TIME.PM)}>
@@ -191,7 +192,7 @@ const PickerModal = forwardRef<
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Text style={{ color: 'white' }}>PM</Text>
+                <Text style={{ color: 'white' }}>{t('pm')}</Text>
               </View>
             </Pressable>
           </View>
@@ -300,7 +301,9 @@ const PickerModal = forwardRef<
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text style={{ fontWeight: '600', color: '#333333' }}>Save</Text>
+              <Text style={{ fontWeight: '600', color: '#333333' }}>
+                {t('Save')}
+              </Text>
             </View>
           </Pressable>
         </BlurView>

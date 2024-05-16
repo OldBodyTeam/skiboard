@@ -12,6 +12,7 @@ import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 // import { createWebView, useBridge } from '@webview-bridge/react-native';
 import { appBridge } from '@pages/edit-light/utils';
+import { useTranslation } from 'react-i18next';
 // import { WebViewMessageEvent } from 'react-native-webview';
 // export const { WebView } = createWebView({
 //   bridge: appBridge,
@@ -106,6 +107,7 @@ const LightList = (props: LightListProps) => {
     getCollectionList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const { t } = useTranslation();
   return (
     <View
       style={{
@@ -158,7 +160,7 @@ const LightList = (props: LightListProps) => {
               }}>
               <Text
                 style={{ fontWeight: 'bold', fontSize: 16, color: '#ffffff' }}>
-                Cancel
+                {t('cancel')}
               </Text>
             </View>
           </TouchableHighlight>
@@ -172,7 +174,7 @@ const LightList = (props: LightListProps) => {
               }}>
               <Text
                 style={{ color: '#FCE500', fontWeight: 'bold', fontSize: 16 }}>
-                Confirm
+                {t('confirm')}
               </Text>
             </View>
           </TouchableHighlight>
