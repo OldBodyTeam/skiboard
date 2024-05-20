@@ -6,6 +6,7 @@ import { musicScreen } from '@config/music-screen';
 import { scrollText } from '@config/scroll-text';
 import { sense } from '@config/sense';
 import { sensitivity } from '@config/sensitivity';
+import { mode } from '@config/mode';
 
 const BLEConfig = {
   designScreen: {
@@ -20,5 +21,6 @@ const BLEConfig = {
   glow,
   sensitivity,
   editLight,
+  mode,
 };
 export { BLEConfig };

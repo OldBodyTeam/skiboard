@@ -4,7 +4,7 @@ const sensitivity = {
   '3': '57ee020261',
   '4': '57ee020361',
   '5': '57ee020461',
-  'Flowing water': '57ee020561',
+  'Flowing Water': '57ee020561',
   Meteor: '57ee020661',
   Fluctuate: '57ee020761',
   Energy: '57ee020861',

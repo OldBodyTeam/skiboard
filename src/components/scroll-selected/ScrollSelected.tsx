@@ -1,18 +1,27 @@
+import useBLE from '@hooks/useBLE';
+import { BLEConfig } from '@utils/ble';
+import { useDebounceFn } from 'ahooks';
+import { get } from 'lodash';
 import React, { FC, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Image, Text } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 export type ScrollSelectedProps = {
-  scrollData: { title: string }[];
+  scrollData: string[];
   title: string;
 };
 const ScrollSelected: FC<ScrollSelectedProps> = props => {
   const { scrollData, title } = props;
   const r = useRef<ICarouselInstance>(null);
   useEffect(() => {
-    const index = scrollData.findIndex(v => v.title === title);
+    const index = scrollData.findIndex(v => v === title);
     r.current?.scrollTo({ index });
   }, [scrollData, title]);
-
+  const { t } = useTranslation();
+  const { bleWrite } = useBLE();
+  const { run } = useDebounceFn((_a, b: number) => {
+    bleWrite(get(BLEConfig, `mode.${title}.${scrollData[b]}`) ?? '');
+  });
   return (
     <View
       style={{
@@ -60,6 +69,7 @@ const ScrollSelected: FC<ScrollSelectedProps> = props => {
         />
       </View>
       <Carousel
+        onProgressChange={run}
         ref={r}
         loop={false}
         autoPlayInterval={0}
@@ -79,8 +89,8 @@ const ScrollSelected: FC<ScrollSelectedProps> = props => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              key={item.title}>
-              <Text style={{ fontSize: 28, color: 'white' }}>{item.title}</Text>
+              key={item}>
+              <Text style={{ fontSize: 28, color: 'white' }}>{t(item)}</Text>
             </View>
           );
         }}

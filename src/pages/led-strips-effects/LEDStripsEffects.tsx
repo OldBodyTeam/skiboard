@@ -37,7 +37,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
     two: true,
     three: true,
   });
-  const [selectedTitle, setSelectedTitle] = useState('');
+  const [selectedTitle, setSelectedTitle] = useState('Rainbow');
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
 

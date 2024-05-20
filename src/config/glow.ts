@@ -9,7 +9,7 @@ const glow = {
   Marquee: '57de020761',
   Meteor: '57de020861',
   Laser: '57de020961',
-  'Flowing water': '57de021061',
+  'Flowing Water': '57de021061',
   Curtain: '57de021161',
   Rainbow: '57de021261',
   Chasing: '57de021361',

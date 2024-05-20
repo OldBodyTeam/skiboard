@@ -2,29 +2,29 @@ import ClickProgressNumber from '@components/progress-number/ClickProgressNumber
 import Reverse from '@components/reverse/Reverse';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
 import SVGNum from '@components/svg-num/SVGNum';
-import { glow } from '@config/glow';
-import { led } from '@config/led';
-import useBLE from '@hooks/useBLE';
+// import { glow } from '@config/glow';
+// import { led } from '@config/led';
+// import useBLE from '@hooks/useBLE';
 import { useScreenSize } from '@hooks/useScreenSize';
-import { scrollData } from '@pages/light-glow-modes/utils';
-import { BLEConfig } from '@utils/ble';
+import { glowModes, scrollData } from '@pages/light-glow-modes/utils';
+// import { BLEConfig } from '@utils/ble';
 import { findIndex } from 'lodash';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 export type CoverCardProps = { selectedTitle: string; mode: 'glow' | 'led' };
 const CoverCard: FC<CoverCardProps> = props => {
   const { selectedTitle, mode } = props;
-  const { bleWrite } = useBLE();
-  useEffect(() => {
-    if (selectedTitle) {
-      if (mode === 'led') {
-        bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
-      } else if (mode === 'glow') {
-        bleWrite(BLEConfig.glow[selectedTitle as keyof typeof glow]);
-      }
-    }
-  }, [bleWrite, mode, selectedTitle]);
+  // const { bleWrite } = useBLE();
+  // useEffect(() => {
+  //   if (selectedTitle) {
+  //     if (mode === 'led') {
+  //       bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
+  //     } else if (mode === 'glow') {
+  //       bleWrite(BLEConfig.glow[selectedTitle as keyof typeof glow]);
+  //     }
+  //   }
+  // }, [bleWrite, mode, selectedTitle]);
   const { width } = useScreenSize();
   const height = 720 / 2;
   const index =
@@ -74,7 +74,10 @@ const CoverCard: FC<CoverCardProps> = props => {
           marginTop: 36,
           zIndex: 1,
         }}>
-        <ScrollSelected scrollData={scrollData} title={selectedTitle} />
+        <ScrollSelected
+          scrollData={glowModes[selectedTitle as keyof typeof glowModes]}
+          title={selectedTitle}
+        />
 
         <View
           style={{

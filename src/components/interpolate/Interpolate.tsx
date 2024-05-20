@@ -9,7 +9,7 @@ import Carousel from 'react-native-reanimated-carousel';
 export type InterpolateProps = {
   autoPlayReverse?: boolean;
   style?: StyleProp<ViewStyle>;
-  carouselData: { title: string; icon: any }[];
+  carouselData: { title: string; icon: any; key: string }[];
   autoPlay: boolean;
   handleAutoPlay: (title: string, index?: number) => void;
   selectedLinePosition: number;
@@ -20,7 +20,6 @@ const Interpolate: FC<InterpolateProps> = props => {
     autoPlayReverse,
     style,
     carouselData,
-    autoPlay,
     handleAutoPlay,
     selectedLine,
     selectedLinePosition,
@@ -45,7 +44,7 @@ const Interpolate: FC<InterpolateProps> = props => {
             <InterpolateItem
               item={item}
               onPress={() => {
-                handleAutoPlay(item.title, index);
+                handleAutoPlay(item.key, index);
                 // r.current?.scrollTo({ index, animated: false });
               }}
               selectedLed={selectedLine && selectedLinePosition === index}

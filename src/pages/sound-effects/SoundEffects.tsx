@@ -26,7 +26,7 @@ enum TABS {
   SOUND = 'sound',
 }
 export enum MODULENAME {
-  FlowingWater = 'Flowing water',
+  FlowingWater = 'Flowing Water',
   Meteor = 'Meteor',
   Fluctuate = 'Fluctuate',
   Energy = 'Energy',

@@ -5,7 +5,7 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import { CarouselOneData, CarouselThreeData, CarouselTwoData } from './utils';
-import { useScreenSize } from '@hooks/useScreenSize';
+// import { useScreenSize } from '@hooks/useScreenSize';
 
 import CoverCard from '@components/cover-card/CoverCard';
 import { useTranslation } from 'react-i18next';
@@ -30,17 +30,17 @@ const LightGlowModes = (props: LightGlowModesProps) => {
   useEffect(() => {
     ScrollViewRef.current?.scrollTo({ y: -43, animated: true });
   }, []);
-  const { width } = useScreenSize();
+  // const { width } = useScreenSize();
   const [selectedInterpolate, setSelectedInterpolate] = useState({
     one: true,
     two: true,
     three: true,
   });
-  const [selectedTitle, setSelectedTitle] = useState('');
+  const [selectedTitle, setSelectedTitle] = useState('Rainbow');
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
   const handleAutoPlay = (id: LINE, title: string, index?: number) => {
-    console.log(id, index);
+    console.log(title);
     setSelectedInterpolate(() => {
       return {
         one: true,

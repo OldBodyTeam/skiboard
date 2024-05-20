@@ -9,7 +9,7 @@ const led = {
   Marquee: '57ce020761',
   Meteor: '57ce020861',
   Laser: '57ce020961',
-  'Flowing water': '57ce021061',
+  'Flowing Water': '57ce021061',
   Curtain: '57ce021161',
   Rainbow: '57ce021261',
   Chasing: '57ce021361',
