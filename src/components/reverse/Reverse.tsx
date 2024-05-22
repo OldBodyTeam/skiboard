@@ -1,22 +1,37 @@
+import { reverseMode } from '@config/mode';
 import useBLE from '@hooks/useBLE';
+import { bleState } from '@stores/ble/ble.atom';
 import { BLEConfig } from '@utils/ble';
+import { get } from 'lodash';
 import React, { FC, useEffect, useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
 import { View } from 'react-native-ui-lib';
+import { useRecoilState } from 'recoil';
 const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
   const { mode } = props;
   const [reverse, setReverse] = useState(false);
   const { bleWrite } = useBLE();
+  const [bleData] = useRecoilState(bleState);
   useEffect(() => {
-    if (mode === 'led') {
-      bleWrite(
-        reverse ? BLEConfig.led.reverseRight : BLEConfig.led.reverseLeft,
-      );
-    } else if (mode === 'glow') {
-      bleWrite(
-        reverse ? BLEConfig.glow.reverseRight : BLEConfig.glow.reverseLeft,
-      );
+    // if (mode === 'led') {
+    //   bleWrite(
+    //     reverse ? BLEConfig.led.reverseRight : BLEConfig.led.reverseLeft,
+    //   );
+    // } else if (mode === 'glow') {
+    //   bleWrite(
+    //     reverse ? BLEConfig.glow.reverseRight : BLEConfig.glow.reverseLeft,
+    //   );
+    // }
+    const code = get(reverseMode, `${bleData.title}.${bleData.key}`);
+    if (reverse && code) {
+      const reverseCodeArr = (code as string).split('');
+      reverseCodeArr[5] = '3';
+      const reverseNewCode = reverseCodeArr.splice(7, 0, '00').join('');
+      bleWrite(reverseNewCode);
+    } else if (!reverse) {
+      bleWrite(get(BLEConfig, `mode.${bleData.title}.${bleData.key}`) ?? '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bleWrite, mode, reverse]);
   return (
     <View
