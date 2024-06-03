@@ -294,7 +294,7 @@ const DesignScreen = (props: DesignScreenProps) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ flex: 1, marginLeft: 5 }}
-            onPress={() => navigation.push('LightList')}>
+            onPress={() => navigation.push('CreativePatterns')}>
             <View
               style={{
                 height: 444 / 2,

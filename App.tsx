@@ -46,7 +46,7 @@ function App(): React.JSX.Element {
           <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
             <Stack.Navigator
               screenOptions={{ headerShown: false }}
-              initialRouteName="Home">
+              initialRouteName="Login">
               {routeConfig.map(item => (
                 <Stack.Screen
                   name={item.name}

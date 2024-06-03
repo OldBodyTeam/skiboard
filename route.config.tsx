@@ -1,6 +1,7 @@
 import Auth from '@pages/auth/Auth';
 import BleManager from '@pages/ble-manager/BleManager';
 import ColorPickerPage from '@pages/color-picker/ColorPicker';
+import CreativePatterns from '@pages/creative-patterns/CreativePatterns';
 import DeviceList from '@pages/device-list/DeviceList';
 import EditLight from '@pages/edit-light/EditLight';
 import Home from '@pages/home/Home';
@@ -95,6 +96,10 @@ const routeConfig = [
   {
     name: 'TestBLE',
     component: TestBLE,
+  },
+  {
+    name: 'CreativePatterns',
+    component: CreativePatterns,
   },
 ] as const;
 export { routeConfig };

@@ -303,6 +303,36 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags collection
+   * @name CollectionControllerGetCollectionAllList
+   * @request GET:/api/collection/list/collection
+   * @secure
+   */
+  collectionControllerGetCollectionAllList = (
+    query: {
+      pageSize: number;
+      pageNumber: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<
+      {
+        data?: CollectionEntity;
+        msg?: string;
+        code?: number;
+      },
+      any
+    >({
+      path: `/api/collection/list/collection`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags auth
    * @name AuthControllerLogin
    * @request POST:/api/auth/login
