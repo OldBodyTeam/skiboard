@@ -36,7 +36,13 @@ const Login = (props: LoginProps) => {
       const token = requestData.data.data?.access_token ?? '';
       await AsyncStorage.setItem('access_token', token);
       await getUserInfo(requestData.data.data?.userId ?? '');
-      navigation.push('Home', { screen: 'DesignScreen' });
+      Toast.show('登录成功', {
+        position: Toast.positions.CENTER,
+        delay: 0,
+        animation: true,
+        duration: Toast.durations.SHORT,
+      });
+      navigation.push('BleManager');
     } catch (e) {
       if (isAxiosError(e)) {
         console.log(JSON.stringify(e));

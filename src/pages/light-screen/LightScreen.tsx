@@ -22,7 +22,7 @@ import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { lightScreen } from '@config/light-screen';
 import { useTranslation } from 'react-i18next';
-const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#FF8A5E', '#60AEE6'];
+const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#AA8F1E', '#60AEE6'];
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -40,6 +40,7 @@ const LightScreen = (props: LightScreenProps) => {
       bleWrite(BLEConfig.lightScreen[writeData as keyof typeof lightScreen]);
     } else if (currentOptIndex === 11) {
       bleWrite(BLEConfig.lightScreen.random);
+      setSelected(11);
     }
   };
   const [progress, setProgress] = useState(0);
@@ -66,7 +67,7 @@ const LightScreen = (props: LightScreenProps) => {
     bleWrite(BLEConfig.lightScreen[color as keyof typeof lightScreen]);
   };
   const { t } = useTranslation();
-
+  console.log(selected);
   return (
     <ImageBackground
       style={{

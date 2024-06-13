@@ -1,7 +1,7 @@
 import useBLE from '@hooks/useBLE';
 import { bleState } from '@stores/ble/ble.atom';
 import { BLEConfig } from '@utils/ble';
-import { useDebounceFn } from 'ahooks';
+import { useDebounceFn, useMount } from 'ahooks';
 import { get } from 'lodash';
 import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ export type ScrollSelectedProps = {
 const ScrollSelected: FC<ScrollSelectedProps> = props => {
   const { scrollData, title } = props;
   const r = useRef<ICarouselInstance>(null);
+  console.log(scrollData, title);
   useEffect(() => {
     const index = scrollData.findIndex(v => v === title);
     r.current?.scrollTo({ index });
@@ -22,6 +23,9 @@ const ScrollSelected: FC<ScrollSelectedProps> = props => {
   const { t } = useTranslation();
   const { bleWrite } = useBLE();
   const [_, setBleConfig] = useRecoilState(bleState);
+  useMount(() => {
+    setBleConfig({ title, key: scrollData[0] });
+  });
   const { run } = useDebounceFn((_a, b: number) => {
     setBleConfig({ title, key: scrollData[b] });
     bleWrite(get(BLEConfig, `mode.${title}.${scrollData[b]}`) ?? '');

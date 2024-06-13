@@ -24,9 +24,8 @@ import BleManager, {
   BleState,
   Peripheral,
 } from 'react-native-ble-manager';
-import { Toast } from 'react-native-ui-lib';
 import Video from 'react-native-video';
-import { useMemoizedFn, useMount } from 'ahooks';
+import { useMemoizedFn } from 'ahooks';
 import { useRecoilState } from 'recoil';
 import videoMp4 from './connected.mp4';
 import { deviceInfoState } from '@stores/device/device.atom';
@@ -34,6 +33,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useTranslation } from 'react-i18next';
 import { Logger } from '@utils/log';
+import Toast from 'react-native-root-toast';
 declare module 'react-native-ble-manager' {
   interface Peripheral {
     connected?: boolean;
@@ -60,6 +60,7 @@ type BleManagerBlockProps = NativeStackScreenProps<
   'Register'
 >;
 const BleManagerBlock: FC<BleManagerBlockProps> = props => {
+  const { navigation } = props;
   const [userOpt, setUserOpt] = useState<BleDeviceStatus>(
     BleDeviceStatus.isScanning,
   );
@@ -262,21 +263,6 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   }
 
   useEffect(() => {
-    try {
-      BleManager.start({ showAlert: false })
-        .then(() => {
-          console.debug('BleManager started.');
-          // 开始扫描
-          startScan();
-        })
-        .catch((error: any) =>
-          console.error('BeManager could not be started.', error),
-        );
-    } catch (error) {
-      console.error('unexpected error starting BleManager.', error);
-      return;
-    }
-
     const listeners = [
       bleManagerEmitter.addListener(
         'BleManagerDiscoverPeripheral',
@@ -298,6 +284,15 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     ];
 
     handleAndroidPermissions();
+    BleManager.start({ showAlert: false })
+      .then(() => {
+        Toast.show('BleManager started.');
+        // 开始扫描
+        startScan();
+      })
+      .catch((error: any) =>
+        Toast.show(`BeManager could not be started.${error.message}`),
+      );
 
     return () => {
       console.debug('[app] main component unmounting. Removing listeners...');
@@ -308,7 +303,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAndroidPermissions = () => {
+  const handleAndroidPermissions = useMemoizedFn(() => {
     if (Platform.OS === 'android' && Platform.Version >= 31) {
       PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
@@ -349,7 +344,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         }
       });
     }
-  };
+  });
   const [deviceInfo, setDeviceInfo] = useState<Peripheral>();
   const [_, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
   const handleConnectedBLE = async () => {
@@ -361,14 +356,14 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     setGlobalDeviceInfo(info);
     // 数据共享到系统中
   };
-  const { navigation } = props;
-  useEffect(() => {
-    Logger(deviceInfo?.connected);
-    if (deviceInfo?.connected) {
-      // 路由跳转
-      navigation.replace('Home', { screen: 'DesignScreen' });
-    }
-  }, [deviceInfo?.connected, navigation]);
+  // const { navigation } = props;
+  // useEffect(() => {
+  //   Logger(deviceInfo?.connected);
+  //   if (deviceInfo?.connected) {
+  //     // 路由跳转
+  //     navigation.replace('Home', { screen: 'DesignScreen' });
+  //   }
+  // }, [deviceInfo?.connected, navigation]);
 
   const { t } = useTranslation();
 
@@ -376,7 +371,8 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     <View style={styles.body}>
       <StatusBar />
       {userOpt === BleDeviceStatus.isScanning ? (
-        <View
+        <TouchableHighlight
+          onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}
           style={{
             alignItems: 'center',
             flex: 1,
@@ -385,36 +381,38 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
             left: 0,
             bottom: 175 / 2,
           }}>
-          <View
-            style={{
-              backgroundColor: 'rgba(253, 222, 49, 1)',
-              height: 52,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderRadius: 104,
-              flexDirection: 'row',
-              paddingHorizontal: 19,
-            }}>
-            <Image
-              source={require('../../assets/robot.png')}
-              style={{ width: 57 / 2, height: 23 }}
-            />
-            <Text style={{ color: '#131416', fontSize: 13 }}>
-              {t('ble-intro')}
-            </Text>
+          <View>
+            <View
+              style={{
+                backgroundColor: 'rgba(253, 222, 49, 1)',
+                height: 52,
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: 104,
+                flexDirection: 'row',
+                paddingHorizontal: 19,
+              }}>
+              <Image
+                source={require('../../assets/robot.png')}
+                style={{ width: 57 / 2, height: 23 }}
+              />
+              <Text style={{ color: '#131416', fontSize: 13 }}>
+                {t('ble-intro')}
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 155 / 2,
+              }}>
+              <Text style={{ color: '#FDFDFD', fontSize: 16 }}>
+                {t('ble-search')}…
+              </Text>
+            </View>
           </View>
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 155 / 2,
-            }}>
-            <Text style={{ color: '#FDFDFD', fontSize: 16 }}>
-              {t('ble-search')}…
-            </Text>
-          </View>
-        </View>
+        </TouchableHighlight>
       ) : (
         <View
           style={{

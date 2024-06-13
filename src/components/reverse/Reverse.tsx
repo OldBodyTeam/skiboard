@@ -22,14 +22,14 @@ const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
     //     reverse ? BLEConfig.glow.reverseRight : BLEConfig.glow.reverseLeft,
     //   );
     // }
-    const code = get(reverseMode, `${bleData.title}.${bleData.key}`);
+    const code = get(reverseMode, `${bleData?.title}.${bleData?.key}`);
     if (reverse && code) {
       const reverseCodeArr = (code as string).split('');
       reverseCodeArr[5] = '3';
       const reverseNewCode = reverseCodeArr.splice(7, 0, '00').join('');
       bleWrite(reverseNewCode);
     } else if (!reverse) {
-      bleWrite(get(BLEConfig, `mode.${bleData.title}.${bleData.key}`) ?? '');
+      bleWrite(get(BLEConfig, `mode.${bleData?.title}.${bleData?.key}`) ?? '');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bleWrite, mode, reverse]);

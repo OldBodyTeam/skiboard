@@ -13,6 +13,7 @@ import { userInfoState } from '@stores/login/login.atom';
 // import { createWebView, useBridge } from '@webview-bridge/react-native';
 import { appBridge } from '@pages/edit-light/utils';
 import { useTranslation } from 'react-i18next';
+import Toast from 'react-native-root-toast';
 // import { WebViewMessageEvent } from 'react-native-webview';
 // export const { WebView } = createWebView({
 //   bridge: appBridge,
@@ -53,7 +54,7 @@ const LightList = (props: LightListProps) => {
         webRef.current?.injectJavaScript(injected);
       }, 1000);
     } catch (e) {
-      console.log(e);
+      Toast.show(`${(e as Error).message}`);
     }
   };
   const [deleteInfo, setDeleteInfo] = useState<{

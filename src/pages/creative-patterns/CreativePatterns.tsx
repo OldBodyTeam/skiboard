@@ -6,8 +6,7 @@ import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { ClientRequest } from '@services/client';
-import { useRecoilState } from 'recoil';
-import { userInfoState } from '@stores/login/login.atom';
+import Toast from 'react-native-root-toast';
 
 type CreativePatternsProps = NativeStackScreenProps<
   RootStackParamList,
@@ -27,7 +26,6 @@ const CreativePatterns = (props: CreativePatternsProps) => {
   const uri = useWebViewUrl('creative-patterns');
   const webRef = useRef<any>(null);
   const getCollectionList = async () => {
-    console.log('*************');
     try {
       const client = await ClientRequest();
       const responseData =
@@ -36,7 +34,6 @@ const CreativePatterns = (props: CreativePatternsProps) => {
           pageNumber: 100,
         });
       const collection = responseData.data.data.data;
-      console.log(collection);
       const buildPostData = {
         type: 'setCollection',
         webData: collection,
@@ -47,8 +44,9 @@ const CreativePatterns = (props: CreativePatternsProps) => {
           true;
         `;
         webRef.current?.injectJavaScript(injected);
-      }, 1000);
+      }, 1400);
     } catch (e) {
+      Toast.show((e as Error).message);
       console.log(e);
     }
   };

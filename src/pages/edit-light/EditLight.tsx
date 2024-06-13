@@ -121,7 +121,7 @@ const EditLight = (props: EditLightProps) => {
         collectionId ? copyFrameInCollection(data as any) : undefined;
         return;
       case 'speed':
-        handlePlayDrawSpeed(data);
+        handlePlayDrawSpeed(data as any);
         return;
       case 'route':
       default:

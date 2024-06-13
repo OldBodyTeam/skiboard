@@ -30,8 +30,8 @@ const scrollData = [
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: t('Curtain'),
-    key: 'Curtain',
+    title: t('Theater Curtain'),
+    key: 'Theater Curtain',
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
   {
@@ -67,8 +67,8 @@ const CarouselOneData = [
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: t('Curtain'),
-    key: 'Curtain',
+    title: t('Theater Curtain'),
+    key: 'Theater Curtain',
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
 ];
@@ -106,8 +106,8 @@ const CarouselThreeData = [
     icon: require('../../assets/light-glow-modes/Flowing-Water.png'),
   },
   {
-    title: t('Curtain'),
-    key: 'Curtain',
+    title: t('Theater Curtain'),
+    key: 'Theater Curtain',
     icon: require('../../assets/light-glow-modes/Curtain.png'),
   },
   {

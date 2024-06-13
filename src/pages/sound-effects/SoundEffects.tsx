@@ -93,10 +93,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
       source={require('../../assets/sound-effects/bg.png')}>
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView
-          contentContainerStyle={{
-            flex: 1,
-          }}>
+        <ScrollView>
           <View>
             <Header title={t('lightGlow-modes')} handlePress={back} />
             <View style={{ marginTop: 2 }}>
@@ -125,7 +122,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
           </View>
 
           {currentSelected === TABS.MUSIC ? (
-            <ScrollView style={{ flex: 1 }}>
+            <>
               <View
                 style={{
                   flex: 1,
@@ -180,10 +177,10 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 </Text>
               </View>
               <MusicPlayer />
-            </ScrollView>
+            </>
           ) : null}
           {currentSelected === TABS.SOUND ? (
-            <ScrollView
+            <View
               style={{
                 flex: 1,
                 backgroundColor: 'white',
@@ -312,7 +309,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                   selectModuleName={selectModuleName}
                 />
               </View>
-            </ScrollView>
+            </View>
           ) : null}
           {/* </View> */}
         </ScrollView>

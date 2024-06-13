@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 import { Buffer } from 'buffer';
 import BleManager from 'react-native-ble-manager';
 import { BLEWriteLogger } from '@utils/log';
+import Toast from 'react-native-root-toast';
 
 const useBLE = () => {
   const [deviceInfo] = useRecoilState(deviceInfoState);
@@ -61,7 +62,10 @@ const useBLE = () => {
       return false;
     }
   });
-  return __DEV__
+  if (!deviceId || !deviceCharacteristicUUID || !deviceServiceUUID) {
+    Toast.show('当前无法连接蓝牙，请重试');
+  }
+  return __DEV__ || !deviceId || !deviceCharacteristicUUID || !deviceServiceUUID
     ? {
         getBLEBatteryPower: () => Promise.resolve('70'),
         bleWrite: () => Promise.resolve({}),

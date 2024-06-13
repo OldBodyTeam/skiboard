@@ -1,7 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
+import { deviceInfoState } from '@stores/device/device.atom';
 import { userInfoState } from '@stores/login/login.atom';
 import React, { PropsWithChildren, useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 type AuthProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
@@ -9,6 +11,7 @@ type AuthProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
 const Auth = (props: AuthProps) => {
   const { navigation } = props;
   const [_, setUserInfo] = useRecoilState(userInfoState);
+  const [deviceInfo] = useRecoilState(deviceInfoState);
   useEffect(() => {
     const handleAutoLogin = async () => {
       try {
@@ -17,13 +20,27 @@ const Auth = (props: AuthProps) => {
         const userId = (data.data as any).data.sub;
         const userInfoData = await client.userControllerUser(userId);
         setUserInfo(userInfoData.data.data);
-        navigation.replace('Home', { screen: 'DesignScreen' });
+        if (deviceInfo.connected) {
+          navigation.push('Home', { screen: 'DesignScreen' });
+        } else {
+          navigation.push('BleManager');
+        }
       } catch (e) {
-        navigation.replace('Login');
+        console.log(e);
+        navigation.push('Login');
       }
     };
     handleAutoLogin();
-  }, [navigation, setUserInfo]);
-  return <></>;
+  }, [deviceInfo.connected, navigation, setUserInfo]);
+  return (
+    <View
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text>权限请求中</Text>
+    </View>
+  );
 };
 export default Auth;

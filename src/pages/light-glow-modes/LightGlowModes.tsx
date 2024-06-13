@@ -40,7 +40,6 @@ const LightGlowModes = (props: LightGlowModesProps) => {
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
   const handleAutoPlay = (id: LINE, title: string, index?: number) => {
-    console.log(title);
     setSelectedInterpolate(() => {
       return {
         one: true,

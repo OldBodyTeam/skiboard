@@ -14,7 +14,6 @@ import { LogBox, Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { RecoilRoot } from 'recoil';
-import Toast from 'react-native-toast-message';
 
 import './src/utils/i18next';
 // import { ClientRequest } from '@services/client';
@@ -42,7 +41,6 @@ function App(): React.JSX.Element {
     <RecoilRoot>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <RootSiblingParent>
-          <Toast />
           <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
             <Stack.Navigator
               screenOptions={{ headerShown: false }}

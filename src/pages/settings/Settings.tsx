@@ -64,6 +64,7 @@ const Settings = (props: SettingsTextProps) => {
           },
         );
         const newUserInfo = requestData.data.data;
+        console.log(newUserInfo);
         setUserInfo(newUserInfo);
       }
     } catch (e) {

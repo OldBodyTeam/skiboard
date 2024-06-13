@@ -98,7 +98,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                     ...StyleSheet.flatten(style.welcomeText),
                     color: 'rgba(18,17,21,0.5)',
                   }}>
-                  nice to
+                  &nbsp;&nbsp;nice to
                 </Text>
               </AutoSizeText>
               <AutoSizeText
