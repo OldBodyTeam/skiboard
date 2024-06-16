@@ -14,8 +14,8 @@ import { LogBox, Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { RecoilRoot } from 'recoil';
+import i18next from './src/utils/i18next';
 
-import './src/utils/i18next';
 // import { ClientRequest } from '@services/client';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 LogBox.ignoreLogs([
@@ -41,10 +41,15 @@ function App(): React.JSX.Element {
     <RecoilRoot>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <RootSiblingParent>
-          <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
+          <NavigationContainer
+            onReady={() => {
+              i18next.on('loaded', () => {
+                BootSplash.hide({ fade: true });
+              })
+            }}>
             <Stack.Navigator
               screenOptions={{ headerShown: false }}
-              initialRouteName="Login">
+              initialRouteName="Auth">
               {routeConfig.map(item => (
                 <Stack.Screen
                   name={item.name}

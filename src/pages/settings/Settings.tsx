@@ -19,6 +19,7 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -75,6 +76,7 @@ const Settings = (props: SettingsTextProps) => {
     navigation.goBack();
   };
   const modalEditRef = useRef<BlurModalRef>(null);
+  const modalLogoutRef = useRef<BlurModalRef>(null);
   const [username, setUsername] = useState('Hyuk Design');
   useEffect(() => {
     setUsername(userInfo?.username ?? '');
@@ -121,7 +123,20 @@ const Settings = (props: SettingsTextProps) => {
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView style={{ flex: 1 }}>
-          <Header title="" handlePress={back} />
+          <Header
+            title=""
+            handlePress={back}
+            extra={
+              <TouchableOpacity
+                style={{ position: 'absolute', top: 30, right: 16 }}
+                onPress={() => modalLogoutRef.current?.openModal()}>
+                <Text
+                  style={{ fontSize: 18, fontWeight: '500', color: '#ffffff' }}>
+                  {t('Logout')}
+                </Text>
+              </TouchableOpacity>
+            }
+          />
           <View
             style={{
               alignItems: 'center',
@@ -280,6 +295,68 @@ const Settings = (props: SettingsTextProps) => {
               </Text>
             </View>
           </TouchableHighlight>
+        </View>
+      </BlurModal>
+      <BlurModal
+        ref={modalLogoutRef}
+        title={t('Logout')}
+        content={t('logout-text')}>
+        <View style={{ display: 'flex', marginTop: 8, width: '100%' }}>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 50,
+              flexDirection: 'row',
+            }}>
+            <TouchableWithoutFeedback
+              style={{ flex: 1, marginTop: 12 }}
+              onPress={() => modalLogoutRef.current?.closeModal()}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <Text
+                  style={{
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
+                  {t('cancel')}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              style={{ flex: 1, marginTop: 12 }}
+              onPress={() => {
+                Promise.resolve()
+                  .then(() => {
+                    modalLogoutRef.current?.closeModal();
+                  })
+                  .then(() => {
+                    navigation.replace('Login');
+                  });
+              }}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <Text
+                  style={{
+                    color: '#FCE500',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
+                  {t('confirm')}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </BlurModal>
     </View>

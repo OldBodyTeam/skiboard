@@ -23,8 +23,17 @@ const SelectedColor: FC<{ handleSelected: (data: string) => void }> = props => {
   const position = useSharedValue(0);
   const oldValue = useSharedValue(0);
   const handleSelected = (index: number) => {
-    const currentIndex = Math.floor(100 / data.length / Math.abs(index));
-    props.handleSelected(data[currentIndex].slice(1));
+    let num = index <= 0 ? 1 : index > 100 ? 100 : index;
+    if (num >= 1 && num <= 100) {
+      const currentIndex = Math.floor(100 / data.length / Math.abs(num));
+      let pos =
+        currentIndex >= data.length - 1
+          ? data.length - 1
+          : currentIndex <= 0
+          ? 0
+          : currentIndex;
+      props.handleSelected(data[pos]?.slice(1));
+    }
   };
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
@@ -42,6 +51,7 @@ const SelectedColor: FC<{ handleSelected: (data: string) => void }> = props => {
         position.value = 0;
         oldValue.value = 0;
       }
+      oldValue.value = position.value;
     });
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value }],

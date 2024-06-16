@@ -55,9 +55,8 @@ const Login = (props: LoginProps) => {
       });
     }
   };
-  const goRegisterPage = () => {
-    console.log('goRegisterPage');
-    navigation.push('Register');
+  const goRegisterPage = (data: any) => {
+    navigation.push(data.goPage);
   };
   const handleNavigation = async (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data) as Params;
@@ -67,7 +66,7 @@ const Login = (props: LoginProps) => {
         return;
       case 'route':
       default:
-        goRegisterPage();
+        goRegisterPage(data);
     }
   };
   const uri = useWebViewUrl('login');

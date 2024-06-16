@@ -163,5 +163,17 @@
     "White Curtain": "白色拉幕",
     "Color Wash": "七彩刷色拉幕",
     "Red-Green-Blue Wash": "红绿蓝刷色拉幕",
-    "Yellow-Cyan-Purple Wash": "黄青紫刷色拉幕"
+    "Yellow-Cyan-Purple Wash": "黄青紫刷色拉幕",
+
+    "Rest": "重置",
+    "Email": "邮箱",
+    "email-placeholder": "请输入邮箱",
+    "New Password": "新密码",
+    "new-password-placeholder": "请输入新密码",
+    "Confirm New Password": "确认新密码",
+    "confirm-password-placeholder": "请输入确认密码",
+    "Change Password": "修改密码",
+    "Login": "登录",
+    "Logout": "登出",
+    "logout-text": "登出之后，需要重新登录"
 }

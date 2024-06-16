@@ -10,6 +10,7 @@ import LightGlowModes from '@pages/light-glow-modes/LightGlowModes';
 import LightList from '@pages/light-list/LightList';
 import Login from '@pages/login/Login';
 import Register from '@pages/register/Register';
+import Reset from '@pages/reset/Reset';
 import Scenes from '@pages/scenes/Scenes';
 import ScrollText from '@pages/scroll-text/ScrollText';
 import Settings from '@pages/settings/Settings';
@@ -31,6 +32,7 @@ export type RootStackParamList = {
   SoundEffects: any;
   LEDStripsEffects: any;
   Auth: any;
+  Reset: any;
 };
 const routeConfig = [
   {
@@ -92,6 +94,10 @@ const routeConfig = [
   {
     name: 'Auth',
     component: Auth,
+  },
+  {
+    name: 'Reset',
+    component: Reset,
   },
   // {
   //   name: 'TestBLE',

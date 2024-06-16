@@ -18,7 +18,7 @@ const ClientRequest = async () => {
   const axios = new Api({
     headers: { Authorization: `Bearer ${token}` },
     baseURL: __DEV__
-      ? 'https://www.ski-api.gawtec.com/'
+      ? 'http://localhost:3000/'
       : 'https://www.ski-api.gawtec.com/',
   });
   axios.instance.interceptors.response.use(

@@ -1,12 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Image, Text, TouchableOpacity, View, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export type HeaderProps = {
   title: string;
   handlePress: () => void;
+  extra?: ReactNode;
 };
 const Header: FC<HeaderProps> = props => {
-  const { title, handlePress } = props;
+  const { title, handlePress, extra } = props;
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -51,6 +52,7 @@ const Header: FC<HeaderProps> = props => {
       <Text style={{ fontWeight: '600', fontSize: 20, color: 'white' }}>
         {title}
       </Text>
+      {extra}
     </View>
   );
 };

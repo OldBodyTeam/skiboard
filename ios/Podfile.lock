@@ -1168,7 +1168,7 @@ PODS:
     - React-perflogger (= 0.73.8)
   - ReactNativeUiLib (4.1.3):
     - React
-  - RNAudioRecorderPlayer (3.6.7):
+  - RNAudioRecorderPlayer (3.6.8):
     - React-Core
   - RNBootSplash (5.5.3):
     - React-Core
@@ -1182,7 +1182,7 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNLocalize (3.1.0):
+  - RNLocalize (3.2.0):
     - React-Core
   - RNReanimated (3.12.0):
     - glog
@@ -1557,13 +1557,13 @@ SPEC CHECKSUMS:
   React-utils: 4cc2ba652f5df1c8f0461d4ae9e3ee474c1354ea
   ReactCommon: 1da3fc14d904883c46327b3322325eebf60a720a
   ReactNativeUiLib: e23a2b3d196aaaf561694cf76385c1ff3055bdc2
-  RNAudioRecorderPlayer: 9b34adc281800e5b19258f1b91d889b1ef3abdd6
+  RNAudioRecorderPlayer: 93e4f95bcc25c8e2caa1a64134bc929942e76b59
   RNBootSplash: e025d4ee98d942ee6c8b495a6fe66339a6b5f6dd
   RNCAsyncStorage: e31a32913b3b5d8a42621be993a8f51c34073f1f
   RNCMaskedView: 090213d32d8b3bb83a4dcb7d12c18f0152591906
   RNDateTimePicker: 4f3c4dbd4f908be32ec8c93f086e8924bd4a2e07
   RNGestureHandler: 96439cf6543defdde87459e48cd1a3f0e45a008e
-  RNLocalize: e8694475db034bf601e17bd3dfa8986565e769eb
+  RNLocalize: b77875884750cb6a58cd6865863fe2ba2729b72b
   RNReanimated: 6aeb85e1e17364c8069f9ee5661615b4a281bd5c
   RNScreens: 134a7511b12b8eb440b87aac21e36a71295d6024
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a

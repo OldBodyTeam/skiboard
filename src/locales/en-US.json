@@ -162,5 +162,17 @@
     "White Curtain": "White Curtain",
     "Color Wash": "Color Wash",
     "Red-Green-Blue Wash": "Red-Green-Blue Wash",
-    "Yellow-Cyan-Purple Wash": "Yellow-Cyan-Purple Wash"
+    "Yellow-Cyan-Purple Wash": "Yellow-Cyan-Purple Wash",
+
+    "Rest": "Rest",
+    "Email": "Email",
+    "email-placeholder": "Enter Email",
+    "New Password": "New Password",
+    "new-password-placeholder": "Enter New Password",
+    "Confirm New Password": "Confirm New Password",
+    "confirm-password-placeholder": "Enter Confirm New Password",
+    "Change Password": "Change Password",
+    "Login": "Login",
+    "Logout": "Logout",
+    "logout-text": "After logging out, you need to log in again"
 }

@@ -15,6 +15,7 @@ import {
   CreateCollectionDto,
   CreateUserDto,
   LoginUserDto,
+  ModifyPasswordDto,
   RegisterUserDto,
   UpdateCollectionDto,
   UserAvatarDto,
@@ -396,6 +397,29 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     >({
       path: `/api/auth/profile`,
       method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags auth
+   * @name AuthControllerModifyPassword
+   * @request POST:/api/auth/modify-password
+   */
+  authControllerModifyPassword = (data: ModifyPasswordDto, params: RequestParams = {}) =>
+    this.request<
+      {
+        data?: UserEntity;
+        msg?: string;
+        code?: number;
+      },
+      any
+    >({
+      path: `/api/auth/modify-password`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
