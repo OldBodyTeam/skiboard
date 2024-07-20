@@ -175,5 +175,18 @@
     "Change Password": "修改密码",
     "Login": "登录",
     "Logout": "登出",
-    "logout-text": "登出之后，需要重新登录"
+    "logout-text": "登出之后，需要重新登录",
+    "register": "注册",
+    "forget": "忘记密码",
+    "login": "登录",
+    "login-user-label": "用户名/邮箱",
+    "login-user-placeholder": "请输入用户名/邮箱",
+    "login-password-label": "密码",
+    "login-password-placeholder": "请输入密码",
+    "register-user-label": "用户名",
+    "register-email-label": "邮箱",
+    "register-password-label": "密码",
+    "register-user-placeholder": "请输入用户名",
+    "register-email-placeholder": "请输入邮箱",
+    "register-password-placeholder": "请输入密码"
 }

@@ -1,6 +1,5 @@
 import {
   Image,
-  ImageBackground,
   ScrollView,
   StatusBar,
   Text,
@@ -12,7 +11,6 @@ import React, { FC, PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
-import { useRequest } from 'ahooks';
 import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
 type ResetProps = NativeStackScreenProps<RootStackParamList, 'Reset'> &

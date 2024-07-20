@@ -1,4 +1,3 @@
-import { AxiosResponse, ResponseType } from 'axios';
 import { Api } from './Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const retrieveData = async () => {
@@ -14,26 +13,9 @@ export const retrieveData = async () => {
   }
 };
 const ClientRequest = async () => {
-  const token = await retrieveData();
-  const axios = new Api({
-    headers: { Authorization: `Bearer ${token}` },
-    baseURL: __DEV__
-      ? 'http://localhost:3000/'
-      : 'https://www.ski-api.gawtec.com/',
-  });
-  axios.instance.interceptors.response.use(
-    function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    },
-    function (error) {
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
-      return Promise.reject(error);
-    },
-  );
-  return axios;
+  const api = new Api();
+
+  return api;
 };
 
 export { ClientRequest };

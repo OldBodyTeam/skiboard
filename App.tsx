@@ -43,7 +43,7 @@ function App(): React.JSX.Element {
         <RootSiblingParent>
           <NavigationContainer
             onReady={() => {
-              i18next.on('loaded', () => {
+              i18next.then(() => {
                 BootSplash.hide({ fade: true });
               })
             }}>

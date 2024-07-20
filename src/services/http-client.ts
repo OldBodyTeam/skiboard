@@ -11,6 +11,7 @@
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
 import axios from 'axios';
+import { retrieveData } from './client';
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -45,7 +46,36 @@ export enum ContentType {
   UrlEncoded = 'application/x-www-form-urlencoded',
   Text = 'text/plain',
 }
-
+const instance = axios.create({
+  baseURL: __DEV__
+      ? 'http://localhost:3000/'
+      : 'https://www.ski-api.gawtec.com/',
+})
+instance.interceptors.response.use(
+  function (response) {
+    console.log('response --->', response);
+    return response;
+  },
+  function (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+    }
+    console.log(error.config);
+    return Promise.reject(error);
+  },
+);
 export class HttpClient<SecurityDataType = unknown> {
   public instance: AxiosInstance;
   private securityData: SecurityDataType | null = null;
@@ -54,9 +84,9 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || '' });
+    this.instance = instance;
     this.secure = secure;
-    this.format = format;
+    // this.format = format;
     this.securityWorker = securityWorker;
   }
 
@@ -110,6 +140,7 @@ export class HttpClient<SecurityDataType = unknown> {
     body,
     ...params
   }: FullRequestParams): Promise<AxiosResponse<T>> => {
+    const token = await retrieveData();
     const secureParams =
       ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
@@ -131,9 +162,10 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(requestParams.headers || {}),
         ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+        Authorization: `Bearer ${token}`
       },
       params: query,
-      responseType: responseFormat,
+      // responseType: responseFormat,
       data: body,
       url: path,
     });

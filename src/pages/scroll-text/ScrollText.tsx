@@ -18,21 +18,33 @@ const ScrollText = (props: ScrollTextProps) => {
   const { navigation } = props;
   const { bleWrite } = useBLE();
   const handleNavigation = async (event: WebViewMessageEvent) => {
+    console.log('*************', event.nativeEvent.data);
     try {
       const data = JSON.parse(event.nativeEvent.data) as {
         type: 'chooseText' | 'back';
         [p: string]: any;
       };
+      console.log('*************', event.nativeEvent.data);
       switch (data.type) {
         case 'chooseText':
-          const text = (data.str as string).split('');
-          for await (let str of text) {
-            await bleWrite(
-              BLEConfig.scrollText[
-                str.toLowerCase() as keyof typeof BLEConfig.scrollText
-              ],
-            );
-          }
+          const text = data.str as string[];
+          console.log('*************', text);
+          // for await (let str of text) {
+          //   await bleWrite(
+          //     BLEConfig.scrollText[
+          //       str.toLowerCase() as keyof typeof BLEConfig.scrollText
+          //     ],
+          //   );
+          // }
+          console.log(
+            '57 e0 2b e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef d0 ff c1 cf b2 be A2 AE 93 9D 83 8D 7C 74 6C 64 5B 55 4b  45 3A 36 2A 26 19 17 08 61'.trim(),
+          );
+          await bleWrite(
+            '57 e0 2b e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef d0 ff c1 cf b2 be A2 AE 93 9D 83 8D 7C 74 6C 64 5B 55 4b  45 3A 36 2A 26 19 17 08 61'.replaceAll(
+              ' ',
+              '',
+            ),
+          );
           return;
         case 'back':
         default:
