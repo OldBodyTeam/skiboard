@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
-import Toast from 'react-native-root-toast';
 import { useToastMessage } from '@hooks/useAxiosError';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
   PropsWithChildren<{ name?: string }>;
