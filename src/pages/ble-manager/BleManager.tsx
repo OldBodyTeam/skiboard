@@ -15,6 +15,7 @@ import {
   TouchableHighlight,
   Image,
   Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import BleManager, {
   BleDisconnectPeripheralEvent,
@@ -390,23 +391,24 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         />
       </View>
       {userOpt === BleDeviceStatus.isScanning ? (
-        <TouchableHighlight
-          onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}
-          style={{
-            alignItems: 'center',
-            flex: 1,
-            marginHorizontal: 83 / 2,
-            position: 'absolute',
-            left: 0,
-            bottom: 175 / 2,
-          }}>
-          <View>
+        <TouchableWithoutFeedback
+          onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginHorizontal: 83 / 2,
+              position: 'absolute',
+              left: 0,
+              bottom: 175 / 2,
+            }}>
             {lan === 'en' ? (
               <LottieView
                 source={require('../../assets/lottie/reboten.json')}
                 autoPlay
                 style={{
-                  width: Dimensions.get('window').width - 38,
+                  width: Dimensions.get('window').width - 83,
                   height: 52,
                 }}
                 loop={false}
@@ -416,7 +418,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
                 source={require('../../assets/lottie/rebotzh.json')}
                 autoPlay
                 style={{
-                  width: Dimensions.get('window').width - 38,
+                  width: Dimensions.get('window').width - 83,
                   height: 52,
                 }}
                 loop={false}
@@ -448,7 +450,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
               </Text> */}
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       ) : (
         <View
           style={{

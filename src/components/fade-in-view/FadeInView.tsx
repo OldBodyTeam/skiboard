@@ -12,13 +12,13 @@ const FadeInView: FC<PropsWithChildren> = ({ children }) => {
   const opacity = useSharedValue(0);
   useFocusEffect(() => {
     opacity.value = withTiming(1, {
-      duration: 500,
+      duration: 800,
       easing: Easing.inOut(Easing.ease),
     });
 
     return () => {
       opacity.value = withTiming(0, {
-        duration: 500,
+        duration: 800,
         easing: Easing.inOut(Easing.ease),
       });
     };
@@ -46,23 +46,23 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
   },
 });
-const SpringInView: FC<PropsWithChildren<{ height: number }>> = ({
-  children,
-  height,
-}) => {
-  const translateY = useSharedValue(height);
+const SpringInView: FC<
+  PropsWithChildren<{ height?: number; duration?: number; reverse?: boolean }>
+> = ({ children, height, reverse, duration = 800 }) => {
+  const h = (reverse ? 1 : -1) * (height ?? -Dimensions.get('window').height);
+  const translateY = useSharedValue(h);
 
   useFocusEffect(() => {
     // Animate the component into view
     translateY.value = withTiming(0, {
-      duration: 800,
+      duration: duration,
       easing: Easing.inOut(Easing.ease),
     });
 
     return () => {
       // Animate the component out of view
-      translateY.value = withTiming(height, {
-        duration: 800,
+      translateY.value = withTiming(h, {
+        duration: duration,
         easing: Easing.inOut(Easing.ease),
       });
     };
@@ -80,23 +80,23 @@ const SpringInView: FC<PropsWithChildren<{ height: number }>> = ({
     </Animated.View>
   );
 };
-const SpringInViewX: FC<PropsWithChildren<{ width: number }>> = ({
-  children,
-  width,
-}) => {
-  const translateX = useSharedValue(width);
+const SpringInViewX: FC<
+  PropsWithChildren<{ width?: number; duration?: number; reverse?: boolean }>
+> = ({ children, width, reverse, duration = 800 }) => {
+  const w = (reverse ? -1 : 1) * (width ?? -Dimensions.get('window').width);
+  const translateX = useSharedValue(w);
 
   useFocusEffect(() => {
     // Animate the component into view
-    translateX.value = withTiming(0, {
-      duration: 800,
+    translateX.value = withTiming(-0, {
+      duration: duration,
       easing: Easing.inOut(Easing.ease),
     });
 
     return () => {
       // Animate the component out of view
-      translateX.value = withTiming(width, {
-        duration: 800,
+      translateX.value = withTiming(w, {
+        duration: duration,
         easing: Easing.inOut(Easing.ease),
       });
     };
