@@ -6,21 +6,24 @@ import {
 import { TabConfig, TabParamList } from './tab-config';
 import CustomTabBar from '@components/custom-tab-bar/CustomTabBar';
 import { RootStackParamList } from 'route.config';
-
 const Tab = createBottomTabNavigator<TabParamList>();
 type HomeProps = BottomTabScreenProps<RootStackParamList, 'Home'> &
   React.PropsWithChildren<{ name?: string }>;
+
 const Home = (_props: HomeProps) => {
   return (
     <Tab.Navigator
       tabBar={CustomTabBar}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        lazy: false,
+      }}
       initialRouteName="DesignScreen">
       {TabConfig.map(item => {
         return (
           <Tab.Screen
             name={item.name}
-            component={item.component}
+            component={item.component as any}
             key={item.name}
           />
         );

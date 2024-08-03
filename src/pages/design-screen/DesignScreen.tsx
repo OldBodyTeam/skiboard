@@ -21,6 +21,7 @@ import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { useTranslation } from 'react-i18next';
+import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -38,290 +39,296 @@ const DesignScreen = (props: DesignScreenProps) => {
   };
   const { t } = useTranslation();
   return (
-    <ImageBackground
-      style={{
-        flex: 1,
-        backgroundColor: '#131416',
-      }}
-      source={require('../../assets/bg-home.png')}>
-      <StatusBar />
-      <ScrollView>
-        <CoverImage
-          type="design"
-          marginTop={92}
-          handleNavigationPerson={() => navigation.push('Settings')}
-          handleNavigationDevice={() => navigation.push('DeviceList')}
-          bottom={32}>
-          <View
-            style={{
-              marginTop: 100,
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginHorizontal: 25,
-              height: 80,
-            }}>
-            <Image
-              source={{ uri: userInfo?.avatar }}
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 80,
-                marginRight: 15,
-              }}
-            />
-            <View
-              style={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-              }}>
-              <AutoSizeText
+    <FadeInView>
+      <ImageBackground
+        style={{
+          flex: 1,
+          backgroundColor: '#131416',
+        }}
+        source={require('../../assets/bg-home.png')}>
+        <StatusBar />
+        <ScrollView>
+          <SpringInView height={-300}>
+            <CoverImage
+              type="design"
+              marginTop={92}
+              handleNavigationPerson={() => navigation.push('Settings')}
+              handleNavigationDevice={() => navigation.push('DeviceList')}
+              bottom={32}>
+              <View
                 style={{
-                  ...StyleSheet.flatten(style.welcomeText),
-                  color: 'rgba(18,17,21,0.5)',
-                }}
-                fontSize={32}
-                numberOfLines={1}
-                mode={ResizeTextMode.max_lines}>
-                <Text
+                  marginTop: 100,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginHorizontal: 25,
+                  height: 80,
+                }}>
+                <Image
+                  source={{ uri: userInfo?.avatar }}
                   style={{
-                    ...StyleSheet.flatten(style.welcomeText),
-                    color: '#121115',
-                  }}>
-                  Hi {userInfo?.username},
-                </Text>
-                <Text
+                    width: 80,
+                    height: 80,
+                    borderRadius: 80,
+                    marginRight: 15,
+                  }}
+                />
+                <View
                   style={{
-                    ...StyleSheet.flatten(style.welcomeText),
-                    color: 'rgba(18,17,21,0.5)',
+                    display: 'flex',
+                    flex: 1,
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
                   }}>
-                  &nbsp;&nbsp;nice to
-                </Text>
-              </AutoSizeText>
-              <AutoSizeText
-                style={{
-                  ...StyleSheet.flatten(style.welcomeText),
-                  color: 'rgba(18,17,21,0.5)',
-                }}
-                fontSize={32}
-                numberOfLines={1}
-                mode={ResizeTextMode.max_lines}>
-                see you!
-              </AutoSizeText>
-              {/* <Text
+                  <AutoSizeText
+                    style={{
+                      ...StyleSheet.flatten(style.welcomeText),
+                      color: 'rgba(18,17,21,0.5)',
+                    }}
+                    fontSize={32}
+                    numberOfLines={1}
+                    mode={ResizeTextMode.max_lines}>
+                    <Text
+                      style={{
+                        ...StyleSheet.flatten(style.welcomeText),
+                        color: '#121115',
+                      }}>
+                      Hi {userInfo?.username},
+                    </Text>
+                    <Text
+                      style={{
+                        ...StyleSheet.flatten(style.welcomeText),
+                        color: 'rgba(18,17,21,0.5)',
+                      }}>
+                      &nbsp;&nbsp;nice to
+                    </Text>
+                  </AutoSizeText>
+                  <AutoSizeText
+                    style={{
+                      ...StyleSheet.flatten(style.welcomeText),
+                      color: 'rgba(18,17,21,0.5)',
+                    }}
+                    fontSize={32}
+                    numberOfLines={1}
+                    mode={ResizeTextMode.max_lines}>
+                    see you!
+                  </AutoSizeText>
+                  {/* <Text
                 style={{
                   ...StyleSheet.flatten(style.welcomeText),
                   color: 'rgba(18,17,21,0.5)',
                 }}>
                 see you!
               </Text> */}
-            </View>
-          </View>
-        </CoverImage>
-        <View
-          style={{
-            height: 193 / 2,
-            borderRadius: 77 / 2,
-            backgroundColor: 'rgba(52, 53, 54, 0.5)',
-            // backgroundColor: 'red',
-            display: 'flex',
-            flexDirection: 'row',
-            overflow: 'hidden',
-            marginTop: 28,
-            marginHorizontal: 5,
-          }}>
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={async () => {
-              await bleWrite(BLEConfig.designScreen.closeLight);
-              setSwitchStatus('off');
-            }}>
+                </View>
+              </View>
+            </CoverImage>
+          </SpringInView>
+          <SpringInView height={500}>
             <View
               style={{
-                flex: 1,
+                height: 193 / 2,
                 borderRadius: 77 / 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                ...(switchStatus === 'off'
-                  ? { backgroundColor: 'white' }
-                  : { backgroundColor: 'rgba(118,118,118,0.1)' }),
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  ...(switchStatus === 'off'
-                    ? { color: 'black', fontWeight: '600' }
-                    : { color: '#ffffff' }),
-                }}>
-                {switchStatus === 'off' ? 'Auto-Brake Off' : 'Off'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={async () => {
-              await bleWrite(BLEConfig.designScreen.openLight);
-              setSwitchStatus('on');
-            }}>
-            <View
-              style={{
-                flex: 1,
-                marginLeft: 5,
-                borderRadius: 77 / 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                ...(switchStatus === 'on'
-                  ? { backgroundColor: 'white' }
-                  : { backgroundColor: 'rgba(118,118,118,0.1)' }),
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  ...(switchStatus === 'on'
-                    ? { color: 'black', fontWeight: '600' }
-                    : { color: '#ffffff' }),
-                }}>
-                {switchStatus === 'on' ? 'Auto-Brake On' : 'On'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            height: 191 / 2,
-            marginTop: 5,
-            marginHorizontal: 5,
-          }}>
-          <TouchableOpacity
-            style={{
-              height: '100%',
-              overflow: 'hidden',
-              borderRadius: 30,
-              flex: 1,
-            }}
-            onPress={() => navigation.push('LightList')}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                backgroundColor: 'rgba(52, 53, 54, 0.5)',
+                // backgroundColor: 'red',
                 display: 'flex',
                 flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
+                overflow: 'hidden',
+                marginTop: 28,
+                marginHorizontal: 5,
               }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#ffffff',
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={async () => {
+                  await bleWrite(BLEConfig.designScreen.closeLight);
+                  setSwitchStatus('off');
                 }}>
-                {t('effect')}
-              </Text>
-              <Image
-                source={require('../../assets/design/love.png')}
-                style={{ width: 122 / 2, height: 111 / 2, marginLeft: 16 }}
-              />
+                <View
+                  style={{
+                    flex: 1,
+                    borderRadius: 77 / 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...(switchStatus === 'off'
+                      ? { backgroundColor: 'white' }
+                      : { backgroundColor: 'rgba(118,118,118,0.1)' }),
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      ...(switchStatus === 'off'
+                        ? { color: 'black', fontWeight: '600' }
+                        : { color: '#ffffff' }),
+                    }}>
+                    {switchStatus === 'off' ? 'Auto-Brake Off' : 'Off'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={async () => {
+                  await bleWrite(BLEConfig.designScreen.openLight);
+                  setSwitchStatus('on');
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: 5,
+                    borderRadius: 77 / 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    ...(switchStatus === 'on'
+                      ? { backgroundColor: 'white' }
+                      : { backgroundColor: 'rgba(118,118,118,0.1)' }),
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      ...(switchStatus === 'on'
+                        ? { color: 'black', fontWeight: '600' }
+                        : { color: '#ffffff' }),
+                    }}>
+                    {switchStatus === 'on' ? 'Auto-Brake On' : 'On'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.push('ScrollText')}
-            style={{
-              width: '33.149171%',
-              height: '100%',
-              overflow: 'hidden',
-              borderRadius: 30,
-              marginLeft: 3,
-            }}>
             <View
               style={{
-                flex: 1,
-                backgroundColor: 'rgba(52, 53, 54, 0.3)',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                flexDirection: 'row',
+                height: 191 / 2,
+                marginTop: 5,
+                marginHorizontal: 5,
               }}>
-              <Text
+              <TouchableOpacity
                 style={{
-                  fontSize: 14,
-                  color: '#ffffff',
+                  height: '100%',
+                  overflow: 'hidden',
+                  borderRadius: 30,
+                  flex: 1,
+                }}
+                onPress={() => navigation.push('LightList')}>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#ffffff',
+                    }}>
+                    {t('effect')}
+                  </Text>
+                  <Image
+                    source={require('../../assets/design/love.png')}
+                    style={{ width: 122 / 2, height: 111 / 2, marginLeft: 16 }}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.push('ScrollText')}
+                style={{
+                  width: '33.149171%',
+                  height: '100%',
+                  overflow: 'hidden',
+                  borderRadius: 30,
+                  marginLeft: 3,
                 }}>
-                {t('scroll-text')}
-              </Text>
-              <Image
-                source={require('../../assets/design/scroll-text.png')}
-                style={{ width: 39, height: 30, marginTop: 12.5 }}
-              />
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#ffffff',
+                    }}>
+                    {t('scroll-text')}
+                  </Text>
+                  <Image
+                    source={require('../../assets/design/scroll-text.png')}
+                    style={{ width: 39, height: 30, marginTop: 12.5 }}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            marginTop: 5,
-            marginHorizontal: 5,
-          }}>
-          <TouchableOpacity style={{ flex: 1 }} onPress={handleCollection}>
             <View
               style={{
-                height: 444 / 2,
-                width: '100%',
-                backgroundColor: 'rgba(52, 53, 54, 0.3)',
-                borderRadius: 30,
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                flexDirection: 'row',
+                marginTop: 5,
+                marginHorizontal: 5,
               }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#ffffff',
-                  marginBottom: 43 / 2,
-                }}>
-                {t('custom-design')}
-              </Text>
-              <Image
-                source={require('../../assets/design/shan-dian.png')}
-                style={{ width: 258 / 2, height: 228 / 2 }}
-              />
+              <TouchableOpacity style={{ flex: 1 }} onPress={handleCollection}>
+                <View
+                  style={{
+                    height: 444 / 2,
+                    width: '100%',
+                    backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                    borderRadius: 30,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#ffffff',
+                      marginBottom: 43 / 2,
+                    }}>
+                    {t('custom-design')}
+                  </Text>
+                  <Image
+                    source={require('../../assets/design/shan-dian.png')}
+                    style={{ width: 258 / 2, height: 228 / 2 }}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, marginLeft: 5 }}
+                onPress={() => navigation.push('CreativePatterns')}>
+                <View
+                  style={{
+                    height: 444 / 2,
+                    width: '100%',
+                    backgroundColor: 'rgba(52, 53, 54, 0.3)',
+                    borderRadius: 30,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#ffffff',
+                      marginBottom: 68 / 2,
+                    }}>
+                    {t('creative-patterns')}
+                  </Text>
+                  <Image
+                    source={require('../../assets/design/kun.png')}
+                    style={{ width: 178 / 2, height: 178 / 2 }}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flex: 1, marginLeft: 5 }}
-            onPress={() => navigation.push('CreativePatterns')}>
-            <View
-              style={{
-                height: 444 / 2,
-                width: '100%',
-                backgroundColor: 'rgba(52, 53, 54, 0.3)',
-                borderRadius: 30,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#ffffff',
-                  marginBottom: 68 / 2,
-                }}>
-                {t('creative-patterns')}
-              </Text>
-              <Image
-                source={require('../../assets/design/kun.png')}
-                style={{ width: 178 / 2, height: 178 / 2 }}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </ImageBackground>
+          </SpringInView>
+        </ScrollView>
+      </ImageBackground>
+    </FadeInView>
   );
 };
 const style = StyleSheet.create({

@@ -1,7 +1,5 @@
 import {
-  Image,
   ScrollView,
-  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -13,10 +11,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
-type ResetProps = NativeStackScreenProps<RootStackParamList, 'Reset'> &
-  PropsWithChildren<{ name?: string }>;
+import { ChangeStatus } from '@pages/entry/enums';
+type ResetProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Register' | 'Reset' | 'Login'
+> &
+  PropsWithChildren<{ changeStatus: (status: ChangeStatus) => void }>;
 const Reset: FC<ResetProps> = props => {
-  const { navigation } = props;
+  const { navigation, changeStatus } = props;
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [passwordOne, setPasswordOne] = useState('');
@@ -36,48 +38,6 @@ const Reset: FC<ResetProps> = props => {
   };
   return (
     <View style={{ flex: 1, backgroundColor: '#131416' }}>
-      <StatusBar />
-      <View
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: 127.5,
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 87.5,
-        }}>
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -1,
-            width: 215,
-            height: 127.5,
-          }}
-          source={require('../../assets/register/blue.png')}
-        />
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -2,
-            width: 290,
-            height: 107.5,
-          }}
-          source={require('../../assets/register/yellow.png')}
-        />
-        <Text
-          style={{
-            color: '#FDFDFD',
-            fontWeight: 'bold',
-            fontSize: 28,
-            marginLeft: 28,
-          }}>
-          {t('Rest')}
-        </Text>
-      </View>
       <ScrollView style={{ flex: 1, paddingHorizontal: 28 }}>
         <View style={{ marginBottom: 24 }}>
           <View style={{ marginBottom: 7.5 }}>
@@ -162,7 +122,7 @@ const Reset: FC<ResetProps> = props => {
         </View>
         <View style={{ marginTop: 12 }}>
           <TouchableOpacity
-            onPress={() => navigation.push('Login')}
+            onPress={() => changeStatus(ChangeStatus.register2login)}
             style={{
               height: 60,
               flex: 1,

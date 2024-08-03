@@ -6,8 +6,6 @@ import React, { FC, PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
-  StatusBar,
-  Image,
   Text,
   ScrollView,
   TextInput,
@@ -17,11 +15,15 @@ import {
 import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 import { useToastMessage } from '@hooks/useAxiosError';
-type LoginProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
-  PropsWithChildren<{ name?: string }>;
+import { ChangeStatus } from '@pages/entry/enums';
+type LoginProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Register' | 'Reset' | 'Login'
+> &
+  PropsWithChildren<{ changeStatus: (status: ChangeStatus) => void }>;
 
 const Login: FC<LoginProps> = props => {
-  const { navigation } = props;
+  const { changeStatus, navigation } = props;
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [passwordOne, setPasswordOne] = useState('');
@@ -50,48 +52,6 @@ const Login: FC<LoginProps> = props => {
   };
   return (
     <View style={{ flex: 1, backgroundColor: '#131416' }}>
-      <StatusBar />
-      <View
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: 127.5,
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 87.5,
-        }}>
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -1,
-            width: 215,
-            height: 127.5,
-          }}
-          source={require('../../assets/login/yellow.png')}
-        />
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -2,
-            width: 290,
-            height: 107.5,
-          }}
-          source={require('../../assets/login/blue.png')}
-        />
-        <Text
-          style={{
-            color: 'black',
-            fontWeight: 'bold',
-            fontSize: 28,
-            marginLeft: 28,
-          }}>
-          {t('Login')}
-        </Text>
-      </View>
       <ScrollView style={{ flex: 1, paddingHorizontal: 28 }}>
         <View style={{ marginBottom: 24 }}>
           <View style={{ marginBottom: 7.5 }}>
@@ -154,7 +114,7 @@ const Login: FC<LoginProps> = props => {
         </View>
         <View style={{ marginTop: 12 }}>
           <TouchableOpacity
-            onPress={() => navigation.push('Register')}
+            onPress={() => changeStatus(ChangeStatus.login2register)}
             style={{
               height: 60,
               flex: 1,
@@ -171,7 +131,8 @@ const Login: FC<LoginProps> = props => {
           </TouchableOpacity>
         </View>
 
-        <TouchableWithoutFeedback onPress={() => navigation.push('Reset')}>
+        <TouchableWithoutFeedback
+          onPress={() => changeStatus(ChangeStatus.login2reset)}>
           <View
             style={{
               justifyContent: 'center',

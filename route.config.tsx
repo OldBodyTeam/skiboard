@@ -8,7 +8,7 @@ import Home from '@pages/home/Home';
 import LEDStripsEffects from '@pages/led-strips-effects/LEDStripsEffects';
 import LightGlowModes from '@pages/light-glow-modes/LightGlowModes';
 import LightList from '@pages/light-list/LightList';
-import Login from '@pages/login/Login';
+import Login from '@pages/entry/Entry';
 import Register from '@pages/register/Register';
 import Reset from '@pages/reset/Reset';
 import Scenes from '@pages/scenes/Scenes';

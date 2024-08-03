@@ -1,12 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
-import { isAxiosError } from 'axios';
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
-  StatusBar,
-  Image,
   Text,
   ScrollView,
   TextInput,
@@ -14,10 +11,14 @@ import {
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import { useToastMessage } from '@hooks/useAxiosError';
-type RegisterProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
-  PropsWithChildren<{ name?: string }>;
+import { ChangeStatus } from '@pages/entry/enums';
+type RegisterProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Register' | 'Reset' | 'Login'
+> &
+  PropsWithChildren<{ changeStatus: (status: ChangeStatus) => void }>;
 const Register: FC<RegisterProps> = props => {
-  const { navigation } = props;
+  const { navigation, changeStatus } = props;
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -39,48 +40,6 @@ const Register: FC<RegisterProps> = props => {
   };
   return (
     <View style={{ flex: 1, backgroundColor: '#131416' }}>
-      <StatusBar />
-      <View
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: 127.5,
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 87.5,
-        }}>
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -1,
-            width: 215,
-            height: 127.5,
-          }}
-          source={require('../../assets/register/blue.png')}
-        />
-        <Image
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            zIndex: -2,
-            width: 290,
-            height: 107.5,
-          }}
-          source={require('../../assets/register/yellow.png')}
-        />
-        <Text
-          style={{
-            color: '#FDFDFD',
-            fontWeight: 'bold',
-            fontSize: 28,
-            marginLeft: 28,
-          }}>
-          {t('register')}
-        </Text>
-      </View>
       <ScrollView style={{ flex: 1, paddingHorizontal: 28 }}>
         <View style={{ marginBottom: 24 }}>
           <View style={{ marginBottom: 7.5 }}>
@@ -166,7 +125,7 @@ const Register: FC<RegisterProps> = props => {
         </View>
         <View style={{ marginTop: 12 }}>
           <TouchableOpacity
-            onPress={() => navigation.push('Login')}
+            onPress={() => changeStatus(ChangeStatus.register2login)}
             style={{
               height: 60,
               flex: 1,

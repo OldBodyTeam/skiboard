@@ -14,6 +14,7 @@ import {
   PermissionsAndroid,
   TouchableHighlight,
   Image,
+  Dimensions,
 } from 'react-native';
 import BleManager, {
   BleDisconnectPeripheralEvent,
@@ -25,15 +26,16 @@ import BleManager, {
   Peripheral,
 } from 'react-native-ble-manager';
 import Video from 'react-native-video';
-import { useMemoizedFn } from 'ahooks';
+import { useMemoizedFn, useMount } from 'ahooks';
 import { useRecoilState } from 'recoil';
 import videoMp4 from './connected.mp4';
 import { deviceInfoState } from '@stores/device/device.atom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
-import { useTranslation } from 'react-i18next';
+import { getI18n, useTranslation } from 'react-i18next';
 import { Logger } from '@utils/log';
 import Toast from 'react-native-root-toast';
+import LottieView from 'lottie-react-native';
 declare module 'react-native-ble-manager' {
   interface Peripheral {
     connected?: boolean;
@@ -366,10 +368,27 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   // }, [deviceInfo?.connected, navigation]);
 
   const { t } = useTranslation();
-
+  const [lan, setLanguage] = useState<'zh' | 'en'>('zh');
+  useMount(() => {
+    const { language } = getI18n();
+    setLanguage(language as 'zh' | 'en');
+  });
   return (
     <View style={styles.body}>
       <StatusBar />
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 156,
+        }}>
+        <LottieView
+          source={require('../../assets/lottie/logo.json')}
+          autoPlay
+          loop
+          style={{ width: 375, height: 370 }}
+        />
+      </View>
       {userOpt === BleDeviceStatus.isScanning ? (
         <TouchableHighlight
           onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}
@@ -382,34 +401,51 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
             bottom: 175 / 2,
           }}>
           <View>
-            <View
-              style={{
-                backgroundColor: 'rgba(253, 222, 49, 1)',
-                height: 52,
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderRadius: 104,
-                flexDirection: 'row',
-                paddingHorizontal: 19,
-              }}>
-              <Image
-                source={require('../../assets/robot.png')}
-                style={{ width: 57 / 2, height: 23 }}
+            {lan === 'en' ? (
+              <LottieView
+                source={require('../../assets/lottie/reboten.json')}
+                autoPlay
+                style={{
+                  width: Dimensions.get('window').width - 38,
+                  height: 52,
+                }}
+                loop={false}
               />
-              <Text style={{ color: '#131416', fontSize: 13 }}>
-                {t('ble-intro')}
-              </Text>
-            </View>
+            ) : (
+              <LottieView
+                source={require('../../assets/lottie/rebotzh.json')}
+                autoPlay
+                style={{
+                  width: Dimensions.get('window').width - 38,
+                  height: 52,
+                }}
+                loop={false}
+              />
+            )}
             <View
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: 155 / 2,
               }}>
-              <Text style={{ color: '#FDFDFD', fontSize: 16 }}>
+              {lan === 'en' ? (
+                <LottieView
+                  source={require('../../assets/lottie/search.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 89, height: 19 }}
+                />
+              ) : (
+                <LottieView
+                  source={require('../../assets/lottie/zhsearch.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 89, height: 19 }}
+                />
+              )}
+              {/* <Text style={{ color: '#FDFDFD', fontSize: 16 }}>
                 {t('ble-search')}…
-              </Text>
+              </Text> */}
             </View>
           </View>
         </TouchableHighlight>

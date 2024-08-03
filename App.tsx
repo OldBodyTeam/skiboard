@@ -45,18 +45,24 @@ function App(): React.JSX.Element {
             onReady={() => {
               i18next.then(() => {
                 BootSplash.hide({ fade: true });
-              })
+              });
             }}>
             <Stack.Navigator
-              screenOptions={{ headerShown: false }}
-              initialRouteName="Auth">
+              screenOptions={{
+                headerShown: false,
+              }}
+              initialRouteName="Home">
               {routeConfig.map(item => (
                 <Stack.Screen
                   name={item.name}
                   component={item.component as FunctionComponent}
                   key={item.name}
                   options={
-                    item.name === 'Home' ? { gestureEnabled: false } : {}
+                    item.name === 'Home'
+                      ? {
+                          gestureEnabled: false,
+                        }
+                      : {}
                   }
                 />
               ))}
