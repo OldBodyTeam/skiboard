@@ -1,9 +1,11 @@
+import { getHex } from '@utils/hex';
+
 const led = {
-  '0': '57ce020061',
-  '1': '57ce020161',
-  '2': '57ce020261',
-  '3': '57ce020361',
-  '4': '57ce020461',
+  '0': '57aa020061',
+  '1': `57aa02${getHex(20)}61`,
+  '2': `57aa02${getHex(40)}61`,
+  '3': `57aa02${getHex(60)}61`,
+  '4': `57aa02${getHex(80)}61`,
   reverseRight: '57ce020661',
   reverseLeft: '57ce020561',
   Marquee: '57ce020761',

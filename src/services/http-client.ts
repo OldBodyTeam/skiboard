@@ -176,6 +176,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ) {
       body = JSON.stringify(body);
     }
+    console.log(`@@@@@@@@@@@@`)
 
     return this.instance.request({
       ...requestParams,

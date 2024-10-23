@@ -1,9 +1,11 @@
+import { getHex } from '@utils/hex';
+
 const glow = {
-  '0': '57de020061',
-  '1': '57de020161',
-  '2': '57de020261',
-  '3': '57de020361',
-  '4': '57de020461',
+  '0': '57aa020061',
+  '1': `57aa02${getHex(20)}61`,
+  '2': `57aa02${getHex(40)}61`,
+  '3': `57aa02${getHex(60)}61`,
+  '4': `57aa02${getHex(80)}61`,
   reverseRight: '57de020661',
   reverseLeft: '57de020561',
   Marquee: '57de020761',

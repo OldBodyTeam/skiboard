@@ -15,6 +15,8 @@ import Scenes from '@pages/scenes/Scenes';
 import ScrollText from '@pages/scroll-text/ScrollText';
 import Settings from '@pages/settings/Settings';
 import SoundEffects from '@pages/sound-effects/SoundEffects';
+import ScrollTextNew from '@pages/scroll-text/ScrollText.new';
+import LightListNew from '@pages/light-list/LightListNew';
 // import TestBLE from '@pages/test-ble/TestBLE';
 export type RootStackParamList = {
   Login: any;
@@ -26,6 +28,8 @@ export type RootStackParamList = {
   EditLight: any;
   LightList: any;
   ScrollText: any;
+  CreativePatterns: any;
+  ScrollTextNew: any;
   Scenes: any;
   Settings: any;
   LightGlowModes: any;
@@ -65,11 +69,19 @@ const routeConfig = [
   },
   {
     name: 'LightList',
+    component: LightListNew,
+  },
+  {
+    name: 'LightListNew',
     component: LightList,
   },
   {
-    name: 'ScrollText',
+    name: 'ScrollTextNew',
     component: ScrollText,
+  },
+  {
+    name: 'ScrollText',
+    component: ScrollTextNew,
   },
   {
     name: 'Scenes',

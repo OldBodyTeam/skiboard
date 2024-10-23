@@ -3,6 +3,7 @@ import PickerModal, {
 } from '@components/picker-modal/PickerModal';
 import useBLE from '@hooks/useBLE';
 import { TIME } from '@pages/music-screen/config';
+import { getHex } from '@utils/hex';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable, Image } from 'react-native';
@@ -32,11 +33,11 @@ const PickTime: FC<PickTimeProps> = props => {
      * 上午 57ab03082461
      * 下午 57ac03144561
      */
-    bleWrite(
-      `57${time === TIME.AM ? 'ab' : 'ac'}03${
-        currentTime[0] < 10 ? '0' + currentTime[0] : currentTime[0]
-      }${currentTime[1]}61`,
-    );
+    //57 ae 05 01 01 00 80 61
+    // 57 ae 05 0E 0E 01 80 61
+    time === TIME.AM
+      ? bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}008061`)
+      : bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}018061`);
   };
   const { t } = useTranslation();
   return (

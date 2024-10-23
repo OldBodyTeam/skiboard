@@ -65,12 +65,13 @@ const useBLE = () => {
   if (!deviceId || !deviceCharacteristicUUID || !deviceServiceUUID) {
     Toast.show('当前无法连接蓝牙，请重试');
   }
-  return __DEV__ || !deviceId || !deviceCharacteristicUUID || !deviceServiceUUID
+  return __DEV__
     ? {
         getBLEBatteryPower: () => Promise.resolve('70'),
         bleWrite: () => Promise.resolve({}),
         checkBLEConnectStatus: () => Promise.resolve({}),
       }
     : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
+  // return { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
 };
 export default useBLE;

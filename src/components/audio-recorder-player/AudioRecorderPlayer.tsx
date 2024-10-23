@@ -29,6 +29,9 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import LottieView from 'lottie-react-native';
+import { useThrottleFn } from 'ahooks';
+import useBLE from '@hooks/useBLE';
+import { getHex } from '@utils/hex';
 // import { Svg, Path, Rect } from 'react-native-svg';
 // import { useScreenSize } from '@hooks/useScreenSize';
 // import Wave from './Wave';
@@ -58,6 +61,22 @@ const AudioRecorderPlayerWithWave = () => {
     audioRecorderPlayer.current.setSubscriptionDuration(1);
     onStartRecord();
   }, []);
+  const { bleWrite } = useBLE();
+  const { run } = useThrottleFn(
+    async volumn => {
+      let size = -volumn;
+      let data = getHex(size);
+      if (size >= 40 && size < 50) {
+        data = `0000${getHex(size)}`;
+      } else if (size >= 50 && size < 60) {
+        data = `00${getHex(size)}00`;
+      } else {
+        data = `${getHex(size)}0000`;
+      }
+      await bleWrite(`57e204${data}61`);
+    },
+    { wait: 300 },
+  );
   const onStartRecord = async (): Promise<void> => {
     if (Platform.OS === 'android') {
       try {
@@ -105,6 +124,9 @@ const AudioRecorderPlayerWithWave = () => {
     audioRecorderPlayer.current.addRecordBackListener((e: RecordBackType) => {
       const xAxis = Math.floor(e.currentPosition / 1000);
       setIsplay((e.currentMetering ?? -60) > -40);
+      if ((e.currentMetering ?? -60) > -40) {
+        run(e.currentMetering);
+      }
       setAudioState(prev => {
         return {
           ...prev,

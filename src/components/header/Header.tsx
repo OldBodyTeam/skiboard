@@ -14,24 +14,37 @@ const Header: FC<HeaderProps> = props => {
       style={{
         height: 74 + (Platform.OS === 'android' ? insets.top : 0),
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: extra ? 'space-between' : 'center',
         alignItems: 'center',
         position: 'relative',
         width: '100%',
+        flexDirection: 'row',
+        paddingHorizontal: 16,
       }}>
       <View
-        style={{
-          backgroundColor: 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          position: 'absolute',
-          left: 0,
-          height: '100%',
-          top: 0,
-          paddingHorizontal: 16,
-        }}>
+        style={
+          extra
+            ? {
+                backgroundColor: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                height: '100%',
+              }
+            : {
+                backgroundColor: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                position: 'absolute',
+                left: 0,
+                height: '100%',
+                top: 0,
+                paddingHorizontal: 16,
+              }
+        }>
         <TouchableOpacity
           style={{
             width: 41,

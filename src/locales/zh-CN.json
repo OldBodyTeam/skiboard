@@ -188,5 +188,10 @@
     "register-password-label": "密码",
     "register-user-placeholder": "请输入用户名",
     "register-email-placeholder": "请输入邮箱",
-    "register-password-placeholder": "请输入密码"
+    "register-password-placeholder": "请输入密码",
+    "scroll-text-generate": "生成",
+    "scroll-text-placeholder": "请输入文字（仅限英文）",
+    "edit": "编辑",
+    "save": "保存",
+    "preview": "预览"
 }

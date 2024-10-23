@@ -2,59 +2,102 @@ import Header from '@components/header/Header';
 import DrawItem from '@pages/draw/DrawItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { covertCanUseCanvasData, covertMap } from '@utils/draw-config';
-import { FC, PropsWithChildren, useState } from 'react';
+import { FC, PropsWithChildren, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   ScrollView,
   StatusBar,
   Text,
+  TouchableHighlight,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import React from 'react';
 import { useScreenSize } from '@hooks/useScreenSize';
+import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
-
+import { useRecoilState } from 'recoil';
+import { userInfoState } from '@stores/login/login.atom';
 import { CollectionEntity } from '@services/data-contracts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMount } from 'ahooks';
-import { get } from 'lodash';
-type CreativePatternsProps = NativeStackScreenProps<
-  RootStackParamList,
-  'CreativePatterns'
-> &
+import { handleBLeData } from '@pages/edit-light/utils';
+import { getHex } from '@utils/hex';
+import { useSend } from '@utils/send';
+import useBLE from '@hooks/useBLE';
+type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
-const CreativePatterns: FC<CreativePatternsProps> = props => {
+const LightListNew: FC<LightListProps> = props => {
   const { t } = useTranslation();
   const { navigation } = props;
   const back = () => {
     navigation.navigate('Home', { screen: 'DesignScreen' });
   };
+  const [currenStatus, setCurrentStatus] = useState(false);
+  const modalDeleteRef = useRef<BlurModalRef>(null);
+  const [userInfo] = useRecoilState(userInfoState);
+  const [deleteInfo, setDeleteInfo] = useState<{
+    collectionId: string;
+    frameIndex: number;
+  }>();
   const [collectionInfo, setCollectionInfo] = useState<CollectionEntity[]>([]);
+  const { queue, consumer } = useSend();
+  const { bleWrite } = useBLE();
   const getCollectionList = async () => {
     try {
       const client = await ClientRequest();
-      const responseData =
-        await client.collectionControllerGetCollectionAllList({
-          pageSize: 1,
-          pageNumber: 100,
-        });
-      const collection = get(
-        responseData,
-        'data.data.data',
-      ) as unknown as CollectionEntity[];
+      const responseData = await client.collectionControllerGetCollectionList(
+        userInfo?.id ?? '',
+      );
+      const collection = responseData.data
+        .data as unknown as CollectionEntity[];
       setCollectionInfo(collection);
+      collection?.forEach((item, index) => {
+        const frameList = item.frameList as unknown as { frame: any[][] }[];
+        frameList?.forEach((it, poi) => {
+          const frame = it.frame;
+          const code = handleBLeData(frame);
+          const pointer = `57e0${getHex(index)}${getHex(poi)}${getHex(
+            code.length / 2,
+          )}${code}61`;
+          queue.enqueue(pointer);
+          console.log('************', pointer);
+        });
+      });
+      consumer.startConsuming(bleWrite);
     } catch (e) {
-      Toast.show((e as Error).message);
-      console.log(e);
+      Toast.show(`${(e as Error).message}`);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const client = await ClientRequest();
+      await client.collectionControllerDeleteCollection(
+        deleteInfo?.collectionId ?? '',
+      );
+      await getCollectionList();
+      modalDeleteRef.current?.closeModal();
+      setCurrentStatus(false);
+
+      // TODO 处理蓝牙
+    } catch (e) {}
+  };
+  const handleDeleteEffects = (
+    e: any,
+    collectionId: string,
+    frameIndex: number,
+  ) => {
+    e.stopPropagation();
+    modalDeleteRef.current?.openModal();
+    setDeleteInfo({ collectionId, frameIndex });
   };
 
   const { width } = useScreenSize();
   const handleEditLight = (collectionId: string) => {
-    console.log(collectionId);
     navigation.push('EditLight', { collectionId: collectionId });
   };
   useMount(() => {
@@ -69,7 +112,20 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
       }}>
       <StatusBar />
       <SafeAreaView style={{ flex: 1 }}>
-        <Header title={t('creative-patterns')} handlePress={back} />
+        <Header
+          title={t('effect')}
+          handlePress={back}
+          extra={
+            <TouchableWithoutFeedback
+              onPress={() => setCurrentStatus(!currenStatus)}>
+              <View>
+                <Text style={{ color: '#fff' }}>
+                  {currenStatus ? t('cancel') : t('edit')}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          }
+        />
         <ScrollView style={{ paddingHorizontal: 5, flex: 1 }}>
           <View
             style={{
@@ -148,6 +204,27 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
                           })
                           .flat()}
                       </View>
+                      {currenStatus ? (
+                        <TouchableWithoutFeedback
+                          onPress={e =>
+                            handleDeleteEffects(e, itemData.id, index)
+                          }>
+                          <View
+                            style={{
+                              width: 28,
+                              height: 28,
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                            }}>
+                            <Image
+                              source={require('../../assets/light/delete-copy.png')}
+                              alt="deleteIcon"
+                              style={{ width: 28, height: 28 }}
+                            />
+                          </View>
+                        </TouchableWithoutFeedback>
+                      ) : null}
                     </View>
                     <View>
                       <Text
@@ -166,8 +243,54 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
             })}
           </View>
         </ScrollView>
+        <BlurModal
+          ref={modalDeleteRef}
+          title="Remove Device"
+          content="Confirm device removal">
+          <View
+            style={{ display: 'flex', flexDirection: 'row', marginTop: 12 }}>
+            <TouchableHighlight
+              style={{ flex: 1 }}
+              onPress={() => modalDeleteRef.current?.closeModal()}>
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 50,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    color: '#ffffff',
+                  }}>
+                  {t('cancel')}
+                </Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight style={{ flex: 1 }} onPress={handleDelete}>
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 50,
+                }}>
+                <Text
+                  style={{
+                    color: '#FCE500',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
+                  {t('confirm')}
+                </Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        </BlurModal>
       </SafeAreaView>
     </View>
   );
 };
-export default CreativePatterns;
+export default LightListNew;

@@ -19,10 +19,12 @@ import { ClientRequest } from '@services/client';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import useToast from '@hooks/useToast';
-import { useMemoizedFn } from 'ahooks';
+import { useMemoizedFn, useMount } from 'ahooks';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { editLight } from '@config/edit-light';
+import { getHex } from '@utils/hex';
+import { useSend } from '@utils/send';
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
 const EditLight = (props: EditLightProps) => {
@@ -32,6 +34,36 @@ const EditLight = (props: EditLightProps) => {
   const { bleWrite } = useBLE();
   const { collectionId } = route.params || {};
   const showToast = useToast();
+  const getCollectionList = async () => {
+    try {
+      const client = await ClientRequest();
+      const responseData = await client.collectionControllerGetCollectionList(
+        userInfo?.id ?? '',
+      );
+      const collection = responseData.data.data;
+      return collection;
+    } catch (e) {
+      showToast(`${(e as Error).message}`);
+    }
+  };
+  const [index, setIndex] = useState(1);
+  useMount(async () => {
+    const data = await getCollectionList();
+    if (collectionId) {
+      const i = (data as unknown as any[]).findIndex(
+        item => item.id === collectionId,
+      );
+      console.log('poi', i);
+      setIndex(i + 1);
+    } else {
+      if (index + 1 > 10) {
+        showToast('只能创建10个作品，请删除后在进行绘制');
+        navigation.push('Home', { screen: 'DesignScreen' });
+      }
+      // @ts-ignore
+      setIndex((data?.length ?? 0) + 1 ?? 1);
+    }
+  });
   const createCollection = async (data: {
     name: string;
     serverData: { selected: boolean; frame: number[][] };
@@ -92,6 +124,25 @@ const EditLight = (props: EditLightProps) => {
     const { speed } = data;
     bleWrite(BLEConfig.editLight[speed as keyof typeof editLight]);
   });
+
+  const { queue, consumer } = useSend();
+
+  const handleBlueData = useMemoizedFn((data: { blueData: string[][] }) => {
+    const { blueData } = data ?? { blueData: [] };
+    blueData.forEach((item, poi) => {
+      console.log(
+        `57e0${getHex(index)}${getHex(poi)}${getHex(item.length)}${item.join(
+          '',
+        )}61`,
+      );
+      queue.enqueue(
+        `57e0${getHex(index)}${getHex(poi)}${getHex(item.length)}${item.join(
+          '',
+        )}61`,
+      );
+    });
+    consumer.startConsuming(bleWrite);
+  });
   const handleNavigation = (event: WebViewMessageEvent) => {
     const data = JSON.parse(event.nativeEvent.data) as {
       type:
@@ -100,7 +151,8 @@ const EditLight = (props: EditLightProps) => {
         | 'modify-name'
         | 'delete-frame'
         | 'copy-frame'
-        | 'speed';
+        | 'speed'
+        | 'preview-collection';
       [p: string]: any;
     };
     console.log(data);
@@ -122,6 +174,9 @@ const EditLight = (props: EditLightProps) => {
         return;
       case 'speed':
         handlePlayDrawSpeed(data as any);
+        return;
+      case 'preview-collection':
+        handleBlueData(data as any);
         return;
       case 'route':
       default:
@@ -169,6 +224,7 @@ const EditLight = (props: EditLightProps) => {
         type: 'setCollectionDetail',
         webData: collectionDetail,
       };
+
       setTimeout(() => {
         const injected = `
           window.postMessage(${JSON.stringify(buildPostData)}, window.origin);

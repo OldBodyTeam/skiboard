@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "skiboard.app"
-               BlueprintName = "skiboard"
-               ReferencedContainer = "container:skiboard.xcodeproj">
+               BuildableName = "Lumii.app"
+               BlueprintName = "Lumii"
+               ReferencedContainer = "container:Lumii.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "skiboardTests.xctest"
-               BlueprintName = "skiboardTests"
-               ReferencedContainer = "container:skiboard.xcodeproj">
+               BuildableName = "LumiiTests.xctest"
+               BlueprintName = "LumiiTests"
+               ReferencedContainer = "container:Lumii.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "skiboard.app"
-            BlueprintName = "skiboard"
-            ReferencedContainer = "container:skiboard.xcodeproj">
+            BuildableName = "Lumii.app"
+            BlueprintName = "Lumii"
+            ReferencedContainer = "container:Lumii.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "skiboard.app"
-            BlueprintName = "skiboard"
-            ReferencedContainer = "container:skiboard.xcodeproj">
+            BuildableName = "Lumii.app"
+            BlueprintName = "Lumii"
+            ReferencedContainer = "container:Lumii.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

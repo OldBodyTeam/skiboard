@@ -2,7 +2,9 @@ import useBLE from '@hooks/useBLE';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BLEConfig } from '@utils/ble';
+import { getHex } from '@utils/hex';
 import { Logger } from '@utils/log';
+import { get } from 'lodash';
 import React, { PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-root-toast';
@@ -28,23 +30,19 @@ const ScrollText = (props: ScrollTextProps) => {
       switch (data.type) {
         case 'chooseText':
           const text = data.str as string[];
-          console.log('*************', text);
+          const covertText = text
+            .map(v => get(BLEConfig, `scrollText.${v}`))
+            .join('');
+          // console.log('*************', text);
           // for await (let str of text) {
-          //   await bleWrite(
-          //     BLEConfig.scrollText[
-          //       str.toLowerCase() as keyof typeof BLEConfig.scrollText
-          //     ],
-          //   );
+          //   //   await bleWrite(
+          //   //     BLEConfig.scrollText[
+          //   //       str.toLowerCase() as keyof typeof BLEConfig.scrollText
+          //   //     ],
+          //   //   );
+          //   console.log(str);
           // }
-          console.log(
-            '57 e0 2b e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef d0 ff c1 cf b2 be A2 AE 93 9D 83 8D 7C 74 6C 64 5B 55 4b  45 3A 36 2A 26 19 17 08 61'.trim(),
-          );
-          await bleWrite(
-            '57 e0 2b e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef d0 ff c1 cf b2 be A2 AE 93 9D 83 8D 7C 74 6C 64 5B 55 4b  45 3A 36 2A 26 19 17 08 61'.replaceAll(
-              ' ',
-              '',
-            ),
-          );
+          await bleWrite(`57EF${getHex(covertText.length / 2)}${covertText}61`);
           return;
         case 'back':
         default:

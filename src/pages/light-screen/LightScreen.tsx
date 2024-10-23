@@ -26,6 +26,7 @@ import {
   SpringInView,
   SpringInViewX,
 } from '@components/fade-in-view/FadeInView';
+import { getHex } from '@utils/hex';
 const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#AA8F1E', '#60AEE6'];
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
@@ -54,7 +55,7 @@ const LightScreen = (props: LightScreenProps) => {
   const { bleWrite } = useBLE();
   useEffect(() => {
     if (typeof progress === 'number') {
-      bleWrite(`57ee02${progress}61`);
+      bleWrite(`57af02${getHex(progress)}61`);
     }
   }, [bleWrite, progress]);
 

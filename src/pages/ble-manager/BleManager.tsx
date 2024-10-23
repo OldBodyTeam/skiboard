@@ -359,14 +359,13 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     setGlobalDeviceInfo(info);
     // 数据共享到系统中
   };
-  // const { navigation } = props;
-  // useEffect(() => {
-  //   Logger(deviceInfo?.connected);
-  //   if (deviceInfo?.connected) {
-  //     // 路由跳转
-  //     navigation.replace('Home', { screen: 'DesignScreen' });
-  //   }
-  // }, [deviceInfo?.connected, navigation]);
+  useEffect(() => {
+    Logger(deviceInfo?.connected);
+    if (deviceInfo?.connected) {
+      // 路由跳转
+      navigation.replace('Home', { screen: 'DesignScreen' });
+    }
+  }, [deviceInfo?.connected, navigation]);
 
   const { t } = useTranslation();
   const [lan, setLanguage] = useState<'zh' | 'en'>('zh');

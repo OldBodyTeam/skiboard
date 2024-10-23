@@ -188,4 +188,9 @@
     "register-user-placeholder": "Enter Username",
     "register-email-placeholder": "Enter Email",
     "register-password-placeholder": "Enter Password",
+    "scroll-text-generate": "Generate",
+    "scroll-text-placeholder": "please input english",
+    "edit": "Edit",
+    "save": "Save",
+    "preview": "Preview"
 }

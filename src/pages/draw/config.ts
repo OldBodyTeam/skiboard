@@ -1,45 +1,64 @@
-// import { ClientRequest } from '@services/client';
-// import { CollectionEntity } from '@services/data-contracts';
-// import { bridge } from '@webview-bridge/react-native';
-import { get } from 'lodash';
-// type AppBridgeType = {
-//   setCollectionInfo: (
-//     collectionInfo: CollectionEntity | undefined,
-//   ) => Promise<void>;
-//   setUserInfo: (userInfo: any) => Promise<void>;
-// };
-// const appBridge = bridge<AppBridgeType>(({ get, set }) => {
-//   return {
-//     modifyCollectionName: async (
-//       userId: string,
-//       collectionId: string,
-//       data: any,
-//     ) => {
-//       console.log('xxxxxxxxxx');
-//       const client = await ClientRequest();
-//       return await client.collectionControllerModifyName(
-//         userId,
-//         collectionId,
-//         data,
-//       );
-//     },
-//     data: { userInfo: {}, collectionInfo: {} },
-//     async setUserInfo(userInfo) {
-//       set({
-//         data: {
-//           userInfo,
-//         },
-//       });
-//     },
-//     async setCollectionInfo(collectionInfo) {
-//       set({
-//         data: {
-//           collectionInfo,
-//         },
-//       });
-//     },
-//   };
-// });
+import { cloneDeep } from 'lodash';
+
+const drawData = new Map<number, Map<string, { selectStatus: boolean }>>();
+const data = [1, 3, 5, 5, 7, 7, 9, 9, 11, 11, 13, 13, 15, 17, 15];
+for (let i = 0; i < data.length; i++) {
+  const col = new Map();
+
+  for (let j = 0; j < data[i]; j++) {
+    col.set(`${i}-${j}`, { selectStatus: false });
+  }
+
+  drawData.set(i, col);
+}
+export type DrawBlockType = Map<number, Map<string, { selectStatus: boolean }>>;
+export type DrawRestoreStackType = {
+  prev: Array<{ x: number; y: number }>;
+  next: Array<{ x: number; y: number }>;
+};
+const getInitOptData = () => {
+  return {
+    drawBlock: new Map(drawData),
+    drawRestoreStack: {
+      prev: [] as { x: number; y: number }[],
+      next: [] as { x: number; y: number }[],
+    },
+  };
+};
+const covertCanUseCanvasData = (drawCanvas: DrawBlockType) => {
+  const drawBlockObj = Object.fromEntries(drawCanvas);
+  return Object.keys(drawBlockObj).map(v => {
+    const drawBlockItemObj = Object.fromEntries(drawBlockObj[v]);
+    return Object.keys(drawBlockItemObj).map(k => drawBlockItemObj[k]);
+  });
+};
+const covertDataToServer = (
+  webData: {
+    selectStatus: boolean;
+  }[][],
+) => {
+  return webData.map(item => {
+    return item
+      .map((v, index) => {
+        return v.selectStatus ? index : null;
+      })
+      .filter((v): v is number => typeof v === 'number');
+  });
+};
+const covertMap = (scrollText: number[][]) => {
+  // const coverLiterMap = new Map<string, DrawBlockType>();
+  // Object.keys(scrollText).forEach((v) => {
+  const optData = cloneDeep(drawData);
+  scrollText.forEach((item, index) => {
+    const row = optData.get(index);
+    item.forEach(b => {
+      row?.set(`${index}-${b}`, { selectStatus: true });
+    });
+    // });
+    // coverLiterMap.set(String(v), optData);
+  });
+  return optData;
+};
 const poi = new Map();
 poi.set('0-0', '08');
 poi.set('1-0', '17');
@@ -181,16 +200,11 @@ poi.set('14-11', 'ec');
 poi.set('14-12', 'ed');
 poi.set('14-13', 'ee');
 poi.set('14-14', 'ef');
-const handleBLeData = (data: any[][]) => {
-  const arr = [] as string[];
-  for (let i = 0; i < data.length; i++) {
-    for (let j = 0; j < data[i].length; j++) {
-      const k = get(data, `${i}.${j}`, undefined);
-      if (typeof k === 'number') {
-        arr.push(poi.get(`${i}-${k}`));
-      }
-    }
-  }
-  return arr.join('');
+export {
+  covertCanUseCanvasData,
+  getInitOptData,
+  drawData,
+  covertDataToServer,
+  covertMap,
+  poi,
 };
-export { handleBLeData };
