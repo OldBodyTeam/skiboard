@@ -21,6 +21,7 @@ import useBLE from '@hooks/useBLE';
 import { get } from 'lodash';
 import { BLEConfig } from '@utils/ble';
 import { getHex } from '@utils/hex';
+import Toast from 'react-native-root-toast';
 type ScrollTextProps = NativeStackScreenProps<
   RootStackParamList,
   'ScrollText'
@@ -44,6 +45,14 @@ const ScrollTextNew: FC<ScrollTextProps> = props => {
     console.log('handleGenerate');
   });
   const { width } = useScreenSize();
+  const handleScrollText = useMemoizedFn((text: string) => {
+    if (!/^[0-9a-zA-Z]$/g.test(text)) {
+      return Toast.show('只能输入数字字母', {
+        position: Toast.positions.CENTER,
+      });
+    }
+    setTextValue(text);
+  });
   return (
     <View
       style={{
@@ -63,7 +72,7 @@ const ScrollTextNew: FC<ScrollTextProps> = props => {
           }}>
           <TextInput
             value={textValue}
-            onChangeText={setTextValue}
+            onChangeText={handleScrollText}
             placeholder={t('scroll-text-placeholder')}
             style={{
               backgroundColor: 'rgba(52,53,54,0.3)',

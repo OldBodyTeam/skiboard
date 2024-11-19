@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
   AVEncodingOption,
@@ -41,7 +41,8 @@ import { getHex } from '@utils/hex';
 // const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const path = Platform.select({ ios: undefined, android: undefined });
 
-const AudioRecorderPlayerWithWave = () => {
+const AudioRecorderPlayerWithWave: FC<{ sIndex: number }> = props => {
+  const { sIndex } = props;
   const audioRecorderPlayer = useRef<AudioRecorderPlayer>(
     new AudioRecorderPlayer(),
   );

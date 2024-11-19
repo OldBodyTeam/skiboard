@@ -1,7 +1,7 @@
 import { sensitivity } from '@config/sensitivity';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -9,7 +9,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-const ClickSensitivityProgress = () => {
+const ClickSensitivityProgress: FC<{
+  onChange: (num: number) => void;
+}> = props => {
+  const { onChange } = props;
   const { width } = useWindowDimensions();
   const canUseWidth = useMemo(() => {
     return (width - 6 * 2 - 10 * 2 - 8 * 2 - 20 * 2) / 5;
@@ -17,10 +20,11 @@ const ClickSensitivityProgress = () => {
   const { bleWrite } = useBLE();
   const [selectedIndex, setSelectedIndex] = useState(1);
   useEffect(() => {
+    onChange(selectedIndex);
     bleWrite(
       BLEConfig.sensitivity[String(selectedIndex) as keyof typeof sensitivity],
     );
-  }, [bleWrite, selectedIndex]);
+  }, [bleWrite, selectedIndex, onChange]);
   return (
     <View
       style={{

@@ -97,7 +97,7 @@ poi.set('8-6', '89');
 poi.set('8-7', '8a');
 poi.set('8-8', '8b');
 poi.set('8-9', '8c');
-poi.set('8-10', '8d');
+poi.set('8-a', '8d');
 poi.set('9-0', '93');
 poi.set('9-1', '94');
 poi.set('9-2', '95');
@@ -108,7 +108,7 @@ poi.set('9-6', '99');
 poi.set('9-7', '9a');
 poi.set('9-8', '9b');
 poi.set('9-9', '9c');
-poi.set('9-10', '9d');
+poi.set('9-a', '9d');
 poi.set('10-0', 'a2');
 poi.set('10-1', 'a3');
 poi.set('10-2', 'a4');
@@ -163,9 +163,10 @@ poi.set('13-9', 'd9');
 poi.set('13-10', 'da');
 poi.set('13-11', 'db');
 poi.set('13-12', 'dc');
-poi.set('13-13', 'de');
-poi.set('13-14', 'df');
-poi.set('13-15', 'ff');
+poi.set('13-13', 'dd');
+poi.set('13-14', 'de');
+poi.set('13-15', 'df');
+poi.set('13-16', 'ff');
 poi.set('14-0', 'e1');
 poi.set('14-1', 'e2');
 poi.set('14-2', 'e3');
@@ -187,6 +188,7 @@ const handleBLeData = (data: any[][]) => {
     for (let j = 0; j < data[i].length; j++) {
       const k = get(data, `${i}.${j}`, undefined);
       if (typeof k === 'number') {
+        console.log(i, k);
         arr.push(poi.get(`${i}-${k}`));
       }
     }

@@ -1,7 +1,35 @@
 import { cloneDeep } from 'lodash';
-
+import { Dimensions } from 'react-native';
+const width = Dimensions.get('window').width;
+const currentWidth = () => {
+  const a = Math.floor(width / 17);
+  const b = Math.floor(a / 2);
+  return b * 2;
+};
+const blockWidth = currentWidth();
+const getItemPoi = (itemNum: number, yDistance: number) => {
+  const a = itemNum * blockWidth; // 点占的宽度
+  const b = (width - a) / 2; // 第一个点的坐标
+  const arr = [];
+  for (let i = 0; i < itemNum; i++) {
+    arr.push({
+      x: b + blockWidth * i,
+      y: yDistance * blockWidth,
+      width: blockWidth,
+      height: blockWidth,
+      target: `${yDistance}-${i}`,
+    });
+  }
+  return arr;
+};
 const drawData = new Map<number, Map<string, { selectStatus: boolean }>>();
-const data = [1, 3, 5, 5, 7, 7, 9, 9, 11, 11, 13, 13, 15, 17, 15];
+export const data = [1, 3, 5, 5, 7, 7, 9, 9, 11, 11, 13, 13, 15, 17, 15];
+export const getPointPoi = data
+  .map((item, index) => {
+    return getItemPoi(item, index);
+  })
+  .flat();
+
 for (let i = 0; i < data.length; i++) {
   const col = new Map();
 

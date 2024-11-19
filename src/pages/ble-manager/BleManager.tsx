@@ -13,7 +13,6 @@ import {
   Platform,
   PermissionsAndroid,
   TouchableHighlight,
-  Image,
   Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
@@ -23,7 +22,6 @@ import BleManager, {
   BleScanCallbackType,
   BleScanMatchMode,
   BleScanMode,
-  BleState,
   Peripheral,
 } from 'react-native-ble-manager';
 import Video from 'react-native-video';
@@ -71,43 +69,68 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     new Map<Peripheral['id'], Peripheral>(),
   );
   const [canUseDevice, setCanUseDevice] = useState<Set<string>>(new Set());
+  // const update = useUpdate();
+  // const startScan = useMemoizedFn(() => {
+  //   BleManager.checkState().then((state: BleState) => {
+  //     // if (state !== BleState.On) {
+  //     Logger('当前蓝牙不可用' + state);
+  //     //   return;
+  //     // }
+  //     if (userOpt === BleDeviceStatus.isScanning) {
+  //       // reset found peripherals before scan
+  //       Logger('1');
+  //       setPeripherals(new Map<Peripheral['id'], Peripheral>());
 
-  const startScan = useMemoizedFn(() => {
-    BleManager.checkState().then((state: BleState) => {
-      if (state !== BleState.On) {
-        Logger('当前蓝牙不可用' + state);
-        return;
+  //       try {
+  //         console.debug('[startScan] starting scan...');
+  //         BleManager.scan(
+  //           SERVICE_UUIDS,
+  //           SECONDS_TO_SCAN_FOR,
+  //           ALLOW_DUPLICATES,
+  //           {
+  //             matchMode: BleScanMatchMode.Sticky,
+  //             scanMode: BleScanMode.LowLatency,
+  //             callbackType: BleScanCallbackType.AllMatches,
+  //           },
+  //         )
+  //           .then(() => {
+  //             console.debug('[startScan] scan promise returned successfully.');
+  //             update();
+  //             BleManager.checkState();
+  //           })
+  //           .catch((err: any) => {
+  //             console.error('[startScan] ble scan returned in error', err);
+  //           });
+  //       } catch (error) {
+  //         console.error('[startScan] ble scan error thrown ', error);
+  //       }
+  //     }
+  //   });
+  // });
+  const startScan = () => {
+    if (userOpt === BleDeviceStatus.isScanning) {
+      // reset found peripherals before scan
+      setPeripherals(new Map<Peripheral['id'], Peripheral>());
+
+      try {
+        console.debug('[startScan] starting scan...');
+        // setIsScanning(true);
+        BleManager.scan(SERVICE_UUIDS, SECONDS_TO_SCAN_FOR, ALLOW_DUPLICATES, {
+          matchMode: BleScanMatchMode.Sticky,
+          scanMode: BleScanMode.LowLatency,
+          callbackType: BleScanCallbackType.AllMatches,
+        })
+          .then(() => {
+            console.debug('[startScan] scan promise returned successfully.');
+          })
+          .catch((err: any) => {
+            console.error('[startScan] ble scan returned in error', err);
+          });
+      } catch (error) {
+        console.error('[startScan] ble scan error thrown', error);
       }
-      if (userOpt === BleDeviceStatus.isScanning) {
-        // reset found peripherals before scan
-        Logger('1');
-        setPeripherals(new Map<Peripheral['id'], Peripheral>());
-
-        try {
-          console.debug('[startScan] starting scan...');
-          BleManager.scan(
-            SERVICE_UUIDS,
-            SECONDS_TO_SCAN_FOR,
-            ALLOW_DUPLICATES,
-            {
-              matchMode: BleScanMatchMode.Sticky,
-              scanMode: BleScanMode.LowLatency,
-              callbackType: BleScanCallbackType.AllMatches,
-            },
-          )
-            .then(() => {
-              console.debug('[startScan] scan promise returned successfully.');
-            })
-            .catch((err: any) => {
-              console.error('[startScan] ble scan returned in error', err);
-            });
-        } catch (error) {
-          console.error('[startScan] ble scan error thrown', error);
-        }
-      }
-    });
-  });
-
+    }
+  };
   const handleStopScan = () => {
     setUserOpt(BleDeviceStatus.connected);
     console.debug('[handleStopScan] scan is stopped.');
@@ -220,6 +243,13 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
           }
           return map;
         });
+        await sleep(900);
+        try {
+          const mtu = await BleManager.requestMTU(peripheral.id, 512);
+          Toast.show(`MTU size changed to ${mtu} bytes`);
+        } catch (error) {
+          Toast.show(`Failed to change MTU size: ${error}`);
+        }
 
         // before retrieving services, it is often a good idea to let bonding & connection finish properly
         await sleep(900);
@@ -266,6 +296,18 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   }
 
   useEffect(() => {
+    BleManager.start({ showAlert: false })
+      .then(() => {
+        Toast.show('BleManager started.');
+        // 开始扫描
+        setTimeout(() => {
+          startScan();
+          Toast.show('开始扫描');
+        }, 3000);
+      })
+      .catch((error: any) =>
+        Toast.show(`BeManager could not be started.${error.message}`),
+      );
     const listeners = [
       bleManagerEmitter.addListener(
         'BleManagerDiscoverPeripheral',
@@ -287,15 +329,6 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     ];
 
     handleAndroidPermissions();
-    BleManager.start({ showAlert: false })
-      .then(() => {
-        Toast.show('BleManager started.');
-        // 开始扫描
-        startScan();
-      })
-      .catch((error: any) =>
-        Toast.show(`BeManager could not be started.${error.message}`),
-      );
 
     return () => {
       console.debug('[app] main component unmounting. Removing listeners...');
@@ -360,7 +393,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     // 数据共享到系统中
   };
   useEffect(() => {
-    Logger(deviceInfo?.connected);
+    Logger(`deviceInfo?.connected ${deviceInfo?.connected}`);
     if (deviceInfo?.connected) {
       // 路由跳转
       navigation.replace('Home', { screen: 'DesignScreen' });
@@ -391,7 +424,8 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
       </View>
       {userOpt === BleDeviceStatus.isScanning ? (
         <TouchableWithoutFeedback
-          onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}>
+        // onPress={() => navigation.push('Home', { screen: 'DesignScreen' })}
+        >
           <View
             style={{
               justifyContent: 'center',

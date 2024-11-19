@@ -14,5 +14,6 @@ const lightScreen = {
   FF8A5E: '57ed04FF8A5E61',
   '60AEE6': '57ed0460AEE661',
   random: '57ed021061',
+  AA8F1E: '57ed04AA8F1E61',
 };
 export { lightScreen };

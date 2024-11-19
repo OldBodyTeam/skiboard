@@ -23,7 +23,7 @@ import { useMemoizedFn, useMount } from 'ahooks';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { editLight } from '@config/edit-light';
-import { getHex } from '@utils/hex';
+import { getHex, getSimpleHex } from '@utils/hex';
 import { useSend } from '@utils/send';
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
@@ -129,18 +129,20 @@ const EditLight = (props: EditLightProps) => {
 
   const handleBlueData = useMemoizedFn((data: { blueData: string[][] }) => {
     const { blueData } = data ?? { blueData: [] };
+    console.log('blueData', data);
     blueData.forEach((item, poi) => {
       console.log(
-        `57e0${getHex(index)}${getHex(poi)}${getHex(item.length)}${item.join(
-          '',
-        )}61`,
+        `57e0${getHex(item.length + 2)}00${getSimpleHex(index)}${getSimpleHex(
+          poi + 1,
+        )}${item.join('')}61`,
       );
       queue.enqueue(
-        `57e0${getHex(index)}${getHex(poi)}${getHex(item.length)}${item.join(
-          '',
-        )}61`,
+        `57e0${getHex(item.length + 2)}00${getSimpleHex(index)}${getSimpleHex(
+          poi + 1,
+        )}${item.join('')}61`,
       );
     });
+    queue.enqueue('57e003011061');
     consumer.startConsuming(bleWrite);
   });
   const handleNavigation = (event: WebViewMessageEvent) => {

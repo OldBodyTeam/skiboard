@@ -192,5 +192,7 @@
     "scroll-text-placeholder": "please input english",
     "edit": "Edit",
     "save": "Save",
-    "preview": "Preview"
+    "preview": "Preview",
+    "draw-light-speed": "Speed",
+    "draw-light-frames": "Frames"
 }

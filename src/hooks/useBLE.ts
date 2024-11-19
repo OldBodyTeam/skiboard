@@ -37,19 +37,29 @@ const useBLE = () => {
   });
   // 写入
   const bleWrite = useMemoizedFn(async (data: string) => {
-    const buffer = Buffer.from(data, 'hex');
-    const bleData = buffer.toJSON().data;
-    try {
-      await BleManager.writeWithoutResponse(
-        deviceId,
-        deviceServiceUUID,
-        deviceCharacteristicUUID,
-        bleData,
-      );
-      BLEWriteLogger(data);
-    } catch (error) {
-      console.log('belWrite', (error as Error).message);
-    }
+    BleManager.isPeripheralConnected(deviceId)
+      .then(async res => {
+        try {
+          if (!res) {
+            Toast.show('蓝牙需要连接');
+            await BleManager.connect(deviceId);
+            Toast.show('蓝牙连接成功');
+          }
+          const buffer = Buffer.from(data, 'hex');
+          const bleData = buffer.toJSON().data;
+          Toast.show('蓝牙开始写入');
+          await BleManager.writeWithoutResponse(
+            deviceId,
+            deviceServiceUUID,
+            deviceCharacteristicUUID,
+            bleData,
+          );
+          BLEWriteLogger(data);
+        } catch (error) {
+          console.log('belWrite', (error as Error).message);
+        }
+      })
+      .catch();
   });
   // 检查是否连接中
   const checkBLEConnectStatus = useMemoizedFn(async () => {

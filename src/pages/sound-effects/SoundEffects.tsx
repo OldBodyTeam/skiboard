@@ -21,6 +21,7 @@ import ClickSensitivityProgress from '@components/sensitivity-progress/ClickSens
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { useTranslation } from 'react-i18next';
+import { useMemoizedFn } from 'ahooks';
 enum TABS {
   MUSIC = 'music',
   SOUND = 'sound',
@@ -83,6 +84,10 @@ const SoundEffects = (props: SoundEffectsProps) => {
     bleWrite(BLEConfig.sensitivity[moduleName]);
   };
   const { t } = useTranslation();
+  const [sIndex, setSIndex] = useState(1);
+  const handleS = useMemoizedFn((index: number) => {
+    setSIndex(index);
+  });
   return (
     <ImageBackground
       style={{
@@ -199,7 +204,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 }}>
                 {t('Microphone')}
               </Text>
-              <AudioRecorderPlayerWithWave />
+              <AudioRecorderPlayerWithWave sIndex={sIndex} />
               {/* <Waveform /> */}
               <Text
                 style={{
@@ -213,7 +218,7 @@ const SoundEffects = (props: SoundEffectsProps) => {
                 {t('Sensitivity')}
               </Text>
               {/* <SensitivityProgress /> */}
-              <ClickSensitivityProgress />
+              <ClickSensitivityProgress onChange={handleS} />
               <View
                 style={{
                   position: 'relative',

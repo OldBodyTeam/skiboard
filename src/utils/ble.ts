@@ -10,8 +10,8 @@ import { mode } from '@config/mode';
 
 const BLEConfig = {
   designScreen: {
-    openLight: '5701020161',
-    closeLight: '5701020061',
+    openLight: '57ab020161',
+    closeLight: '57ab020061',
   },
   scrollText,
   lightScreen,

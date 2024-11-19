@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
 import { deviceInfoState } from '@stores/device/device.atom';
@@ -21,11 +22,12 @@ const Auth = (props: AuthProps) => {
         const userInfoData = await client.userControllerUser(userId);
         setUserInfo(userInfoData.data.data);
         if (deviceInfo.connected) {
-          navigation.push('Home', { screen: 'DesignScreen' });
+          // navigation.push('Home', { screen: 'DesignScreen' });
         } else {
           __DEV__
             ? navigation.push('Home', { screen: 'DesignScreen' })
             : navigation.push('BleManager');
+          // navigation.push('BleManager');
         }
       } catch (e) {
         console.log(e);
@@ -33,7 +35,7 @@ const Auth = (props: AuthProps) => {
       }
     };
     handleAutoLogin();
-  }, [deviceInfo.connected, navigation, setUserInfo]);
+  }, [navigation, setUserInfo]);
   return (
     <View
       style={{

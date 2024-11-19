@@ -17,6 +17,7 @@ import Settings from '@pages/settings/Settings';
 import SoundEffects from '@pages/sound-effects/SoundEffects';
 import ScrollTextNew from '@pages/scroll-text/ScrollText.new';
 import LightListNew from '@pages/light-list/LightListNew';
+import Drawer from '@pages/draw/Drawer';
 // import TestBLE from '@pages/test-ble/TestBLE';
 export type RootStackParamList = {
   Login: any;
@@ -37,8 +38,13 @@ export type RootStackParamList = {
   LEDStripsEffects: any;
   Auth: any;
   Reset: any;
+  Drawer: any;
 };
 const routeConfig = [
+  {
+    name: 'Drawer',
+    component: Drawer,
+  },
   {
     name: 'Login',
     component: Login,

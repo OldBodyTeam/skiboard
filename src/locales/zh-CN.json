@@ -193,5 +193,7 @@
     "scroll-text-placeholder": "请输入文字（仅限英文）",
     "edit": "编辑",
     "save": "保存",
-    "preview": "预览"
+    "preview": "预览",
+    "draw-light-speed": "速度",
+    "draw-light-frames": "关键帧"
 }

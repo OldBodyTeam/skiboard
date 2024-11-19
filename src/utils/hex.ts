@@ -6,4 +6,7 @@ const getHex = (num: number) => {
     return covertNum.toString(16);
   }
 };
-export { getHex };
+const getSimpleHex = (num: number) => {
+  return num.toString(16);
+};
+export { getHex, getSimpleHex };

@@ -59,7 +59,7 @@ export enum ContentType {
 }
 const instance = axios.create({
   baseURL: __DEV__
-    ? 'http://localhost:3000/'
+    ? 'https://www.ski-api.gawtec.com/'
     : 'https://www.ski-api.gawtec.com/',
 });
 instance.interceptors.response.use(

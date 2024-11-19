@@ -25,7 +25,7 @@ import { CollectionEntity } from '@services/data-contracts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMount } from 'ahooks';
 import { handleBLeData } from '@pages/edit-light/utils';
-import { getHex } from '@utils/hex';
+import { getHex, getSimpleHex } from '@utils/hex';
 import { useSend } from '@utils/send';
 import useBLE from '@hooks/useBLE';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
@@ -60,9 +60,9 @@ const LightListNew: FC<LightListProps> = props => {
         frameList?.forEach((it, poi) => {
           const frame = it.frame;
           const code = handleBLeData(frame);
-          const pointer = `57e0${getHex(index)}${getHex(poi)}${getHex(
-            code.length / 2,
-          )}${code}61`;
+          const pointer = `57e0${getHex(code.length / 2 + 2)}00${getSimpleHex(
+            index,
+          )}${getSimpleHex(poi + 1)}${code}61`;
           queue.enqueue(pointer);
           console.log('************', pointer);
         });
