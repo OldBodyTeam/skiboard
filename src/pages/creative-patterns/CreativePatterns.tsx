@@ -21,6 +21,8 @@ import { CollectionEntity } from '@services/data-contracts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMount } from 'ahooks';
 import { get } from 'lodash';
+import { drawData } from '@pages/draw/config';
+import { Items } from '@pages/draw/Drawer';
 type CreativePatternsProps = NativeStackScreenProps<
   RootStackParamList,
   'CreativePatterns'
@@ -60,6 +62,7 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
   useMount(() => {
     getCollectionList();
   });
+  const data = covertCanUseCanvasData(drawData);
   return (
     <View
       style={{
@@ -79,6 +82,13 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
               justifyContent: 'space-between',
             }}>
             {collectionInfo?.map((itemData, index) => {
+              const { frame } =
+                (
+                  itemData.frameList as unknown as {
+                    selected: boolean;
+                    frame: string[];
+                  }[]
+                ).find(v => v.selected) ?? {};
               return (
                 <TouchableWithoutFeedback
                   key={index}
@@ -103,62 +113,32 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
                       }}>
                       <View
                         style={{
-                          display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
                           flex: 1,
                         }}>
-                        {(
-                          itemData.frameList as unknown as {
-                            selected: boolean;
-                            frame: number[][];
-                          }[]
-                        )
-                          .map(item => {
-                            if (!item.selected) {
-                              return null;
-                            }
-                            const list = covertCanUseCanvasData(
-                              covertMap(item.frame),
-                            );
-                            return list.map((draw, x) => {
-                              return (
-                                <View
-                                  style={{
-                                    display: 'flex',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'row',
-                                  }}
-                                  key={x}>
-                                  {draw.map((v, y) => {
-                                    return (
-                                      <DrawItem
-                                        x={x}
-                                        y={y}
-                                        key={x + y}
-                                        selectStatus={v.selectStatus}
-                                        style={{ width: 8, height: 8 }}
-                                      />
-                                    );
-                                  })}
-                                </View>
-                              );
-                            });
-                          })
-                          .flat()}
+                        {data.map((rows, r) => {
+                          return (
+                            <View
+                              key={r}
+                              style={{
+                                flexDirection: 'row',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              {rows.map((item, c) => {
+                                return (
+                                  <Items
+                                    key={`${r}-${c}`}
+                                    width={10}
+                                    selected={!!frame?.includes(`${r}-${c}`)}
+                                  />
+                                );
+                              })}
+                            </View>
+                          );
+                        })}
                       </View>
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 14,
-                          textAlign: 'center',
-                          marginTop: 16,
-                        }}>
-                        {itemData.name}
-                      </Text>
                     </View>
                   </View>
                 </TouchableWithoutFeedback>

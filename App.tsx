@@ -51,7 +51,7 @@ function App(): React.JSX.Element {
               screenOptions={{
                 headerShown: false,
               }}
-              initialRouteName="Drawer">
+              initialRouteName="Auth">
               {routeConfig.map(item => (
                 <Stack.Screen
                   name={item.name}

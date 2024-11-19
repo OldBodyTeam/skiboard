@@ -24,10 +24,11 @@ import { userInfoState } from '@stores/login/login.atom';
 import { CollectionEntity } from '@services/data-contracts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMount } from 'ahooks';
-import { handleBLeData } from '@pages/edit-light/utils';
 import { getHex, getSimpleHex } from '@utils/hex';
 import { useSend } from '@utils/send';
 import useBLE from '@hooks/useBLE';
+import { drawData, poi } from '@pages/draw/config';
+import { Items } from '@pages/draw/Drawer';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
 const LightListNew: FC<LightListProps> = props => {
@@ -48,6 +49,7 @@ const LightListNew: FC<LightListProps> = props => {
   const { bleWrite } = useBLE();
   const getCollectionList = async () => {
     try {
+      console.log('xxx', userInfo?.id);
       const client = await ClientRequest();
       const responseData = await client.collectionControllerGetCollectionList(
         userInfo?.id ?? '',
@@ -55,14 +57,15 @@ const LightListNew: FC<LightListProps> = props => {
       const collection = responseData.data
         .data as unknown as CollectionEntity[];
       setCollectionInfo(collection);
+      console.log(collection);
       collection?.forEach((item, index) => {
         const frameList = item.frameList as unknown as { frame: any[][] }[];
-        frameList?.forEach((it, poi) => {
+        frameList?.forEach((it, i) => {
           const frame = it.frame;
-          const code = handleBLeData(frame);
+          const code = frame.map(key => poi.get(key));
           const pointer = `57e0${getHex(code.length / 2 + 2)}00${getSimpleHex(
             index,
-          )}${getSimpleHex(poi + 1)}${code}61`;
+          )}${getSimpleHex(i + 1)}${code}61`;
           queue.enqueue(pointer);
           console.log('************', pointer);
         });
@@ -103,6 +106,7 @@ const LightListNew: FC<LightListProps> = props => {
   useMount(() => {
     getCollectionList();
   });
+  const data = covertCanUseCanvasData(drawData);
   return (
     <View
       style={{
@@ -135,6 +139,13 @@ const LightListNew: FC<LightListProps> = props => {
               justifyContent: 'space-between',
             }}>
             {collectionInfo?.map((itemData, index) => {
+              const { frame } =
+                (
+                  itemData.frameList as unknown as {
+                    selected: boolean;
+                    frame: string[];
+                  }[]
+                ).find(v => v.selected) ?? {};
               return (
                 <TouchableWithoutFeedback
                   key={index}
@@ -159,50 +170,31 @@ const LightListNew: FC<LightListProps> = props => {
                       }}>
                       <View
                         style={{
-                          display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
                           flex: 1,
                         }}>
-                        {(
-                          itemData.frameList as unknown as {
-                            selected: boolean;
-                            frame: number[][];
-                          }[]
-                        )
-                          .map(item => {
-                            if (!item.selected) {
-                              return null;
-                            }
-                            const list = covertCanUseCanvasData(
-                              covertMap(item.frame),
-                            );
-                            return list.map((draw, x) => {
-                              return (
-                                <View
-                                  style={{
-                                    display: 'flex',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'row',
-                                  }}
-                                  key={x}>
-                                  {draw.map((v, y) => {
-                                    return (
-                                      <DrawItem
-                                        x={x}
-                                        y={y}
-                                        key={x + y}
-                                        selectStatus={v.selectStatus}
-                                        style={{ width: 8, height: 8 }}
-                                      />
-                                    );
-                                  })}
-                                </View>
-                              );
-                            });
-                          })
-                          .flat()}
+                        {data.map((rows, r) => {
+                          return (
+                            <View
+                              key={r}
+                              style={{
+                                flexDirection: 'row',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              {rows.map((item, c) => {
+                                return (
+                                  <Items
+                                    key={`${r}-${c}`}
+                                    width={10}
+                                    selected={!!frame?.includes(`${r}-${c}`)}
+                                  />
+                                );
+                              })}
+                            </View>
+                          );
+                        })}
                       </View>
                       {currenStatus ? (
                         <TouchableWithoutFeedback

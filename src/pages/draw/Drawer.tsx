@@ -45,7 +45,7 @@ export type ItemsProps = {
   width: number;
   selected: boolean;
 };
-const Items: FC<ItemsProps> = props => {
+export const Items: FC<ItemsProps> = props => {
   const { selected, width } = props;
 
   return (
@@ -317,6 +317,7 @@ const Drawer: FC<DrawerProps> = props => {
         frame: Array.from(value),
       });
     });
+    console.log(serverData);
     try {
       const client = await ClientRequest();
       client.collectionControllerCreate(userInfo?.id ?? '', {
@@ -428,8 +429,8 @@ const Drawer: FC<DrawerProps> = props => {
                 <Image
                   source={
                     currentStatus.next
-                      ? require('../../assets/draw/left.png')
-                      : require('../../assets/draw/letf-tra.png')
+                      ? require('../../assets/draw/letf-tra.png')
+                      : require('../../assets/draw/left.png')
                   }
                   style={styles.prev}
                 />
@@ -440,8 +441,8 @@ const Drawer: FC<DrawerProps> = props => {
                 <Image
                   source={
                     currentStatus.next
-                      ? require('../../assets/draw/right.png')
-                      : require('../../assets/draw/right-tra.png')
+                      ? require('../../assets/draw/right-tra.png')
+                      : require('../../assets/draw/right.png')
                   }
                   style={styles.next}
                 />
@@ -676,6 +677,7 @@ const styles = StyleSheet.create({
     height: 31,
     borderRadius: 31,
     overflow: 'hidden',
+    marginRight: 8,
   },
   next: {
     width: 31,

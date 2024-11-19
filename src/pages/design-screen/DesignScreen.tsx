@@ -40,7 +40,7 @@ const DesignScreen = (props: DesignScreenProps) => {
   const { bleWrite } = useBLE();
   // () => navigation.push('EditLight')
   const handleCollection = async () => {
-    navigation.push('EditLight');
+    navigation.push('Drawer');
   };
   const { t } = useTranslation();
   return (

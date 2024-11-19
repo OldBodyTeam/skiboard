@@ -46,6 +46,7 @@ const Login: FC<LoginProps> = props => {
       await getUserInfo(requestData.data.data?.userId ?? '');
       toast('登录成功');
       navigation.push('BleManager');
+      // navigation.push('Home', { screen: 'DesignScreen' });
     } catch (e: unknown) {
       handleAxiosError(e);
     }
