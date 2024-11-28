@@ -27,7 +27,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'skiboard' do
+target 'Lumii' do
   use_expo_modules!
   post_integrate do |installer|
     begin
@@ -49,7 +49,7 @@ target 'skiboard' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'skiboardTests' do
+  target 'LumiiTests' do
     inherit! :complete
     # Pods for testing
   end

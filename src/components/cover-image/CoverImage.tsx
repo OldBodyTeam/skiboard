@@ -1,5 +1,6 @@
 import useBLE from '@hooks/useBLE';
 import { deviceInfoState } from '@stores/device/device.atom';
+import { useThrottleFn } from 'ahooks';
 import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -59,11 +60,23 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
   }, [type]);
   const { getBLEBatteryPower } = useBLE();
   const [batteryPower, setBatteryPower] = useState('100');
+  const [deviceInfo, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
+  const { run } = useThrottleFn(
+    data => {
+      setGlobalDeviceInfo(prev => {
+        return {
+          ...prev,
+          num: data,
+        };
+      });
+    },
+    { wait: 10 * 60 * 1000 },
+  );
   getBLEBatteryPower().then(data => {
     setBatteryPower(data ?? '0');
+    run(data);
   });
   const { t } = useTranslation();
-  const [deviceInfo] = useRecoilState(deviceInfoState);
   return (
     <View>
       <ImageBackground

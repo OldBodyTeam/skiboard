@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Dimensions, StyleProp, ViewStyle } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { View } from 'react-native-ui-lib';
@@ -13,6 +13,8 @@ import { playlistData } from '@components/music-player/assets/playlist';
 import useBLE from '@hooks/useBLE';
 import { useThrottleFn } from 'ahooks';
 import { getHex } from '@utils/hex';
+import { wave } from '@components/music-player/assets/wave';
+import { get } from 'lodash';
 export type MusicCarouselProps = {
   autoPlayReverse?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -45,30 +47,28 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
 
   const { bleWrite } = useBLE();
   const { run } = useThrottleFn(
-    async volumn => {
-      let size = -volumn;
-      let data = getHex(size);
-      if (size >= 40 && size < 50) {
-        data = `0000${getHex(size)}`;
-      } else if (size >= 50 && size < 60) {
-        data = `00${getHex(size)}00`;
-      } else {
-        data = `${getHex(size)}0000`;
-      }
-      await bleWrite(`57e204${data}61`);
+    async volume => {
+      await bleWrite(`57e204${volume}61`);
     },
-    { wait: 300 },
+    { wait: 2000 },
   );
+  const [title, setTitle] = useState('');
   useEffect(() => {
     const j = async () => {
       const state = (await TrackPlayer.getPlaybackState()).state;
-      if (state === State.Playing) {
-        const value = Math.random() * (70 - 40) + 40;
-        run(value);
+      if (state === State.Playing && title) {
+        const num = get(
+          wave,
+          `${title}.${Math.floor(progress.position)}`,
+          undefined,
+        );
+        if (typeof num === 'number') {
+          run((num + 0.1).toFixed(6).split('.')[1]);
+        }
       }
     };
     j();
-  }, [progress, run]);
+  }, [progress, run, title]);
   return (
     <View>
       <Carousel
@@ -92,6 +92,7 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
                 handleAutoPlay(item.title, order);
                 TrackPlayer.setQueue([item] as Track[]);
                 TrackPlayer.play();
+                setTitle(item.title.slice(0, -4));
                 // r.current?.scrollTo({
                 //   index: order,
                 //   animated: false,

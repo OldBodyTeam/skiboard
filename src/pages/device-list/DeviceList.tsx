@@ -12,6 +12,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { useRecoilState } from 'recoil';
+import { deviceInfoState } from '@stores/device/device.atom';
 
 type DeviceListProps = NativeStackScreenProps<
   RootStackParamList,
@@ -24,6 +26,8 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
   };
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const [deviceInfo] = useRecoilState(deviceInfoState);
+  console.log('deviceInfo', deviceInfo);
   return (
     <View
       style={{ backgroundColor: '#000000', flex: 1, paddingTop: insets.top }}>
@@ -66,15 +70,11 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
       </View>
       <FlatList
         style={{ paddingTop: 4 }}
-        data={Array(30)
-          .fill(1)
-          .map(() => {
-            return { index: Math.random() };
-          })}
-        renderItem={item => (
-          <DeviceListItem key={item.index} device={item.index} />
+        data={[deviceInfo]}
+        renderItem={({ item, index }) => (
+          <DeviceListItem key={index} device={item} />
         )}
-        keyExtractor={item => item.index + ''}
+        keyExtractor={item => item.name + ''}
       />
     </View>
   );

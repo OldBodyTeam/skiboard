@@ -48,24 +48,26 @@ const LightScreen = (props: LightScreenProps) => {
       setSelected(11);
     }
   };
-  const [progress, setProgress] = useState(0);
-  const handleProgressChange = (num: number) => {
-    setProgress(num);
-  };
+  // const [progress, setProgress] = useState(0);
   const { bleWrite } = useBLE();
-  useEffect(() => {
-    if (typeof progress === 'number') {
-      bleWrite(`57af02${getHex(progress)}61`);
-    }
-  }, [bleWrite, progress]);
 
-  useEffect(() => {
-    bleWrite(
-      switchValue
-        ? BLEConfig.lightScreen.openLight
-        : BLEConfig.lightScreen.closeLight,
-    );
-  }, [bleWrite, switchValue]);
+  const handleProgressChange = (num: number) => {
+    bleWrite(`57af02${getHex(num)}61`);
+    // setProgress(num);
+  };
+  // useEffect(() => {
+  //   if (typeof progress === 'number') {
+  //     bleWrite(`57af02${getHex(progress)}61`);
+  //   }
+  // }, [bleWrite, progress]);
+
+  // useEffect(() => {
+  //   bleWrite(
+  //     switchValue
+  //       ? BLEConfig.lightScreen.openLight
+  //       : BLEConfig.lightScreen.closeLight,
+  //   );
+  // }, [bleWrite, switchValue]);
 
   const handleSelected = (color: string) => {
     console.log(color);
@@ -130,7 +132,14 @@ const LightScreen = (props: LightScreenProps) => {
               <Progress onProgressChange={handleProgressChange} />
               <Switch
                 switchValue={switchValue}
-                onSwitchChange={(value: boolean) => setSwitchValue(value)}
+                onSwitchChange={(value: boolean) => {
+                  bleWrite(
+                    value
+                      ? BLEConfig.lightScreen.openLight
+                      : BLEConfig.lightScreen.closeLight,
+                  );
+                  setSwitchValue(value);
+                }}
               />
             </View>
             <ScrollView

@@ -48,11 +48,6 @@ const ClickSensitivityProgress: FC<{
         style={{
           width: 20,
           height: 20,
-          //   marginRight: 21,
-          //   position: 'absolute',
-          //   left: 8,
-          //   top: 11,
-          //   zIndex: 1,
         }}
       />
       {[1, 2, 3, 4, 5].map(v => {
@@ -66,22 +61,9 @@ const ClickSensitivityProgress: FC<{
               alignItems: 'center',
               flex: 1,
               paddingHorizontal: 8,
-              //   backgroundColor: v % 2 === 1 ? 'red' : 'green',
               flexGrow: 1,
               flexShrink: 0,
             }}>
-            {/* <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                flex: 1,
-                paddingHorizontal: 8,
-                backgroundColor: v % 2 === 1 ? 'red' : 'green',
-                flexGrow: 1,
-                flexShrink: 0,
-              }}
-              onLayout={e => console.log(e.nativeEvent.layout.width)}> */}
             <View
               style={{
                 width: 1,
@@ -100,7 +82,6 @@ const ClickSensitivityProgress: FC<{
                 style={{
                   fontSize: 15,
                   lineHeight: 18,
-                  // color: '#1D2122',
                   color: '#494D4E',
                   fontWeight: 'bold',
                   opacity: selectedIndex === v ? 0 : 1,
@@ -116,7 +97,6 @@ const ClickSensitivityProgress: FC<{
                 backgroundColor: selectedIndex > v ? '#1D2122' : 'white',
               }}
             />
-            {/* </View> */}
           </Pressable>
         );
       })}
@@ -175,11 +155,6 @@ const ClickSensitivityProgress: FC<{
         style={{
           width: 20,
           height: 20,
-          //   position: 'absolute',
-          //   right: 8,
-          //   top: 11,
-          //   zIndex: 1,
-          // marginRight
         }}
       />
     </View>

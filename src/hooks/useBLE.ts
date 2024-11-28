@@ -3,7 +3,7 @@ import { useMemoizedFn } from 'ahooks';
 import { useRecoilState } from 'recoil';
 import { Buffer } from 'buffer';
 import BleManager from 'react-native-ble-manager';
-// import { BLEWriteLogger } from '@utils/log';
+import { BLEWriteLogger } from '@utils/log';
 import Toast from 'react-native-root-toast';
 
 const useBLE = () => {
@@ -62,7 +62,7 @@ const useBLE = () => {
             512 - 3,
           );
 
-          // BLEWriteLogger(data);
+          BLEWriteLogger(data);
         } catch (error) {
           console.log('belWrite', (error as Error).message);
         }
@@ -86,7 +86,10 @@ const useBLE = () => {
   return __DEV__
     ? {
         getBLEBatteryPower: () => Promise.resolve('70'),
-        bleWrite: () => Promise.resolve({}),
+        bleWrite: (data: any) => {
+          console.log(data);
+          Promise.resolve({});
+        },
         checkBLEConnectStatus: () => Promise.resolve({}),
       }
     : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };

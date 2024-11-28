@@ -8,18 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* skiboardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* skiboardTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-skiboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-skiboard.a */; };
 		0CBA41B74801436C8E5AB56E /* DINPro-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A7C718F314A041508C5E45BC /* DINPro-Bold.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1AC55B10ECFCE805F03FB875 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06CAF19E458382973EB3FD1 /* ExpoModulesProvider.swift */; };
 		2B49063C2B4ED1E600BF586E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B49063B2B4ED1E600BF586E /* BootSplash.storyboard */; };
-		4152BBB3F36ED008AB28612E /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F788AFF6E12C263FA331517 /* ExpoModulesProvider.swift */; };
-		7699B88040F8A987B510C191 /* libPods-skiboard-skiboardTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-skiboard-skiboardTests.a */; };
+		4F383E01D1C05D603F604562 /* libPods-Lumii.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A033A7D59E476DBB9BD71FB /* libPods-Lumii.a */; };
+		5DBB1696299C6147DEA9F329 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5723274C4C97418832480B /* ExpoModulesProvider.swift */; };
+		64CFFAAA6F2258C357E33128 /* libPods-Lumii-LumiiTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D83174C6284023852A90EED /* libPods-Lumii-LumiiTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		84D1A644AF634F918DBE7D79 /* FuturaLT-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D323E270EB14BA28E781200 /* FuturaLT-ExtraBold.ttf */; };
 		9EAE9347A28FC3C53E15F77B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 66B9F13A291DE2A7290583BF /* PrivacyInfo.xcprivacy */; };
-		B15E8290EDD8133B96F76ABC /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,27 +36,31 @@
 		00E356EE1AD99517003FC87E /* LumiiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumiiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* skiboardTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = skiboardTests.m; sourceTree = "<group>"; };
+		0F76019588533FAD5183BCE7 /* Pods-Lumii.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lumii.debug.xcconfig"; path = "Target Support Files/Pods-Lumii/Pods-Lumii.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Lumii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lumii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = skiboard/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = skiboard/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = skiboard/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = skiboard/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = skiboard/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-skiboard-skiboardTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-skiboard-skiboardTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B3D32872B4D169A001E3341 /* skiboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = skiboard.entitlements; path = skiboard/skiboard.entitlements; sourceTree = "<group>"; };
 		2B49063B2B4ED1E600BF586E /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = skiboard/BootSplash.storyboard; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-skiboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard.debug.xcconfig"; path = "Target Support Files/Pods-skiboard/Pods-skiboard.debug.xcconfig"; sourceTree = "<group>"; };
-		4F788AFF6E12C263FA331517 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-skiboard/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-skiboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard.release.xcconfig"; path = "Target Support Files/Pods-skiboard/Pods-skiboard.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-skiboard-skiboardTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard-skiboardTests.debug.xcconfig"; path = "Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-skiboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-skiboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F5723274C4C97418832480B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Lumii/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		66B9F13A291DE2A7290583BF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = skiboard/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = skiboard/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-skiboard-skiboardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-skiboard-skiboardTests.release.xcconfig"; path = "Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests.release.xcconfig"; sourceTree = "<group>"; };
+		8A033A7D59E476DBB9BD71FB /* libPods-Lumii.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Lumii.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D83174C6284023852A90EED /* libPods-Lumii-LumiiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Lumii-LumiiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FA41A7C3287215F95EF24CB /* Pods-Lumii.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lumii.release.xcconfig"; path = "Target Support Files/Pods-Lumii/Pods-Lumii.release.xcconfig"; sourceTree = "<group>"; };
 		9D323E270EB14BA28E781200 /* FuturaLT-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FuturaLT-ExtraBold.ttf"; path = "../assets/fonts/FuturaLT-ExtraBold.ttf"; sourceTree = "<group>"; };
+		A06CAF19E458382973EB3FD1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Lumii-LumiiTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		A7C718F314A041508C5E45BC /* DINPro-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DINPro-Bold.otf"; path = "../assets/fonts/DINPro-Bold.otf"; sourceTree = "<group>"; };
+		B818ED6463C5ED905E145E68 /* Pods-Lumii-LumiiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lumii-LumiiTests.debug.xcconfig"; path = "Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C024D36AD03DCE3866EE2AF7 /* Pods-Lumii-LumiiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lumii-LumiiTests.release.xcconfig"; path = "Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-skiboard-skiboardTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-skiboard-skiboardTests.a in Frameworks */,
+				64CFFAAA6F2258C357E33128 /* libPods-Lumii-LumiiTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-skiboard.a in Frameworks */,
+				4F383E01D1C05D603F604562 /* libPods-Lumii.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,39 +125,39 @@
 			name = skiboard;
 			sourceTree = "<group>";
 		};
-		16486C0EEC3911E671453DBE /* skiboard */ = {
-			isa = PBXGroup;
-			children = (
-				4F788AFF6E12C263FA331517 /* ExpoModulesProvider.swift */,
-			);
-			name = skiboard;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-skiboard.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-skiboard-skiboardTests.a */,
+				8A033A7D59E476DBB9BD71FB /* libPods-Lumii.a */,
+				8D83174C6284023852A90EED /* libPods-Lumii-LumiiTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3AFE5A1F1B3B8B365A348D8E /* LumiiTests */ = {
+			isa = PBXGroup;
+			children = (
+				A06CAF19E458382973EB3FD1 /* ExpoModulesProvider.swift */,
+			);
+			name = LumiiTests;
+			sourceTree = "<group>";
+		};
+		4F4C7836710F0AF13510D22E /* Lumii */ = {
+			isa = PBXGroup;
+			children = (
+				5F5723274C4C97418832480B /* ExpoModulesProvider.swift */,
+			);
+			name = Lumii;
 			sourceTree = "<group>";
 		};
 		50C9BB8ABDF74A183B6A4011 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				16486C0EEC3911E671453DBE /* skiboard */,
-				73F1FD2B27918FF104B254AC /* skiboardTests */,
+				4F4C7836710F0AF13510D22E /* Lumii */,
+				3AFE5A1F1B3B8B365A348D8E /* LumiiTests */,
 			);
 			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		73F1FD2B27918FF104B254AC /* skiboardTests */ = {
-			isa = PBXGroup;
-			children = (
-				EE28297794E87D65A31543A6 /* ExpoModulesProvider.swift */,
-			);
-			name = skiboardTests;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -196,6 +200,10 @@
 				5709B34CF0A7D63546082F79 /* Pods-skiboard.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-skiboard-skiboardTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-skiboard-skiboardTests.release.xcconfig */,
+				0F76019588533FAD5183BCE7 /* Pods-Lumii.debug.xcconfig */,
+				8FA41A7C3287215F95EF24CB /* Pods-Lumii.release.xcconfig */,
+				B818ED6463C5ED905E145E68 /* Pods-Lumii-LumiiTests.debug.xcconfig */,
+				C024D36AD03DCE3866EE2AF7 /* Pods-Lumii-LumiiTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -329,15 +337,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5529F60B0727A476C398AD5F /* [Expo] Configure project */ = {
@@ -357,7 +365,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-skiboard/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Lumii/expo-configure-project.sh\"\n";
 		};
 		8E7763AE26BD01745B33C639 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -376,7 +384,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-skiboard-skiboardTests/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Lumii-LumiiTests/expo-configure-project.sh\"\n";
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -393,7 +401,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-skiboard-skiboardTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Lumii-LumiiTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -415,7 +423,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-skiboard-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Lumii-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -428,15 +436,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
@@ -445,15 +453,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-skiboard/Pods-skiboard-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Lumii/Pods-Lumii-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
@@ -462,15 +470,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-skiboard-skiboardTests/Pods-skiboard-skiboardTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Lumii-LumiiTests/Pods-Lumii-LumiiTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -481,7 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* skiboardTests.m in Sources */,
-				B15E8290EDD8133B96F76ABC /* ExpoModulesProvider.swift in Sources */,
+				1AC55B10ECFCE805F03FB875 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +499,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				4152BBB3F36ED008AB28612E /* ExpoModulesProvider.swift in Sources */,
+				5DBB1696299C6147DEA9F329 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,7 +516,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-skiboard-skiboardTests.debug.xcconfig */;
+			baseConfigurationReference = B818ED6463C5ED905E145E68 /* Pods-Lumii-LumiiTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -536,7 +544,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-skiboard-skiboardTests.release.xcconfig */;
+			baseConfigurationReference = C024D36AD03DCE3866EE2AF7 /* Pods-Lumii-LumiiTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -561,7 +569,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-skiboard.debug.xcconfig */;
+			baseConfigurationReference = 0F76019588533FAD5183BCE7 /* Pods-Lumii.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
@@ -595,7 +603,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-skiboard.release.xcconfig */;
+			baseConfigurationReference = 8FA41A7C3287215F95EF24CB /* Pods-Lumii.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;

@@ -11,11 +11,15 @@ import {
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { useTranslation } from 'react-i18next';
+import { useRecoilState } from 'recoil';
+import { deviceInfoState } from '@stores/device/device.atom';
+import { useDebounceFn } from 'ahooks';
 export type DeviceListItemProps = {
   device: any;
 };
-const DeviceListItem: FC<DeviceListItemProps> = _props => {
-  //   const { device, handleConnectDevice } = props;
+const DeviceListItem: FC<DeviceListItemProps> = props => {
+  const { device } = props;
+  console.log(device);
   const [selectedDevice, setSelectedDevice] = useState<boolean>(false);
   const handleConnectDevice = () => {
     //处理蓝牙连接 数据共享
@@ -23,16 +27,27 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
   };
   const modalDeleteRef = useRef<BlurModalRef>(null);
   const modalEditRef = useRef<BlurModalRef>(null);
-  const handleEdit = () => {
-    console.log('edit');
-    modalEditRef.current?.closeModal();
-  };
+
   const handleDelete = () => {
     console.log('delete');
     modalEditRef.current?.closeModal();
   };
   const { width } = useScreenSize();
   const { t } = useTranslation();
+  const [deviceInfo, setDeviceInfo] = useRecoilState(deviceInfoState);
+  const [name, setName] = useState(deviceInfo.name);
+  const { run } = useDebounceFn((name?: string) => {
+    setDeviceInfo(prev => {
+      return {
+        ...prev,
+        name,
+      };
+    });
+  });
+  const handleEdit = () => {
+    modalEditRef.current?.closeModal();
+    run(name);
+  };
   return (
     <>
       <TouchableHighlight onPress={handleConnectDevice} style={{ flex: 1 }}>
@@ -105,7 +120,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                   fontSize: 15,
                   marginBottom: 9,
                 }}>
-                111
+                {device.name}
               </Text>
               <View
                 style={{
@@ -130,7 +145,7 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                       : 'rgba(255,255,255,0.65)',
                     marginLeft: 4,
                   }}>
-                  99%
+                  {device.num}%
                 </Text>
               </View>
             </View>
@@ -220,6 +235,8 @@ const DeviceListItem: FC<DeviceListItemProps> = _props => {
                 paddingRight: 12,
                 color: 'rgba(255,255,255,0.65)',
               }}
+              value={name}
+              onChangeText={setName}
             />
           </View>
           <TouchableHighlight

@@ -37,11 +37,11 @@ const MusicScreen = (props: MusicScreenProps) => {
   const { navigation } = props;
   const [switchValue, setSwitchValue] = useState<boolean>(false);
   const { bleWrite } = useBLE();
-  useEffect(() => {
-    bleWrite(
-      switchValue ? BLEConfig.musicScreen.open : BLEConfig.musicScreen.close,
-    );
-  }, [bleWrite, switchValue]);
+  // useEffect(() => {
+  //   bleWrite(
+  //     switchValue ? BLEConfig.musicScreen.open : BLEConfig.musicScreen.close,
+  //   );
+  // }, [bleWrite, switchValue]);
   const { t } = useTranslation();
   return (
     <ImageBackground
@@ -83,7 +83,14 @@ const MusicScreen = (props: MusicScreenProps) => {
                 </View>
                 <Switch
                   switchValue={switchValue}
-                  onSwitchChange={setSwitchValue}
+                  onSwitchChange={value => {
+                    bleWrite(
+                      value
+                        ? BLEConfig.musicScreen.open
+                        : BLEConfig.musicScreen.close,
+                    );
+                    setSwitchValue(value);
+                  }}
                 />
               </View>
               <View
