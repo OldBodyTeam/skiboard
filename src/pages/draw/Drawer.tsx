@@ -87,16 +87,17 @@ const Drawer: FC<DrawerProps> = props => {
   useMount(async () => {
     const collectionData = await getCollectionList();
     // @ts-ignore
-    if ((collectionData?.length ?? 0) >= 10) {
+    if ((collectionData?.length ?? 0) > 10) {
       showToast('只能创建10个作品，请删除后在进行绘制');
       navigation.push('Home', { screen: 'DesignScreen' });
       return;
     }
+    // @ts-ignore
+    setCollectionNum((collectionData?.length ?? 0) + 1);
     if (collectionId) {
-      const i = (data as unknown as any[]).findIndex(
+      const i = (collectionData as unknown as any[]).findIndex(
         item => item.id === collectionId,
       );
-      console.log('collectionNum', i);
       setCollectionNum(i + 1);
     } else {
       // @ts-ignore
@@ -120,6 +121,7 @@ const Drawer: FC<DrawerProps> = props => {
     setSelectedList(prev => {
       if (poi && !prev.has(poi?.target) && poi?.target && !clear) {
         prev.add(poi?.target);
+        setTarget(new Set([...prev]));
         return new Set([...prev]);
       } else if (poi && prev.has(poi?.target) && poi?.target && clear) {
         prev.delete(poi?.target);
@@ -131,7 +133,6 @@ const Drawer: FC<DrawerProps> = props => {
   };
   const b = (_e: any) => {
     if (!clear) {
-      setTarget(new Set([...selectedList]));
       setCurrentStatus({ prev: false, next: true });
     } else {
       setCurrentStatus({ prev: true, next: false });
@@ -202,6 +203,7 @@ const Drawer: FC<DrawerProps> = props => {
     }
     setSelectedList(new Set([...originList]));
   });
+
   const handleClear = useMemoizedFn(() => {
     setClear(c => !c);
   });
@@ -250,8 +252,7 @@ const Drawer: FC<DrawerProps> = props => {
       prev.set(optFrameIndex, new Set([...selectedList]));
       return new Map(prev);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedList]);
+  }, [selectedList, optFrameIndex]);
 
   const handlePress = () => {
     navigation.goBack();
@@ -261,7 +262,7 @@ const Drawer: FC<DrawerProps> = props => {
   const handleSpeed = useMemoizedFn((x: number) => {
     setSpeed(x);
     // @ts-ignore
-    bleWrite(BLEConfig.editLight[speed]);
+    bleWrite(BLEConfig.editLight[x]);
   });
 
   const handleCopyEvent = useMemoizedFn((index: number) => {
@@ -299,6 +300,7 @@ const Drawer: FC<DrawerProps> = props => {
           collectionNum,
         )}${getSimpleHex(key)}${item.join('')}61`,
       );
+
       queue.enqueue(
         `57e0${getHex(item.length + 2)}00${getSimpleHex(
           collectionNum,
@@ -317,7 +319,6 @@ const Drawer: FC<DrawerProps> = props => {
         frame: Array.from(value),
       });
     });
-    console.log(serverData);
     try {
       const client = await ClientRequest();
       client.collectionControllerCreate(userInfo?.id ?? '', {
@@ -357,6 +358,19 @@ const Drawer: FC<DrawerProps> = props => {
   };
   const handleSave = useMemoizedFn(() => {
     collectionId ? updateCollection() : createCollection();
+    handleBlueData();
+  });
+  const handleSinglePreview = useMemoizedFn(async () => {
+    const frame = frameList.get(optFrameIndex);
+    if (frame) {
+      const item = Array.from(frame).map(v => poi.get(v));
+      await bleWrite(
+        `57e0${getHex(item.length + 2)}00${getSimpleHex(
+          collectionNum,
+        )}${getSimpleHex(optFrameIndex)}${item.join('')}61`,
+      );
+      await bleWrite('57e003011061');
+    }
   });
   const getCollection = async () => {
     try {
@@ -391,7 +405,7 @@ const Drawer: FC<DrawerProps> = props => {
     }
   });
   return (
-    <View style={{ flex: 1, backgroundColor: '#5938EC' }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#5938EC' }}>
       <StatusBar />
       <SafeAreaView
         style={{ flex: 1, backgroundColor: '#5938EC' }}
@@ -424,11 +438,11 @@ const Drawer: FC<DrawerProps> = props => {
             experimentalBlurMethod="dimezisBlurView">
             <View style={styles.leftOpt}>
               <TouchableOpacity
-                onPress={handleNext}
-                disabled={currentStatus.next}>
+                onPress={handlePrev}
+                disabled={currentStatus.prev}>
                 <Image
                   source={
-                    currentStatus.next
+                    currentStatus.prev
                       ? require('../../assets/draw/letf-tra.png')
                       : require('../../assets/draw/left.png')
                   }
@@ -436,8 +450,8 @@ const Drawer: FC<DrawerProps> = props => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={handlePrev}
-                disabled={currentStatus.prev}>
+                onPress={handleNext}
+                disabled={currentStatus.next}>
                 <Image
                   source={
                     currentStatus.next
@@ -448,39 +462,48 @@ const Drawer: FC<DrawerProps> = props => {
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={handleClear}>
-              <Image
-                source={require('../../assets/draw/clean.png')}
-                style={StyleSheet.compose(styles.clear, {
-                  backgroundColor: clear ? 'red' : 'yellow',
-                })}
-              />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={handleClear}>
+                <Image
+                  source={require('../../assets/draw/magic.png')}
+                  style={StyleSheet.compose(styles.clear, {
+                    backgroundColor: clear ? 'white' : 'yellow',
+                    marginRight: 8,
+                  })}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleClear}>
+                <Image
+                  source={require('../../assets/draw/clean.png')}
+                  style={StyleSheet.compose(styles.clear, {
+                    backgroundColor: clear ? 'yellow' : 'white',
+                  })}
+                />
+              </TouchableOpacity>
+            </View>
           </BlurView>
-          <View style={styles.menuBlock}>
-            <Text style={styles.frames}>{t('draw-light-frames')}</Text>
-            <ScrollView horizontal style={styles.scrollBlock}>
-              {Array(frameList.size)
-                .fill(1)
-                .map((_, index) => {
+          <View style={styles.cover}>
+            <View style={styles.menuBlock}>
+              <Text style={styles.frames}>{t('draw-light-frames')}</Text>
+              <ScrollView horizontal style={styles.scrollBlock}>
+                {Array.from(frameList.keys()).map(index => {
+                  console.log('index', index);
                   return (
                     <TouchableOpacity
-                      onPress={() => handleSelectedFrame(index + 1)}
+                      onPress={() => handleSelectedFrame(index)}
                       key={index}>
                       <View
                         style={[
                           styles.containerItem,
                           {
                             borderColor:
-                              optFrameIndex === index + 1
-                                ? '#5938EC'
-                                : '#000000',
+                              optFrameIndex === index ? '#5938EC' : '#000000',
                           },
                         ]}>
                         <TouchableWithoutFeedback
                           onPress={e => {
                             e.stopPropagation();
-                            handleCopyEvent(index + 1);
+                            handleCopyEvent(index);
                           }}>
                           <Image
                             source={require('../../assets/draw/copy.png')}
@@ -490,7 +513,7 @@ const Drawer: FC<DrawerProps> = props => {
                         <TouchableWithoutFeedback
                           onPress={e => {
                             e.stopPropagation();
-                            handleDeleteEvent(index + 1);
+                            handleDeleteEvent(index);
                           }}>
                           <Image
                             source={require('../../assets/draw/delete.png')}
@@ -506,9 +529,7 @@ const Drawer: FC<DrawerProps> = props => {
                                     key={`${r}-${c}`}
                                     width={6}
                                     selected={
-                                      !!frameList
-                                        .get(index + 1)
-                                        ?.has(`${r}-${c}`)
+                                      !!frameList.get(index)?.has(`${r}-${c}`)
                                     }
                                   />
                                 );
@@ -520,38 +541,39 @@ const Drawer: FC<DrawerProps> = props => {
                     </TouchableOpacity>
                   );
                 })}
-              <TouchableOpacity
-                onPress={() => handleSelectedFrame(frameList.size + 1)}>
-                <View style={[styles.containerItem]}>
-                  <Image
-                    source={require('../../assets/draw/add.png')}
-                    style={styles.blockAdd}
-                  />
+                <TouchableOpacity
+                  onPress={() => handleSelectedFrame(frameList.size + 1)}>
+                  <View style={[styles.containerItem]}>
+                    <Image
+                      source={require('../../assets/draw/add.png')}
+                      style={styles.blockAdd}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </ScrollView>
+              <View style={styles.slider}>
+                <View style={{ marginRight: 9 }}>
+                  <Text style={styles.speed}>{t('draw-light-speed')}</Text>
                 </View>
-              </TouchableOpacity>
-            </ScrollView>
-            <View style={styles.slider}>
-              <View style={{ marginRight: 9 }}>
-                <Text style={styles.speed}>{t('draw-light-speed')}</Text>
+                <SliderDraw onChange={handleSpeed} speed={speed} />
               </View>
-              <SliderDraw onChange={handleSpeed} speed={speed} />
-            </View>
-            <View style={styles.btnBlock}>
-              <TouchableOpacity onPress={handleBlueData}>
-                <View style={styles.previewBtn}>
-                  <Text>预览</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleSave}>
-                <View style={styles.createBtn}>
-                  <Text>创建</Text>
-                </View>
-              </TouchableOpacity>
+              <View style={styles.btnBlock}>
+                <TouchableOpacity onPress={handleSinglePreview}>
+                  <View style={styles.previewBtn}>
+                    <Text>预览</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSave}>
+                  <View style={styles.createBtn}>
+                    <Text>创建</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
       </SafeAreaView>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -559,6 +581,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#5938EC',
     position: 'relative',
+  },
+  cover: {
+    backgroundColor: '#5938EC',
+    marginTop: 20,
   },
   container: {
     alignItems: 'center',
@@ -650,9 +676,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 24,
     overflow: 'hidden',
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
     width: Dimensions.get('window').width,
   },
   frames: {

@@ -1,5 +1,5 @@
-import React, { FC, useEffect } from 'react';
-import { Dimensions, StyleSheet, View, ImageBackground } from 'react-native';
+import React, { FC } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   clamp,
@@ -47,11 +47,15 @@ const SliderDraw: FC<SliderDrawProps> = props => {
       translationX.value = clamp(a, 0, maxTranslateX);
     })
     .runOnJS(true);
-
+  // const animatedTextStyle = useAnimatedStyle(() => ({
+  //   color: interpolateColor(
+  //     speed,
+  //     [speed - 1, speed, speed + 1],
+  //     ['black', 'white', 'black'],
+  //   ),
+  // }));
   return (
-    <ImageBackground
-      style={styles.container}
-      source={require('../../assets/draw/slider.png')}>
+    <View style={styles.container}>
       <View style={styles.list}>
         {[0, 1, 2, 3, 4].map(item => {
           return (
@@ -61,6 +65,7 @@ const SliderDraw: FC<SliderDrawProps> = props => {
                 style={[
                   styles.text,
                   { color: speed === item ? 'white' : 'black' },
+                  // animatedTextStyle,
                 ]}>
                 {item}
               </Animated.Text>
@@ -74,20 +79,23 @@ const SliderDraw: FC<SliderDrawProps> = props => {
           style={[animatedStyles, styles.slider]}
         />
       </GestureDetector>
-    </ImageBackground>
+    </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     width: windowWidth - 48 - 67 - 9,
-    height: 42,
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
+    borderRadius: 48,
+    borderColor: '#BFBFBF',
+    borderWidth: 1,
   },
   item: {
     flex: 1,
-    height: 42,
+    height: 48,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -101,16 +109,17 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   text: {
-    color: '#ffffff',
+    color: 'black',
     fontSize: 14,
     fontWeight: '400',
   },
   slider: {
     width: (windowWidth - 48 - 67 - 9 - 32) / 5,
-    height: 56,
+    minWidth: 54.5,
+    height: 68,
     position: 'absolute',
     left: 16,
-    top: -7,
+    top: -10,
     zIndex: 5,
   },
 });

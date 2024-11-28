@@ -3,7 +3,7 @@ import { useMemoizedFn } from 'ahooks';
 import { useRecoilState } from 'recoil';
 import { Buffer } from 'buffer';
 import BleManager from 'react-native-ble-manager';
-import { BLEWriteLogger } from '@utils/log';
+// import { BLEWriteLogger } from '@utils/log';
 import Toast from 'react-native-root-toast';
 
 const useBLE = () => {
@@ -11,14 +11,14 @@ const useBLE = () => {
   const deviceId = deviceInfo.id;
   const deviceServiceUUID = deviceInfo.serviceUUIDs?.at(0)!;
   const deviceCharacteristicUUID = deviceInfo.characteristicUUIDs?.at(0)!;
-  console.log(
-    '正在读取id',
-    deviceId,
-    ' -- serviceUUIDs -- ',
-    deviceInfo.serviceUUIDs,
-    ' -- characteristicUUIDs -- ',
-    deviceInfo.characteristicUUIDs,
-  );
+  // console.log(
+  //   '正在读取id',
+  //   deviceId,
+  //   ' -- serviceUUIDs -- ',
+  //   deviceInfo.serviceUUIDs,
+  //   ' -- characteristicUUIDs -- ',
+  //   deviceInfo.characteristicUUIDs,
+  // );
   // 获取电量
   const getBLEBatteryPower = useMemoizedFn(async () => {
     try {
@@ -45,16 +45,24 @@ const useBLE = () => {
             await BleManager.connect(deviceId);
             Toast.show('蓝牙连接成功');
           }
+          // const maxLength =
+          //   await BleManager.getMaximumWriteValueLengthForWithoutResponse(
+          //     deviceId,
+          //   );
+          // console.log(maxLength);
+          // await BleManager.requestMTU(deviceId, maxLength);
           const buffer = Buffer.from(data, 'hex');
           const bleData = buffer.toJSON().data;
-          Toast.show('蓝牙开始写入');
+          Toast.show(`蓝牙开始写入${data}`);
           await BleManager.writeWithoutResponse(
             deviceId,
             deviceServiceUUID,
             deviceCharacteristicUUID,
             bleData,
+            512 - 3,
           );
-          BLEWriteLogger(data);
+
+          // BLEWriteLogger(data);
         } catch (error) {
           console.log('belWrite', (error as Error).message);
         }

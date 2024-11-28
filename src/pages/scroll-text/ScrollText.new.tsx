@@ -41,12 +41,14 @@ const ScrollTextNew: FC<ScrollTextProps> = props => {
     const str = textValue.trim().toLowerCase().split('');
     setTextStr(str);
     const covertText = str.map(v => get(BLEConfig, `scrollText.${v}`)).join('');
+    await bleWrite('57d0020061');
     await bleWrite(`57EF${getHex(covertText.length / 2)}${covertText}61`);
     console.log('handleGenerate');
   });
   const { width } = useScreenSize();
   const handleScrollText = useMemoizedFn((text: string) => {
-    if (!/^[0-9a-zA-Z]$/g.test(text)) {
+    console.log(text);
+    if (text.trim().length > 0 && !/^[0-9a-zA-Z]+$/g.test(text.trim())) {
       return Toast.show('只能输入数字字母', {
         position: Toast.positions.CENTER,
       });

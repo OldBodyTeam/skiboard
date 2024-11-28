@@ -13,6 +13,9 @@ const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
   const { bleWrite } = useBLE();
   const [bleData] = useRecoilState(bleState);
   useEffect(() => {
+    setReverse(false);
+  }, [bleData?.title]);
+  useEffect(() => {
     // if (mode === 'led') {
     //   bleWrite(
     //     reverse ? BLEConfig.led.reverseRight : BLEConfig.led.reverseLeft,
@@ -81,6 +84,7 @@ const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
           alignItems: 'center',
           justifyContent: 'center',
         }}
+        disabled={!get(reverseMode, `${bleData?.title}.${bleData?.key}`)}
         onPress={() => setReverse(true)}>
         <Image
           source={require('../../assets/progress-number/right.png')}

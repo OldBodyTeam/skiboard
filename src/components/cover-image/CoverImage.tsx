@@ -1,4 +1,5 @@
 import useBLE from '@hooks/useBLE';
+import { deviceInfoState } from '@stores/device/device.atom';
 import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useRecoilState } from 'recoil';
 const bgList = {
   light: {
     bg: require('../../assets/cover-img/light-bg.png'),
@@ -61,6 +63,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
     setBatteryPower(data ?? '0');
   });
   const { t } = useTranslation();
+  const [deviceInfo] = useRecoilState(deviceInfoState);
   return (
     <View>
       <ImageBackground
@@ -96,7 +99,9 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
               paddingHorizontal: 16,
             }}>
             <Text style={{ fontSize: 14, color: 'white' }}>
-              {t('ble-Connected')}
+              {deviceInfo.connected
+                ? t('ble-Connected')
+                : t('ble-DisConnected')}
             </Text>
             <View
               style={{

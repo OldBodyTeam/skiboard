@@ -12,8 +12,8 @@
     "scroll-text": "滚动字幕",
     "custom-design": "绘制面灯灯效",
     "creative-patterns": "创意库",
-    "sound-effects":"声控模式",
-    "lightGlow-modes":"灯带动态灯效",
+    "sound-effects": "声控模式",
+    "lightGlow-modes": "灯带动态灯效",
     "schedute": "定时设置",
     "scenes": "场景",
     "LED-Strips-Effects": "LED串灯动态灯效",
@@ -44,8 +44,6 @@
     "love": "请选择您喜爱的音乐",
     "Microphone": "麦克风拾音",
     "Sensitivity": "灵敏度",
-
-
     "Auto-cycle": "自动循环",
     "Iris Rainbow": "幻彩彩虹",
     "Color Gradient": "七色渐变",
@@ -54,7 +52,6 @@
     "Green-Cyan Gradient": "绿青交替渐变",
     "Green-Yellow Gradient": "绿黄交替渐变",
     "Blue-Purple Gradient": "蓝紫交替渐变",
-
     "Red Horse Race": "红色跑马",
     "Green Horse Race": "绿色跑马",
     "Blue Horse Race": "蓝色跑马",
@@ -94,7 +91,6 @@
     "Cyan bkgrd with Rainbow": "青底七色跑动",
     "Purple bkgrd with Rainbow": "紫底七色跑动",
     "White bkgrd with Rainbow": "白底七色跑动",
-
     "Color Energy": "七彩能量",
     "Color Jump": "七色跳变",
     "Red-Green-Blue Jump": "红绿蓝跳变",
@@ -102,7 +98,6 @@
     "Color Strobe": "七色频闪",
     "Red-Green-Blue Strobe": "红绿蓝频闪",
     "Yellow-Cyan-Purple Strobe": "黄青紫频闪",
-
     "Color Fade": "七色明暗过渡",
     "Yellow-Green-Red Fade": "黄绿红明暗过渡",
     "Purple-Cyan-Yellow Fade": "紫青黄明暗过渡",
@@ -122,7 +117,6 @@
     "Yellow-Cyan Flow": "黄青流水 ",
     "Purple-Cyan Flow": "青紫流水",
     "Black-White Flow": "黑白流水",
-
     "Color Trailing": "七彩拖尾",
     "Red Trailing": "红色拖尾",
     "Green Trailing": "绿色拖尾",
@@ -131,7 +125,6 @@
     "Cyan Trailing": "青色拖尾",
     "Purple Trailing": "紫色拖尾",
     "White Trailing": "白色拖尾",
-
     "Color Chasing": "七彩追光",
     "Red-Green-Blue Chasing": "红绿蓝追光",
     "Yellow-Cyan-Purple Chasing": "黄青紫追光",
@@ -150,7 +143,6 @@
     "Yellow-White-Yellow Flow": "黄白黄流动",
     "Cyan-White-Cyan Flow": "青白青流动",
     "Purple-White-Purple Flow": "紫白紫流动",
-
     "Color Curtain": "七彩拉幕",
     "Red-Green-Blue Curtain": "红绿蓝拉幕",
     "Yellow-Cyan-Purple Curtain": "黄青紫拉幕",
@@ -164,7 +156,6 @@
     "Color Wash": "七彩刷色拉幕",
     "Red-Green-Blue Wash": "红绿蓝刷色拉幕",
     "Yellow-Cyan-Purple Wash": "黄青紫刷色拉幕",
-
     "Rest": "重置",
     "Email": "邮箱",
     "email-placeholder": "请输入邮箱",
@@ -195,5 +186,6 @@
     "save": "保存",
     "preview": "预览",
     "draw-light-speed": "速度",
-    "draw-light-frames": "关键帧"
+    "draw-light-frames": "关键帧",
+    "ble-DisConnected": "断开"
 }

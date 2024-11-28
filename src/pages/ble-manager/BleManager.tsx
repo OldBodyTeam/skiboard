@@ -169,7 +169,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
       '[handleDiscoverPeripheral] new BLE peripheral=',
       peripheral.name,
     );
-    if (peripheral.name?.startsWith('Wagli') && peripheral.id) {
+    if (peripheral.name?.startsWith('Lumii') && peripheral.id) {
       setPeripherals(map => {
         return new Map(map.set(peripheral.id, peripheral));
       });
@@ -245,10 +245,25 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         });
         await sleep(900);
         try {
-          const mtu = await BleManager.requestMTU(peripheral.id, 512);
-          Toast.show(`MTU size changed to ${mtu} bytes`);
+          if (Platform.OS === 'android') {
+            const maxLength =
+              await BleManager.getMaximumWriteValueLengthForWithoutResponse(
+                peripheral.id,
+              );
+            console.log(maxLength);
+            const mtu = await BleManager.requestMTU(
+              peripheral.id,
+              maxLength > 500 ? maxLength : 510,
+            );
+            Toast.show(`MTU size changed to ${mtu} bytes`, {
+              position: Toast.positions.CENTER,
+            });
+          }
         } catch (error) {
-          Toast.show(`Failed to change MTU size: ${error}`);
+          console.log(`Failed to change MTU size: ${error}`);
+          Toast.show(`Failed to change MTU size: ${error}`, {
+            position: Toast.positions.CENTER,
+          });
         }
 
         // before retrieving services, it is often a good idea to let bonding & connection finish properly

@@ -24,10 +24,10 @@ import { userInfoState } from '@stores/login/login.atom';
 import { CollectionEntity } from '@services/data-contracts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMount } from 'ahooks';
-import { getHex, getSimpleHex } from '@utils/hex';
-import { useSend } from '@utils/send';
-import useBLE from '@hooks/useBLE';
-import { drawData, poi } from '@pages/draw/config';
+// import { getHex, getSimpleHex } from '@utils/hex';
+// import { useSend } from '@utils/send';
+// import useBLE from '@hooks/useBLE';
+import { drawData } from '@pages/draw/config';
 import { Items } from '@pages/draw/Drawer';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
@@ -45,8 +45,8 @@ const LightListNew: FC<LightListProps> = props => {
     frameIndex: number;
   }>();
   const [collectionInfo, setCollectionInfo] = useState<CollectionEntity[]>([]);
-  const { queue, consumer } = useSend();
-  const { bleWrite } = useBLE();
+  // const { queue, consumer } = useSend();
+  // const { bleWrite } = useBLE();
   const getCollectionList = async () => {
     try {
       console.log('xxx', userInfo?.id);
@@ -57,20 +57,20 @@ const LightListNew: FC<LightListProps> = props => {
       const collection = responseData.data
         .data as unknown as CollectionEntity[];
       setCollectionInfo(collection);
-      console.log(collection);
-      collection?.forEach((item, index) => {
-        const frameList = item.frameList as unknown as { frame: any[][] }[];
-        frameList?.forEach((it, i) => {
-          const frame = it.frame;
-          const code = frame.map(key => poi.get(key));
-          const pointer = `57e0${getHex(code.length / 2 + 2)}00${getSimpleHex(
-            index,
-          )}${getSimpleHex(i + 1)}${code}61`;
-          queue.enqueue(pointer);
-          console.log('************', pointer);
-        });
-      });
-      consumer.startConsuming(bleWrite);
+      // console.log(collection);
+      // collection?.forEach((item, index) => {
+      //   const frameList = item.frameList as unknown as { frame: any[][] }[];
+      //   frameList?.forEach((it, i) => {
+      //     const frame = it.frame;
+      //     const code = frame.map(key => poi.get(key));
+      //     const pointer = `57e0${getHex(code.length / 2 + 2)}00${getSimpleHex(
+      //       index,
+      //     )}${getSimpleHex(i + 1)}${code}61`;
+      //     queue.enqueue(pointer);
+      //     console.log('************', pointer);
+      //   });
+      // });
+      // consumer.startConsuming(bleWrite);
     } catch (e) {
       Toast.show(`${(e as Error).message}`);
     }
@@ -101,10 +101,12 @@ const LightListNew: FC<LightListProps> = props => {
 
   const { width } = useScreenSize();
   const handleEditLight = (collectionId: string) => {
-    navigation.push('EditLight', { collectionId: collectionId });
+    navigation.push('Drawer', { collectionId: collectionId });
   };
   useMount(() => {
-    getCollectionList();
+    setTimeout(() => {
+      getCollectionList();
+    }, 300);
   });
   const data = covertCanUseCanvasData(drawData);
   return (

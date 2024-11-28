@@ -44,7 +44,6 @@
     "love": "Select artiste you love",
     "Microphone": "Microphone",
     "Sensitivity": "Sensitivity",
-
     "Auto-cycle": "Auto-cycle",
     "Iris Rainbow": "Iris Rainbow",
     "Color Gradient": "Color Gradient",
@@ -53,7 +52,6 @@
     "Green-Cyan Gradient": "Green-Cyan Gradient",
     "Green-Yellow Gradient": "Green-Yellow Gradient",
     "Blue-Purple Gradient": "Blue-Purple Gradient",
-
     "Red Horse Race": "Red Horse Race",
     "Green Horse Race": "Green Horse Race",
     "Blue Horse Race": "Blue Horse Race",
@@ -93,7 +91,6 @@
     "Cyan bkgrd with Rainbow": "Cyan bkgrd with Rainbow",
     "Purple bkgrd with Rainbow": "Purple bkgrd with Rainbow",
     "White bkgrd with Rainbow": "White bkgrd with Rainbow",
-
     "Color Energy": "Color Energy",
     "Color Jump": "Color Jump",
     "Red-Green-Blue Jump": "Red-Green-Blue Jump",
@@ -101,7 +98,6 @@
     "Color Strobe": "Color Strobe",
     "Red-Green-Blue Strobe": "Red-Green-Blue Strobe",
     "Yellow-Cyan-Purple Strobe": "Yellow-Cyan-Purple Strobe",
-
     "Color Fade": "Color Fade",
     "Yellow-Green-Red Fade": "Yellow-Green-Red Fade",
     "Purple-Cyan-Yellow Fade": "Purple-Cyan-Yellow Fade",
@@ -121,7 +117,6 @@
     "Yellow-Cyan Flow": "Yellow-Cyan Flow",
     "Purple-Cyan Flow": "Purple-Cyan Flow",
     "Black-White Flow": "Black-White Flow",
-
     "Color Trailing": "Color Trailing",
     "Red Trailing": "Red Trailing",
     "Green Trailing": "Green Trailing",
@@ -130,7 +125,6 @@
     "Cyan Trailing": "Cyan Trailing",
     "Purple Trailing": "Purple Trailing",
     "White Trailing": "White Trailing",
-
     "Color Chasing": "Color Chasing",
     "Red-Green-Blue Chasing": "Red-Green-Blue Chasing",
     "Yellow-Cyan-Purple Chasing": "Yellow-Cyan-Purple Chasing",
@@ -149,7 +143,6 @@
     "Yellow-White-Yellow Flow": "Yellow-White-Yellow Flow",
     "Cyan-White-Cyan Flow": "Cyan-White-Cyan Flow",
     "Purple-White-Purple Flow": "Purple-White-Purple Flow",
-
     "Color Curtain": "Color Curtain",
     "Red-Green-Blue Curtain": "Red-Green-Blue Curtain",
     "Yellow-Cyan-Purple Curtain": "Yellow-Cyan-Purple Curtain",
@@ -163,7 +156,6 @@
     "Color Wash": "Color Wash",
     "Red-Green-Blue Wash": "Red-Green-Blue Wash",
     "Yellow-Cyan-Purple Wash": "Yellow-Cyan-Purple Wash",
-
     "Rest": "Rest",
     "Email": "Email",
     "email-placeholder": "Enter Email",
@@ -194,5 +186,6 @@
     "save": "Save",
     "preview": "Preview",
     "draw-light-speed": "Speed",
-    "draw-light-frames": "Frames"
+    "draw-light-frames": "Frames",
+    "ble-DisConnected": "DisConnected"
 }

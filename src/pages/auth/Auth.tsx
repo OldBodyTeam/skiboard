@@ -22,7 +22,7 @@ const Auth = (props: AuthProps) => {
         const userInfoData = await client.userControllerUser(userId);
         setUserInfo(userInfoData.data.data);
         if (deviceInfo.connected) {
-          // navigation.push('Home', { screen: 'DesignScreen' });
+          navigation.push('Home', { screen: 'DesignScreen' });
         } else {
           __DEV__
             ? navigation.push('Home', { screen: 'DesignScreen' })

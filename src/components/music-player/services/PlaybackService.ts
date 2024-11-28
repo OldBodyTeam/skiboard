@@ -56,9 +56,9 @@ export const PlaybackService = async () => {
     console.log('Event.PlaybackState', event);
   });
 
-  //   TrackPlayer.addEventListener(Event.AudioMetadataReceivedEvent, event => {
-  //     console.log('[Deprecated] Event.AudioChapterMetadataReceived', event);
-  //   });
+  // TrackPlayer.addEventListener(Event.AudioMetadataReceivedEvent, event => {
+  //   console.log('[Deprecated] Event.AudioChapterMetadataReceived', event);
+  // });
 
   TrackPlayer.addEventListener(Event.MetadataChapterReceived, event => {
     console.log('Event.MetadataChapterReceived', event);
@@ -72,19 +72,17 @@ export const PlaybackService = async () => {
     console.log('Event.MetadataCommonReceived', event);
   });
 
-  // TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, event => {
-  //   console.log('Event.PlaybackProgressUpdated', event);
-  // });
+  TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, event => {
+    console.log('Event.PlaybackProgressUpdated', event);
+  });
 
-  //   TrackPlayer.addEventListener(
-  //     Event.AudioCommonMetadata,
-  //     async ({ title, artist }) => {
-  //       const activeTrack = await TrackPlayer.getActiveTrack();
-  //       TrackPlayer.updateNowPlayingMetadata({
-  //         artist: [title, artist].filter(Boolean).join(' - '),
-  //         title: activeTrack?.title,
-  //         artwork: activeTrack?.artwork,
-  //       });
-  //     },
-  //   );
+  TrackPlayer.addEventListener(Event.MetadataCommonReceived, async a => {
+    console.log(a);
+    // const activeTrack = await TrackPlayer.getActiveTrack();
+    // TrackPlayer.updateNowPlayingMetadata({
+    //   artist: [title, artist].filter(Boolean).join(' - '),
+    //   title: activeTrack?.title,
+    //   artwork: activeTrack?.artwork,
+    // });
+  });
 };
