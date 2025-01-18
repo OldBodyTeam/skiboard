@@ -21,13 +21,11 @@ import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { lightScreen } from '@config/light-screen';
 import { useTranslation } from 'react-i18next';
-import {
-  FadeInView,
-  SpringInView,
-  SpringInViewX,
-} from '@components/fade-in-view/FadeInView';
+import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
 import { getHex } from '@utils/hex';
-const data = ['#FFFFFF', '#FACF00', '#00FEFC', '#FF8A5E', '#AA8F1E', '#60AEE6'];
+import { useToastMessage } from '@hooks/useAxiosError';
+const data = ['#FFFF00', '#FF00AB', '#00FFFF', '#FF0000', '#00FF00', '#0000FF'];
+const randomNumber = () => Math.floor(Math.random() * 256);
 type LightScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -38,13 +36,27 @@ const LightScreen = (props: LightScreenProps) => {
 
   const [selected, setSelected] = useState(-1);
   const [switchValue, setSwitchValue] = useState<boolean>(false);
+  const { toast } = useToastMessage();
+
   const handleSelectedColor = (currentOptIndex: number) => {
+    if (!switchValue) {
+      toast(t('打开灯带开关'));
+      return;
+    }
     if (switchValue && currentOptIndex !== 11) {
       setSelected(currentOptIndex);
       const writeData = data[currentOptIndex].slice(1);
+      console.log(
+        writeData,
+        BLEConfig.lightScreen[writeData as keyof typeof lightScreen],
+      );
       bleWrite(BLEConfig.lightScreen[writeData as keyof typeof lightScreen]);
     } else if (currentOptIndex === 11) {
-      bleWrite(BLEConfig.lightScreen.random);
+      bleWrite(
+        `57ed04${getHex(randomNumber())}${getHex(randomNumber())}${getHex(
+          randomNumber(),
+        )}61`,
+      );
       setSelected(11);
     }
   };
@@ -69,9 +81,8 @@ const LightScreen = (props: LightScreenProps) => {
   //   );
   // }, [bleWrite, switchValue]);
 
-  const handleSelected = (color: string) => {
-    console.log(color);
-    bleWrite(BLEConfig.lightScreen[color as keyof typeof lightScreen]);
+  const handleSelected = async (color: string) => {
+    await bleWrite(`57ed04${color}61`);
   };
   const { t } = useTranslation();
   return (
@@ -132,12 +143,15 @@ const LightScreen = (props: LightScreenProps) => {
               <Progress onProgressChange={handleProgressChange} />
               <Switch
                 switchValue={switchValue}
-                onSwitchChange={(value: boolean) => {
-                  bleWrite(
+                onSwitchChange={async (value: boolean) => {
+                  await bleWrite(
                     value
                       ? BLEConfig.lightScreen.openLight
                       : BLEConfig.lightScreen.closeLight,
                   );
+                  if (value) {
+                    await bleWrite('57ed04FF8A5E61');
+                  }
                   setSwitchValue(value);
                 }}
               />
@@ -146,10 +160,6 @@ const LightScreen = (props: LightScreenProps) => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={{
-                // display: 'flex',
-                // alignItems: 'center',
-                // justifyContent: 'space-between',
-                // flexDirection: 'row',
                 flex: 1,
               }}>
               {data.map((color, index) => {

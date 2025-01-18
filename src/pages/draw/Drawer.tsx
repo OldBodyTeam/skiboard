@@ -20,7 +20,7 @@ import { covertCanUseCanvasData, drawData, getPointPoi, poi } from './config';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { runOnJS } from 'react-native-reanimated';
-import { useMemoizedFn, useMount } from 'ahooks';
+import { useDebounceFn, useMemoizedFn, useMount } from 'ahooks';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 import SliderDraw from './SliderDraw';
@@ -38,24 +38,36 @@ import { getHex, getSimpleHex } from '@utils/hex';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import useToast from '@hooks/useToast';
+import { v4 } from 'uuid';
 const windowWidth = Dimensions.get('window').width;
 type DrawerProps = NativeStackScreenProps<RootStackParamList, 'ScrollText'> &
   PropsWithChildren<{ name?: string }>;
 export type ItemsProps = {
   width: number;
   selected: boolean;
+  a?: boolean;
 };
 export const Items: FC<ItemsProps> = props => {
-  const { selected, width } = props;
+  const { selected, width, a } = props;
 
   return (
     <View
-      style={StyleSheet.compose(styles.items, {
-        width: width,
-        height: width,
-        borderRadius: width,
-        backgroundColor: selected ? '#F7E54C' : '#715DEE',
-      })}
+      style={StyleSheet.compose(
+        styles.items,
+        !a
+          ? {
+              width: width,
+              height: width,
+              borderRadius: width,
+              backgroundColor: selected ? '#F7E54C' : '#715DEE',
+            }
+          : {
+              width: width,
+              height: width,
+              borderRadius: width,
+              backgroundColor: selected ? '#F7E54C' : 'transparent',
+            },
+      )}
     />
   );
 };
@@ -227,8 +239,9 @@ const Drawer: FC<DrawerProps> = props => {
   });
 
   const handleSelectedFrame = useMemoizedFn((index: number) => {
+    console.log('add or selected', index);
     if (frameList.size === 10) {
-      Toast.show('最多创建10个frames', { position: Toast.positions.CENTER });
+      Toast.show(t('create-frame-tips'), { position: Toast.positions.CENTER });
       return;
     }
     setOptFrameIndex(index);
@@ -248,6 +261,7 @@ const Drawer: FC<DrawerProps> = props => {
   });
 
   useEffect(() => {
+    console.log('&&&&&&&&&&', optFrameIndex);
     setFrameList(prev => {
       prev.set(optFrameIndex, new Set([...selectedList]));
       return new Map(prev);
@@ -267,7 +281,7 @@ const Drawer: FC<DrawerProps> = props => {
 
   const handleCopyEvent = useMemoizedFn((index: number) => {
     if (frameList.size === 10) {
-      Toast.show('最多创建10个frames', { position: Toast.positions.CENTER });
+      Toast.show(t('create-frame-tips'), { position: Toast.positions.CENTER });
       return;
     }
     setOptFrameIndex(frameList.size + 1);
@@ -279,17 +293,23 @@ const Drawer: FC<DrawerProps> = props => {
     }
   });
   const handleDeleteEvent = useMemoizedFn((index: number) => {
-    if (frameList.size === 1) {
-      Toast.show('无法删除当前的frame', { position: Toast.positions.CENTER });
+    if (frameList.size <= 1) {
+      Toast.show(t('delete-frame-tips'), {
+        position: Toast.positions.CENTER,
+      });
       return;
     }
-    const i = index - 1;
+    const keys = Array.from(frameList.keys()).filter(v => v !== index);
+
+    const i = keys?.at(0) ?? 1;
     setOptFrameIndex(i);
+    setSelectedList(new Set([...(frameList.get(i) ?? [])]));
     setFrameList(prev => {
       prev.delete(index);
       return new Map(prev);
     });
   });
+  console.log('keys', Array.from(frameList.keys()));
   const { queue, consumer } = useSend();
 
   const handleBlueData = useMemoizedFn(() => {
@@ -300,14 +320,17 @@ const Drawer: FC<DrawerProps> = props => {
           collectionNum,
         )}${getSimpleHex(key)}${item.join('')}61`,
       );
-
+      // 同步 预览亮 创建不亮
+      // 问题：新编辑永远在第二个 1,2,3,4
       queue.enqueue(
         `57e0${getHex(item.length + 2)}00${getSimpleHex(
           collectionNum,
         )}${getSimpleHex(key)}${item.join('')}61`,
       );
     });
-    queue.enqueue('57e003011061');
+    queue.enqueue(`57e00301${getSimpleHex(collectionNum)}061`);
+    // @ts-ignore
+    queue.enqueue(BLEConfig.editLight[speed]);
     consumer.startConsuming(bleWrite);
   });
   const [title, setTitle] = useState('Smiling Face');
@@ -356,21 +379,22 @@ const Drawer: FC<DrawerProps> = props => {
       showToast('更新失败');
     }
   };
-  const handleSave = useMemoizedFn(() => {
+  const { run: handleSave } = useDebounceFn(() => {
     collectionId ? updateCollection() : createCollection();
     handleBlueData();
   });
-  const handleSinglePreview = useMemoizedFn(async () => {
-    const frame = frameList.get(optFrameIndex);
-    if (frame) {
-      const item = Array.from(frame).map(v => poi.get(v));
-      await bleWrite(
-        `57e0${getHex(item.length + 2)}00${getSimpleHex(
-          collectionNum,
-        )}${getSimpleHex(optFrameIndex)}${item.join('')}61`,
-      );
-      await bleWrite('57e003011061');
-    }
+  const { run: handleSinglePreview } = useDebounceFn(async () => {
+    // const frame = frameList.get(optFrameIndex);
+    // if (frame) {
+    //   const item = Array.from(frame).map(v => poi.get(v));
+    //   await bleWrite(
+    //     `57e0${getHex(item.length + 2)}00${getSimpleHex(
+    //       collectionNum,
+    //     )}${getSimpleHex(optFrameIndex)}${item.join('')}61`,
+    //   );
+    //   await bleWrite('57e003011061');
+    // }
+    handleBlueData();
   });
   const getCollection = async () => {
     try {
@@ -395,6 +419,7 @@ const Drawer: FC<DrawerProps> = props => {
           setTarget(new Set([...element.frame]));
         }
       });
+      setTitle(collectionDetail?.name ?? 'Smiling Face');
     } catch (e) {
       console.log(e);
     }
@@ -410,7 +435,13 @@ const Drawer: FC<DrawerProps> = props => {
       <SafeAreaView
         style={{ flex: 1, backgroundColor: '#5938EC' }}
         edges={{ bottom: 'off', top: 'additive' }}>
-        <Header handlePress={handlePress} onChange={setTitle} />
+        <Header
+          handlePress={handlePress}
+          onChange={(c: string) => {
+            setTitle(c);
+          }}
+          title={title}
+        />
         <View style={styles.page}>
           <GestureDetector gesture={composed}>
             <View style={styles.container}>
@@ -486,24 +517,23 @@ const Drawer: FC<DrawerProps> = props => {
             <View style={styles.menuBlock}>
               <Text style={styles.frames}>{t('draw-light-frames')}</Text>
               <ScrollView horizontal style={styles.scrollBlock}>
-                {Array.from(frameList.keys()).map(index => {
-                  console.log('index', index);
+                {Array.from(frameList.keys()).map((key, index) => {
                   return (
                     <TouchableOpacity
-                      onPress={() => handleSelectedFrame(index)}
-                      key={index}>
+                      onPress={() => handleSelectedFrame(key)}
+                      key={key}>
                       <View
                         style={[
                           styles.containerItem,
                           {
                             borderColor:
-                              optFrameIndex === index ? '#5938EC' : '#000000',
+                              optFrameIndex === key ? '#5938EC' : '#000000',
                           },
                         ]}>
                         <TouchableWithoutFeedback
                           onPress={e => {
                             e.stopPropagation();
-                            handleCopyEvent(index);
+                            handleCopyEvent(key);
                           }}>
                           <Image
                             source={require('../../assets/draw/copy.png')}
@@ -513,7 +543,7 @@ const Drawer: FC<DrawerProps> = props => {
                         <TouchableWithoutFeedback
                           onPress={e => {
                             e.stopPropagation();
-                            handleDeleteEvent(index);
+                            handleDeleteEvent(key);
                           }}>
                           <Image
                             source={require('../../assets/draw/delete.png')}
@@ -529,7 +559,7 @@ const Drawer: FC<DrawerProps> = props => {
                                     key={`${r}-${c}`}
                                     width={6}
                                     selected={
-                                      !!frameList.get(index)?.has(`${r}-${c}`)
+                                      !!frameList.get(key)?.has(`${r}-${c}`)
                                     }
                                   />
                                 );

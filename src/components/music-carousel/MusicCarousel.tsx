@@ -1,20 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Dimensions, StyleProp, ViewStyle } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { View } from 'react-native-ui-lib';
 import MusicCarouselItem from './MusicCarouselItem';
 import { Easing } from 'react-native-reanimated';
-import TrackPlayer, {
-  State,
-  Track,
-  useProgress,
-} from 'react-native-track-player';
+import TrackPlayer, { Track } from 'react-native-track-player';
 import { playlistData } from '@components/music-player/assets/playlist';
-import useBLE from '@hooks/useBLE';
-import { useThrottleFn } from 'ahooks';
-import { getHex } from '@utils/hex';
-import { wave } from '@components/music-player/assets/wave';
-import { get } from 'lodash';
+
 export type MusicCarouselProps = {
   autoPlayReverse?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -23,6 +15,7 @@ export type MusicCarouselProps = {
   handleAutoPlay: (title: string, index?: number) => void;
   selectedIndex: number;
   currentSelectedLine: boolean;
+  setTitle: any;
 };
 const MusicCarousel: FC<MusicCarouselProps> = props => {
   const {
@@ -32,6 +25,7 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
     autoPlay,
     handleAutoPlay,
     currentSelectedLine,
+    setTitle,
   } = props;
   const r = React.useRef<ICarouselInstance>(null);
   useEffect(() => {
@@ -43,32 +37,7 @@ const MusicCarousel: FC<MusicCarouselProps> = props => {
       getStatus();
     };
   }, []);
-  const progress = useProgress();
 
-  const { bleWrite } = useBLE();
-  const { run } = useThrottleFn(
-    async volume => {
-      await bleWrite(`57e204${volume}61`);
-    },
-    { wait: 2000 },
-  );
-  const [title, setTitle] = useState('');
-  useEffect(() => {
-    const j = async () => {
-      const state = (await TrackPlayer.getPlaybackState()).state;
-      if (state === State.Playing && title) {
-        const num = get(
-          wave,
-          `${title}.${Math.floor(progress.position)}`,
-          undefined,
-        );
-        if (typeof num === 'number') {
-          run((num + 0.1).toFixed(6).split('.')[1]);
-        }
-      }
-    };
-    j();
-  }, [progress, run, title]);
   return (
     <View>
       <Carousel

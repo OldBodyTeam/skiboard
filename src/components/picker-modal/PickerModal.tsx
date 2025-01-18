@@ -1,6 +1,7 @@
 import React, {
   PropsWithChildren,
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -32,15 +33,18 @@ export type PickerModalRef = {
 export type BlurModalProps = {
   // type: TIME;
   handleCurrentSelectedTime: (chooseTime: {
-    currentTime: [number, string];
+    numType1: number;
+    currentTime: [number, number];
     time: TIME;
   }) => void; // 选择当前时间
+  a: [number, number];
+  numType: number;
 };
 const PickerModal = forwardRef<
   PickerModalRef,
   PropsWithChildren<BlurModalProps>
 >((props, ref) => {
-  const { handleCurrentSelectedTime } = props;
+  const { handleCurrentSelectedTime, a, numType } = props;
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTimeMode, setSelectedTimeMode] = useState<TIME>(TIME.AM);
   const handleMode = (time: TIME) => {
@@ -61,12 +65,27 @@ const PickerModal = forwardRef<
   const handleSaveOpt = () => {
     const hours = hourRef.current?.getCurrentIndex();
     const mins = minRef.current?.getCurrentIndex();
+    console.log(
+      'hours',
+      hours,
+      mins,
+      AMHoursList[hours!].num,
+      secondsList[mins!].num,
+    );
     handleCurrentSelectedTime({
-      currentTime: [AMHoursList[hours!].num, secondsList[mins!].id],
+      numType1: numType,
+      currentTime: [AMHoursList[hours!].num, secondsList[mins!].num],
       time: selectedTimeMode,
     });
   };
   const { t } = useTranslation();
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('scroll', a);
+      modalVisible && hourRef.current?.scrollTo({ index: a[0] });
+      modalVisible && minRef.current?.scrollTo({ index: a[1] });
+    }, 300);
+  }, [a, modalVisible]);
   return (
     <Modal
       animationType="fade"

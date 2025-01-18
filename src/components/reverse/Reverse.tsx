@@ -1,41 +1,52 @@
 import { reverseMode } from '@config/mode';
 import useBLE from '@hooks/useBLE';
-import { bleState } from '@stores/ble/ble.atom';
 import { BLEConfig } from '@utils/ble';
+import { useMemoizedFn } from 'ahooks';
 import { get } from 'lodash';
 import React, { FC, useEffect, useState } from 'react';
 import { Image, TouchableOpacity } from 'react-native';
+import Toast from 'react-native-root-toast';
 import { View } from 'react-native-ui-lib';
-import { useRecoilState } from 'recoil';
-const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
-  const { mode } = props;
+const Reverse: FC<{
+  mode: 'glow' | 'led';
+  title: string;
+  keyPoi: string;
+}> = props => {
+  const { title, keyPoi } = props;
   const [reverse, setReverse] = useState(false);
   const { bleWrite } = useBLE();
-  const [bleData] = useRecoilState(bleState);
   useEffect(() => {
     setReverse(false);
-  }, [bleData?.title]);
-  useEffect(() => {
-    // if (mode === 'led') {
-    //   bleWrite(
-    //     reverse ? BLEConfig.led.reverseRight : BLEConfig.led.reverseLeft,
-    //   );
-    // } else if (mode === 'glow') {
-    //   bleWrite(
-    //     reverse ? BLEConfig.glow.reverseRight : BLEConfig.glow.reverseLeft,
-    //   );
-    // }
-    const code = get(reverseMode, `${bleData?.title}.${bleData?.key}`);
-    if (reverse && code) {
-      const reverseCodeArr = (code as string).split('');
-      reverseCodeArr[5] = '3';
-      const reverseNewCode = reverseCodeArr.splice(7, 0, '00').join('');
-      bleWrite(reverseNewCode);
-    } else if (!reverse) {
-      bleWrite(get(BLEConfig, `mode.${bleData?.title}.${bleData?.key}`) ?? '');
+  }, [title, keyPoi]);
+  // console.log('&&&&&&', get(reverseMode, `${title}.${keyPoi}`));
+  // useEffect(() => {
+  //   const code = get(reverseMode, `${title}.${keyPoi}`);
+  //   if (reverse && code) {
+  //     const reverseCodeArr = (code as string).split('');
+  //     reverseCodeArr[5] = '3';
+  //     const reverseNewCode = reverseCodeArr.splice(7, 0, '00').join('');
+  //     bleWrite(reverseNewCode);
+  //   } else if (!reverse) {
+  //     bleWrite(get(BLEConfig, `mode.${title}.${keyPoi}`) ?? '');
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [bleWrite, mode, reverse]);
+
+  const handleBtnRevise = useMemoizedFn(async () => {
+    const code = get(reverseMode, `${title}.${keyPoi}`);
+    if (code) {
+      setReverse(true);
+      await bleWrite(code);
+    } else {
+      Toast.show('暂无反向灯效', { position: Toast.positions.CENTER });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bleWrite, mode, reverse]);
+  });
+
+  const handleCancelBtnRevise = useMemoizedFn(async () => {
+    setReverse(false);
+    await bleWrite(get(BLEConfig, `mode.${title}.${keyPoi}`) ?? '');
+  });
+
   return (
     <View
       style={{
@@ -60,7 +71,7 @@ const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        onPress={() => setReverse(false)}>
+        onPress={handleCancelBtnRevise}>
         <Image
           source={require('../../assets/progress-number/left.png')}
           style={{ width: 24, height: 23 }}
@@ -83,9 +94,9 @@ const Reverse: FC<{ mode: 'glow' | 'led' }> = props => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          opacity: reverse ? 1 : 0.6,
         }}
-        disabled={!get(reverseMode, `${bleData?.title}.${bleData?.key}`)}
-        onPress={() => setReverse(true)}>
+        onPress={handleBtnRevise}>
         <Image
           source={require('../../assets/progress-number/right.png')}
           style={{ width: 24, height: 23 }}

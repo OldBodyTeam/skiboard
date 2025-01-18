@@ -5,8 +5,10 @@ import {
   CarouselOneData,
   CarouselTwoData,
   CarouselThreeData,
+  glowModes,
 } from '@pages/light-glow-modes/utils';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { get } from 'lodash';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StatusBar, SafeAreaView, ScrollView } from 'react-native';
@@ -38,6 +40,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
     three: true,
   });
   const [selectedTitle, setSelectedTitle] = useState('Rainbow');
+  const [scrollDataItem, setScrollDataItem] = useState(glowModes.Rainbow.at(0));
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
 
@@ -51,6 +54,7 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
       };
     });
     setSelectedTitle(title);
+    setScrollDataItem(get(glowModes, `${title}.0`));
     setSelectedLine(id);
     setSelectedLinePosition(index!);
   };
@@ -100,7 +104,11 @@ const LEDStripsEffects = (props: LEDStripsEffectsProps) => {
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
-            <CoverCard selectedTitle={selectedTitle} mode="led" />
+            <CoverCard
+              selectedTitle={selectedTitle}
+              mode="led"
+              scrollDataItem={scrollDataItem as string}
+            />
           </ScrollView>
         </ScrollView>
       </SafeAreaView>

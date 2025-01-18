@@ -7,27 +7,57 @@ import { getHex } from '@utils/hex';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable, Image } from 'react-native';
-
+import Toast from 'react-native-root-toast';
+export const sleep = async (timer = 400) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timer);
+  });
+};
 export type PickTimeProps = {
   type: TIME;
+  numType: number;
+  onHandleTime: (a: any, b: any) => void;
+  switchValue: boolean;
   // handleSelectedTime: (timeType: TIME) => void;
   // selectedTimeMode: TIME;
 };
 const PickTime: FC<PickTimeProps> = props => {
-  const { type } = props;
-  const { bleWrite } = useBLE();
+  const { type, numType, onHandleTime, switchValue } = props;
   const modalRef = useRef<PickerModalRef>(null);
   const [showTime, setShowTime] = useState({
-    currentTime: [0, '00'],
+    currentTime: [0, 0],
     time: TIME.AM,
   });
-  const handleCurrentSelectedTime = (chooseTime: {
-    currentTime: [number, string];
+  const [pointer, setPointer] = useState<Map<string, [number, number]>>(
+    new Map(),
+  );
+  const handleCurrentSelectedTime = async (chooseTime: {
+    currentTime: [number, number];
     time: TIME;
+    numType1: number;
   }) => {
+    console.log('chooseTime', chooseTime, pointer.size);
     modalRef.current?.closeModal();
     setShowTime(chooseTime);
-    const { time, currentTime } = chooseTime;
+    const { time, currentTime, numType1 } = chooseTime;
+    const key = `${time}-${numType1}`;
+    setPointer(prev => {
+      prev.set(key, currentTime);
+      return new Map(prev);
+    });
+    onHandleTime(numType1, { type: time, currentTime });
+
+    console.log(pointer);
+    // await bleWrite('57ae020161');
+    // await sleep();
+    // if (numType1 === 1) {
+    // } else {
+    //   const am = time === TIME.AM ? currentTime : pointer.get(key) ?? [0, 0];
+    // }
+    // const pm = time === TIME.PM ? currentTime : pointer.get(key) ?? [0, 0];
+    // await bleWrite(`57ae05${getHex(am[0])}${am[1]}00ff61`);
+    // await sleep();
+    // await bleWrite(`57ae05${getHex(pm[0])}${pm[1]}00ff61`);
     /**
      * 57 - 时间段 - 长度 - 小时 - 分钟 - 61
      * 上午 57ab03082461
@@ -35,11 +65,12 @@ const PickTime: FC<PickTimeProps> = props => {
      */
     //57 ae 05 01 01 00 80 61
     // 57 ae 05 0E 0E 01 80 61
-    time === TIME.AM
-      ? bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}008061`)
-      : bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}018061`);
+    // time === TIME.AM
+    //   ? bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}00ff61`)
+    //   : bleWrite(`57ae05${getHex(currentTime[0])}${currentTime[0]}01ff61`);
   };
   const { t } = useTranslation();
+  console.log('time', `${type}-${numType}`);
   return (
     <View
       style={{
@@ -55,7 +86,14 @@ const PickTime: FC<PickTimeProps> = props => {
         }}>
         {type === TIME.AM ? 'From' : 'To'}
       </Text>
-      <Pressable onPress={() => modalRef.current?.openModal()}>
+      <Pressable
+        onPress={() => {
+          if (switchValue) {
+            modalRef.current?.openModal();
+          } else {
+            Toast.show(t('open-swiutch'), { position: Toast.positions.CENTER });
+          }
+        }}>
         <View
           style={{
             paddingHorizontal: 12,
@@ -74,7 +112,11 @@ const PickTime: FC<PickTimeProps> = props => {
               color: 'white',
               marginRight: 13 / 2,
             }}>
-            {showTime.currentTime.join(':')}
+            {showTime.currentTime
+              .map(v => {
+                return v < 10 ? '0' + v : v;
+              })
+              .join(':')}
           </Text>
           <Text
             style={{
@@ -91,7 +133,9 @@ const PickTime: FC<PickTimeProps> = props => {
         </View>
       </Pressable>
       <PickerModal
+        a={pointer.get(`${showTime.time}-${numType}`) ?? [0, 0]}
         ref={modalRef}
+        numType={numType}
         // type={selectedTimeMode}
         handleCurrentSelectedTime={handleCurrentSelectedTime}
       />

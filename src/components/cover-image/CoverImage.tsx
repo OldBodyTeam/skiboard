@@ -1,16 +1,28 @@
-import useBLE from '@hooks/useBLE';
-import { deviceInfoState } from '@stores/device/device.atom';
-import { useThrottleFn } from 'ahooks';
+// import useBLE from '@hooks/useBLE';
+import { butteryState, deviceInfoState } from '@stores/device/device.atom';
+// import { useMount, useThrottleFn } from 'ahooks';
+// import { get } from 'lodash';
 import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   Image,
   ImageBackground,
+  // NativeEventEmitter,
+  // NativeModules,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+// import BleManager, {
+//   BleDisconnectPeripheralEvent,
+//   BleManagerDidUpdateValueForCharacteristicEvent,
+//   BleScanCallbackType,
+//   BleScanMatchMode,
+//   BleScanMode,
+//   Peripheral,
+// } from 'react-native-ble-manager';
+
 import { useRecoilState } from 'recoil';
 const bgList = {
   light: {
@@ -41,6 +53,8 @@ export type CoverImageProps = { type: keyof typeof bgList } & {
   handleNavigationDevice: () => void;
   bottom: number;
 };
+// const BleManagerModule = NativeModules.BleManager;
+// const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
   const {
     type,
@@ -58,24 +72,50 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
     const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
     setHeight(img.height * ratio);
   }, [type]);
-  const { getBLEBatteryPower } = useBLE();
-  const [batteryPower, setBatteryPower] = useState('100');
-  const [deviceInfo, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
-  const { run } = useThrottleFn(
-    data => {
-      setGlobalDeviceInfo(prev => {
-        return {
-          ...prev,
-          num: data,
-        };
-      });
-    },
-    { wait: 10 * 60 * 1000 },
-  );
-  getBLEBatteryPower().then(data => {
-    setBatteryPower(data ?? '0');
-    run(data);
-  });
+
+  // const [batteryPower, setBatteryPower] = useState(100);
+  const [deviceInfo] = useRecoilState(deviceInfoState);
+  const [batteryPower] = useRecoilState(butteryState);
+  // const { run: handleUpdateValueForCharacteristic } = useThrottleFn(
+  //   async (data: BleManagerDidUpdateValueForCharacteristicEvent) => {
+  //     try {
+  //       console.log('data --->', data);
+  //       await BleManager.startNotification(
+  //         data.peripheral,
+  //         data.service,
+  //         data.characteristic,
+  //       );
+  //       const peripheralData = await BleManager.retrieveServices(
+  //         data.peripheral,
+  //       );
+  //       const readData = get(peripheralData, 'characteristics.0.value', {
+  //         bytes: [] as number[],
+  //       });
+  //       const decodedBytes = Buffer.from(readData.bytes);
+  //       const code = decodedBytes.toString('hex');
+  //       const decimalValue = parseInt(code.slice(-4, -2), 16);
+  //       console.log('decimalValue', decimalValue);
+  //     } catch (e) {
+  //       console.error('e', e);
+  //     }
+  //     // setInfo(decimalValue);
+  //   },
+  //   { wait: 1000, leading: true },
+  // );
+  // useEffect(() => {
+  //   const listeners = [
+  //     bleManagerEmitter.addListener(
+  //       'BleManagerDidUpdateValueForCharacteristic',
+  //       handleUpdateValueForCharacteristic,
+  //     ),
+  //   ];
+
+  //   return () => {
+  //     for (const listener of listeners) {
+  //       listener.remove();
+  //     }
+  //   };
+  // }, [handleUpdateValueForCharacteristic]);
   const { t } = useTranslation();
   return (
     <View>
@@ -125,9 +165,9 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: parseInt(batteryPower, 10) <= 20 ? '#FF7B79' : 'green',
+                  color: batteryPower <= 20 ? '#FF7B79' : 'green',
                 }}>
-                {parseInt(batteryPower, 10)}%
+                {batteryPower}%
               </Text>
               <View
                 style={{
@@ -141,10 +181,9 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
                 }}>
                 <View
                   style={{
-                    width: (parseInt(batteryPower, 10) / 100) * 27,
+                    width: (batteryPower / 100) * 27,
                     height: '100%',
-                    backgroundColor:
-                      parseInt(batteryPower, 10) <= 20 ? '#FF7B79' : 'green',
+                    backgroundColor: batteryPower <= 20 ? '#FF7B79' : 'green',
                   }}
                 />
               </View>

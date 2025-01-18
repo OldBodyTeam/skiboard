@@ -187,5 +187,12 @@
     "preview": "预览",
     "draw-light-speed": "速度",
     "draw-light-frames": "关键帧",
-    "ble-DisConnected": "断开"
+    "ble-DisConnected": "断开",
+    "scroll-Tips": "只能输入数字字母",
+    "password-modify": "修改密码成功",
+    "delete-frame-tips": "无法删除当前的frame",
+    "create-frame-tips": "最多创建10个frames",
+    "BleManager-started": "开始扫描",
+    "open-swiutch": "先开启开关",
+    "reconnect": "蓝牙重新连接成功"
 }

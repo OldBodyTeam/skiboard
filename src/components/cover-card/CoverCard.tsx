@@ -2,36 +2,56 @@ import ClickProgressNumber from '@components/progress-number/ClickProgressNumber
 import Reverse from '@components/reverse/Reverse';
 import ScrollSelected from '@components/scroll-selected/ScrollSelected';
 import SVGNum from '@components/svg-num/SVGNum';
+import useBLE from '@hooks/useBLE';
 // import { glow } from '@config/glow';
 // import { led } from '@config/led';
 // import useBLE from '@hooks/useBLE';
 import { useScreenSize } from '@hooks/useScreenSize';
+// import { poi } from '@pages/draw/config';
 import { glowModes, scrollData } from '@pages/light-glow-modes/utils';
+import { BLEConfig } from '@utils/ble';
+import { useMemoizedFn, useMount } from 'ahooks';
 // import { BLEConfig } from '@utils/ble';
-import { findIndex } from 'lodash';
-import React, { FC } from 'react';
+import { findIndex, get } from 'lodash';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
-export type CoverCardProps = { selectedTitle: string; mode: 'glow' | 'led' };
+export type CoverCardProps = {
+  selectedTitle: string;
+  mode: 'glow' | 'led';
+  scrollDataItem: string;
+};
 const CoverCard: FC<CoverCardProps> = props => {
-  const { selectedTitle, mode } = props;
-  // const { bleWrite } = useBLE();
-  // useEffect(() => {
-  //   if (selectedTitle) {
-  //     if (mode === 'led') {
-  //       bleWrite(BLEConfig.led[selectedTitle as keyof typeof led]);
-  //     } else if (mode === 'glow') {
-  //       bleWrite(BLEConfig.glow[selectedTitle as keyof typeof glow]);
-  //     }
-  //   }
-  // }, [bleWrite, mode, selectedTitle]);
+  const { selectedTitle, mode, scrollDataItem } = props;
+  console.log('***>', selectedTitle, scrollDataItem);
+  const [a, setA] = useState(selectedTitle);
+  const [keyPoi, setKeyPoi] = useState(scrollDataItem);
+  const { bleWrite } = useBLE();
+  const handleSelectedTitle = useMemoizedFn(async (m: string, poi: string) => {
+    setA(m);
+    setKeyPoi(poi);
+    console.info('***>', get(BLEConfig, `mode.${m}.${poi}`));
+    await bleWrite(get(BLEConfig, `mode.${m}.${poi}`) ?? '');
+  });
+  useMount(async () => {
+    await bleWrite(
+      get(BLEConfig, `mode.${selectedTitle}.${scrollDataItem}`) ?? '',
+    );
+  });
+  useEffect(() => {
+    setA(selectedTitle);
+  }, [selectedTitle]);
+  useEffect(() => {
+    setKeyPoi(scrollDataItem);
+  }, [scrollDataItem]);
   const { width } = useScreenSize();
   const height = 720 / 2;
   const index =
-    findIndex(scrollData, v => v.title === selectedTitle) === -1
+    findIndex(scrollData, v => v.key === selectedTitle) === -1
       ? 1
-      : findIndex(scrollData, v => v.title === selectedTitle);
+      : findIndex(scrollData, v => v.key === selectedTitle) + 1;
   const { t } = useTranslation();
+
   return (
     <>
       <View
@@ -75,8 +95,10 @@ const CoverCard: FC<CoverCardProps> = props => {
           zIndex: 1,
         }}>
         <ScrollSelected
-          scrollData={glowModes[selectedTitle as keyof typeof glowModes]}
-          title={selectedTitle}
+          title={a}
+          handleSelectedTitle={handleSelectedTitle}
+          value={keyPoi}
+          key={selectedTitle}
         />
 
         <View
@@ -103,7 +125,12 @@ const CoverCard: FC<CoverCardProps> = props => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <Reverse mode={mode} />
+            <Reverse
+              mode={mode}
+              title={a}
+              keyPoi={keyPoi}
+              key={selectedTitle + '' + scrollDataItem}
+            />
 
             <View
               style={{

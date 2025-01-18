@@ -187,5 +187,12 @@
     "preview": "Preview",
     "draw-light-speed": "Speed",
     "draw-light-frames": "Frames",
-    "ble-DisConnected": "DisConnected"
+    "ble-DisConnected": "DisConnected",
+    "scroll-Tips": "Only letters and numbers can be entered",
+    "password-modify": "Password changed successfully",
+    "delete-frame-tips": "Unable to delete current frame",
+    "create-frame-tips": "Create up to 10 frames",
+    "BleManager-started": "BleManager-started",
+    "open-swiutch": "Turn on the switch first",
+    "reconnect": "Bluetooth reconnection successful"
 }

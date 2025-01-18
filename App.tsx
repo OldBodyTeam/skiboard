@@ -15,6 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { RecoilRoot } from 'recoil';
 import i18next from './src/utils/i18next';
+import BackgroundBle from '@components/background-ble/BackgroundBle';
 
 // import { ClientRequest } from '@services/client';
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,37 +40,39 @@ function App(): React.JSX.Element {
 
   return (
     <RecoilRoot>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <RootSiblingParent>
-          <NavigationContainer
-            onReady={() => {
-              i18next.then(() => {
-                BootSplash.hide({ fade: true });
-              });
-            }}>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}
-              initialRouteName="Auth">
-              {routeConfig.map(item => (
-                <Stack.Screen
-                  name={item.name}
-                  component={item.component as FunctionComponent}
-                  key={item.name}
-                  options={
-                    item.name === 'Home'
-                      ? {
-                          gestureEnabled: false,
-                        }
-                      : {}
-                  }
-                />
-              ))}
-            </Stack.Navigator>
-          </NavigationContainer>
-        </RootSiblingParent>
-      </GestureHandlerRootView>
+      <BackgroundBle>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <RootSiblingParent>
+            <NavigationContainer
+              onReady={() => {
+                i18next.then(() => {
+                  BootSplash.hide({ fade: true });
+                });
+              }}>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}
+                initialRouteName="Auth">
+                {routeConfig.map(item => (
+                  <Stack.Screen
+                    name={item.name}
+                    component={item.component as FunctionComponent}
+                    key={item.name}
+                    options={
+                      item.name === 'Home'
+                        ? {
+                            gestureEnabled: false,
+                          }
+                        : {}
+                    }
+                  />
+                ))}
+              </Stack.Navigator>
+            </NavigationContainer>
+          </RootSiblingParent>
+        </GestureHandlerRootView>
+      </BackgroundBle>
     </RecoilRoot>
   );
 }

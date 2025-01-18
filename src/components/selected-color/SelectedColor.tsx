@@ -9,13 +9,15 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 const data = [
-  '#D96A6D',
-  '#E6B46A',
-  '#A2E770',
-  '#82E3E0',
-  '#6371E3',
-  '#9965EA',
-  '#CA61E8',
+  '#FF0000',
+  '#FFA500',
+  '#FFFF00',
+  '#90EE90',
+  '#00FF00',
+  '#00FFFF',
+  '#0000FF',
+  '#800080',
+  '#FF00FF',
 ];
 const SelectedColor: FC<{ handleSelected: (data: string) => void }> = props => {
   const { width } = useScreenSize();
@@ -25,13 +27,14 @@ const SelectedColor: FC<{ handleSelected: (data: string) => void }> = props => {
   const handleSelected = (index: number) => {
     let num = index <= 0 ? 1 : index > 100 ? 100 : index;
     if (num >= 1 && num <= 100) {
-      const currentIndex = Math.floor(100 / data.length / Math.abs(num));
+      const currentIndex = Math.floor(Math.abs(num) / (100 / data.length));
       let pos =
         currentIndex >= data.length - 1
           ? data.length - 1
           : currentIndex <= 0
           ? 0
           : currentIndex;
+      console.log(currentIndex);
       props.handleSelected(data[pos]?.slice(1));
     }
   };

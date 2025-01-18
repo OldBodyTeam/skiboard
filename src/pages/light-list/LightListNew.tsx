@@ -5,6 +5,7 @@ import { covertCanUseCanvasData, covertMap } from '@utils/draw-config';
 import { FC, PropsWithChildren, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Dimensions,
   Image,
   ScrollView,
   StatusBar,
@@ -22,15 +23,23 @@ import Toast from 'react-native-root-toast';
 import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import { CollectionEntity } from '@services/data-contracts';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useMount } from 'ahooks';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import { useDebounceFn, useMount } from 'ahooks';
 // import { getHex, getSimpleHex } from '@utils/hex';
 // import { useSend } from '@utils/send';
 // import useBLE from '@hooks/useBLE';
-import { drawData } from '@pages/draw/config';
+import { drawData, poi } from '@pages/draw/config';
 import { Items } from '@pages/draw/Drawer';
+import { useSend } from '@utils/send';
+import { getHex, getSimpleHex } from '@utils/hex';
+import useBLE from '@hooks/useBLE';
+import dayjs from 'dayjs';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
+const windowWidth = Dimensions.get('window').width;
 const LightListNew: FC<LightListProps> = props => {
   const { t } = useTranslation();
   const { navigation } = props;
@@ -45,32 +54,42 @@ const LightListNew: FC<LightListProps> = props => {
     frameIndex: number;
   }>();
   const [collectionInfo, setCollectionInfo] = useState<CollectionEntity[]>([]);
+
   // const { queue, consumer } = useSend();
-  // const { bleWrite } = useBLE();
+  const { bleWrite } = useBLE();
+  const [list, setList] = useState<Map<number, Set<string>>[]>([]);
   const getCollectionList = async () => {
     try {
-      console.log('xxx', userInfo?.id);
       const client = await ClientRequest();
       const responseData = await client.collectionControllerGetCollectionList(
         userInfo?.id ?? '',
       );
       const collection = responseData.data
         .data as unknown as CollectionEntity[];
+      console.log('collection', collection);
+      const d = collection
+        .sort(
+          (a, b) =>
+            new Date(
+              dayjs(a.createAt).format('YYYY-MM-DD HH:mm:ss'),
+            ).getTime() -
+            new Date(dayjs(b.createAt).format('YYYY-MM-DD HH:mm:ss')).getTime(),
+        )
+        .map(collectionDetail => {
+          const frameList = new Map<number, Set<string>>();
+          (
+            collectionDetail?.frameList as unknown as {
+              selected: boolean;
+              frame: string[];
+            }[]
+          ).forEach((element, index) => {
+            frameList.set(index + 1, new Set([...element.frame]));
+          });
+          return frameList;
+        });
+      setList(d);
+
       setCollectionInfo(collection);
-      // console.log(collection);
-      // collection?.forEach((item, index) => {
-      //   const frameList = item.frameList as unknown as { frame: any[][] }[];
-      //   frameList?.forEach((it, i) => {
-      //     const frame = it.frame;
-      //     const code = frame.map(key => poi.get(key));
-      //     const pointer = `57e0${getHex(code.length / 2 + 2)}00${getSimpleHex(
-      //       index,
-      //     )}${getSimpleHex(i + 1)}${code}61`;
-      //     queue.enqueue(pointer);
-      //     console.log('************', pointer);
-      //   });
-      // });
-      // consumer.startConsuming(bleWrite);
     } catch (e) {
       Toast.show(`${(e as Error).message}`);
     }
@@ -78,6 +97,13 @@ const LightListNew: FC<LightListProps> = props => {
 
   const handleDelete = async () => {
     try {
+      setList(prev => {
+        const m = prev.filter(v => {
+          const i = deleteInfo?.frameIndex ?? 0;
+          return !v.has(i);
+        });
+        return [...m];
+      });
       const client = await ClientRequest();
       await client.collectionControllerDeleteCollection(
         deleteInfo?.collectionId ?? '',
@@ -109,6 +135,34 @@ const LightListNew: FC<LightListProps> = props => {
     }, 300);
   });
   const data = covertCanUseCanvasData(drawData);
+  const { queue, consumer } = useSend();
+  const { run: handleSync } = useDebounceFn(() => {
+    queue.enqueue('57e003ffff61');
+    list.forEach((frameList, index) => {
+      const collectionNum = index + 1;
+      frameList.forEach((value, key) => {
+        const item = Array.from(value).map(v => poi.get(v));
+        console.log(
+          `第${collectionNum}章 - frame${key}`,
+          `57e0${getHex(item.length + 2)}00${getSimpleHex(
+            collectionNum,
+          )}${getSimpleHex(key)}${item.join('')}61`,
+        );
+        // 同步 预览亮 创建不亮
+        // 问题：新编辑永远在第二个 1,2,3,4
+        queue.enqueue(
+          `57e0${getHex(item.length + 2)}00${getSimpleHex(
+            collectionNum,
+          )}${getSimpleHex(key)}${item.join('')}61`,
+        );
+      });
+      if (collectionNum === list.length) {
+        queue.enqueue(`57e00301${getSimpleHex(collectionNum)}061`);
+      }
+    });
+    consumer.startConsuming(bleWrite);
+  });
+  const insets = useSafeAreaInsets();
   return (
     <View
       style={{
@@ -191,6 +245,7 @@ const LightListNew: FC<LightListProps> = props => {
                                     key={`${r}-${c}`}
                                     width={10}
                                     selected={!!frame?.includes(`${r}-${c}`)}
+                                    a
                                   />
                                 );
                               })}
@@ -283,6 +338,36 @@ const LightListNew: FC<LightListProps> = props => {
             </TouchableHighlight>
           </View>
         </BlurModal>
+        <TouchableHighlight
+          onPress={handleSync}
+          style={{
+            position: 'absolute',
+            left: 0,
+            bottom: insets.bottom + 10,
+            width: windowWidth,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              flex: 1,
+              paddingVertical: 12,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 8,
+              fontWeight: '600',
+              color: '#333333',
+              fontSize: 18,
+              borderRadius: 24,
+              backgroundColor: '#F7E54C',
+              flexBasis: '100%',
+              width: (windowWidth - 8 - 48) / 2,
+            }}>
+            <Text>同步</Text>
+          </View>
+        </TouchableHighlight>
       </SafeAreaView>
     </View>
   );

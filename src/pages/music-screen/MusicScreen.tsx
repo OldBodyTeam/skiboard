@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import BlurBg from '@components/blur-bg/BlurBg';
 import CoverImage from '@components/cover-image/CoverImage';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
@@ -21,12 +22,11 @@ import { TIME } from './config';
 import { BLEConfig } from '@utils/ble';
 import useBLE from '@hooks/useBLE';
 import { useTranslation } from 'react-i18next';
-import {
-  FadeInView,
-  SpringInView,
-  SpringInViewX,
-  SpringInViewXY,
-} from '@components/fade-in-view/FadeInView';
+import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
+import { useMemoizedFn } from 'ahooks';
+import { getHex } from '@utils/hex';
+import { handleSendOpenApp } from '@pages/ble-manager/BleManager';
+import { useSend } from '@utils/send';
 
 type MusicScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'MusicScreen'>,
@@ -43,6 +43,76 @@ const MusicScreen = (props: MusicScreenProps) => {
   //   );
   // }, [bleWrite, switchValue]);
   const { t } = useTranslation();
+  const [pointer, setPointer] = useState<
+    Map<number, { type: TIME; currentTime: [number, number] }>
+  >(new Map());
+  const { queue, consumer } = useSend();
+  const handleCode = useMemoizedFn(
+    (data: { type: TIME; currentTime: [number, number] }) => {
+      const { type, currentTime } = data;
+      if (type === TIME.AM) {
+        return `${getHex(currentTime[0] - 1)}${getHex(currentTime[1] - 1)}`;
+      }
+      if (type === TIME.PM) {
+        return `${getHex(currentTime[0] + 11)}${getHex(currentTime[1] - 1)}`;
+      }
+    },
+  );
+  const onHandleTime = useMemoizedFn(
+    (numType: number, data: { type: TIME; currentTime: [number, number] }) => {
+      const code = handleSendOpenApp();
+      queue.enqueue(code);
+      const c = handleCode(data);
+      if (numType === 1) {
+        queue.enqueue(`57ae05${c}00ff61`);
+      } else if (numType === 2) {
+        queue.enqueue(`57ae05${c}01ff61`);
+      }
+      consumer.startConsuming(bleWrite);
+      setPointer(prev => {
+        prev.set(numType, data);
+        return new Map(prev);
+      });
+    },
+  );
+  // const send = useMemoizedFn(
+  //   async (time: { type: TIME; currentTime: [number, number] }) => {
+  //     const { type, currentTime } = time;
+  //     //休息休息
+  //     if (type === TIME.AM) {
+  //       await bleWrite(
+  //         `57ae05${getHex(currentTime[0] - 1)}${getHex(
+  //           currentTime[1] - 1,
+  //         )}00ff61`,
+  //       );
+  //       await sleep();
+  //     }
+  //     if (type === TIME.PM) {
+  //       await bleWrite(
+  //         `57ae05${getHex(currentTime[0] + 11)}${getHex(
+  //           currentTime[1] - 1,
+  //         )}01ff61`,
+  //       );
+  //       await sleep();
+  //     }
+  //   },
+  // );
+  useEffect(() => {
+    const run = async () => {
+      const firstTime = pointer.get(1);
+      const secondTime = pointer.get(2);
+      if (pointer.size === 2 && firstTime && secondTime) {
+        const code = handleSendOpenApp();
+        queue.enqueue(code);
+        const c1 = handleCode(firstTime);
+        const c2 = handleCode(secondTime);
+        queue.enqueue(`57ae05${c1}00ff61`);
+        queue.enqueue(`57ae05${c2}01ff61`);
+        consumer.startConsuming(bleWrite);
+      }
+    };
+    run();
+  }, [pointer]);
   return (
     <ImageBackground
       style={{
@@ -100,8 +170,18 @@ const MusicScreen = (props: MusicScreenProps) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <PickTime type={TIME.AM} />
-                <PickTime type={TIME.PM} />
+                <PickTime
+                  type={TIME.AM}
+                  numType={1}
+                  onHandleTime={onHandleTime}
+                  switchValue={switchValue}
+                />
+                <PickTime
+                  type={TIME.PM}
+                  numType={2}
+                  onHandleTime={onHandleTime}
+                  switchValue={switchValue}
+                />
               </View>
             </View>
           </View>

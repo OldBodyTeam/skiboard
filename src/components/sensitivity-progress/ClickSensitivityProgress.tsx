@@ -3,12 +3,22 @@ import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
+  Dimensions,
   Image,
-  Pressable,
   Text,
   View,
   useWindowDimensions,
 } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  clamp,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+const maxWidth =
+  Dimensions.get('window').width - 6 * 2 - 10 * 2 - 8 * 2 - 20 * 2;
+const singleWidth =
+  (Dimensions.get('window').width - 6 * 2 - 10 * 2 - 8 * 2 - 20 * 2) / 5;
 const ClickSensitivityProgress: FC<{
   onChange: (num: number) => void;
 }> = props => {
@@ -25,6 +35,38 @@ const ClickSensitivityProgress: FC<{
       BLEConfig.sensitivity[String(selectedIndex) as keyof typeof sensitivity],
     );
   }, [bleWrite, selectedIndex, onChange]);
+  const translationX = useSharedValue(20 + 8 + singleWidth);
+  const prevTranslationX = useSharedValue(20 + 8 + singleWidth);
+
+  const animatedStyles = useAnimatedStyle(() => ({
+    width: translationX.value,
+  }));
+  const pan = Gesture.Pan()
+    .minDistance(1)
+    .onStart(() => {
+      prevTranslationX.value = translationX.value;
+    })
+    .onUpdate(event => {
+      const maxTranslateX = maxWidth + 20 + 8;
+      translationX.value = clamp(
+        prevTranslationX.value + event.translationX,
+        20 + 8 + singleWidth,
+        maxTranslateX,
+      );
+    })
+    .onEnd(event => {
+      const maxTranslateX = maxWidth + 20 + 8;
+      const d = event.translationX > 0 ? 1 : -1; // 方向
+      const x = translationX.value - 20 - 8; // 移动的距离
+      const index = Math.floor(x / singleWidth); // 几个点
+      //   const reset = maxWidth - x;
+      const reset = x - index * singleWidth;
+      const i = Number(reset > singleWidth / 2);
+      const a = (index + i * d) * singleWidth + 20 + 8;
+      setSelectedIndex(index + i * d);
+      translationX.value = clamp(a, 20 + 8 + singleWidth, maxTranslateX);
+    })
+    .runOnJS(true);
   return (
     <View
       style={{
@@ -48,13 +90,15 @@ const ClickSensitivityProgress: FC<{
         style={{
           width: 20,
           height: 20,
+          position: 'relative',
+          zIndex: 5,
         }}
       />
+
       {[1, 2, 3, 4, 5].map(v => {
         return (
-          <Pressable
+          <View
             key={v}
-            onPress={() => setSelectedIndex(v)}
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -63,6 +107,9 @@ const ClickSensitivityProgress: FC<{
               paddingHorizontal: 8,
               flexGrow: 1,
               flexShrink: 0,
+              position: 'relative',
+              pointerEvents: 'none',
+              zIndex: 5,
             }}>
             <View
               style={{
@@ -82,7 +129,7 @@ const ClickSensitivityProgress: FC<{
                 style={{
                   fontSize: 15,
                   lineHeight: 18,
-                  color: '#494D4E',
+                  color: selectedIndex === v ? 'white' : '#494D4E',
                   fontWeight: 'bold',
                   opacity: selectedIndex === v ? 0 : 1,
                 }}>
@@ -97,59 +144,79 @@ const ClickSensitivityProgress: FC<{
                 backgroundColor: selectedIndex > v ? '#1D2122' : 'white',
               }}
             />
-          </Pressable>
+          </View>
         );
       })}
-
-      <View
-        style={{
-          position: 'absolute',
-          zIndex: -1,
-          width: 20 + 8 + canUseWidth * selectedIndex,
-          backgroundColor: 'rgba(250, 237, 69, 1)',
-          left: 0,
-          top: 0,
-          height: 44,
-          flexDirection: 'row',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          borderRadius: 44,
-          overflow: 'hidden',
-        }}>
-        <View
-          style={{
-            width: canUseWidth - 4,
-            height: 40,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#1C2122',
-            borderRadius: 40,
-            marginHorizontal: 2,
-          }}>
-          <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
-          <View
-            style={{
-              height: 40,
+      <GestureDetector gesture={pan}>
+        <Animated.View
+          style={[
+            animatedStyles,
+            {
+              // width: 20 + 8 + canUseWidth * selectedIndex,
+              position: 'absolute',
+              zIndex: 0,
+              backgroundColor: 'rgba(250, 237, 69, 1)',
+              left: 0,
+              top: 0,
+              height: 44,
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
               alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-            }}>
-            <Text
+              borderRadius: 44,
+              overflow: 'hidden',
+            },
+          ]}>
+          <View
+            style={
+              {
+                // position: 'absolute',
+                // zIndex: -1,
+                // backgroundColor: 'rgba(250, 237, 69, 1)',
+                // left: 0,
+                // top: 0,
+                // height: 44,
+                // flexDirection: 'row',
+                // justifyContent: 'flex-end',
+                // alignItems: 'center',
+                // borderRadius: 44,
+                // overflow: 'hidden',
+              }
+            }>
+            <View
               style={{
-                fontSize: 15,
-                lineHeight: 18,
-                // color: '#1D2122',
-                color: 'white',
-                fontWeight: 'bold',
+                width: canUseWidth - 4,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#1C2122',
+                borderRadius: 40,
+                marginHorizontal: 2,
               }}>
-              {selectedIndex}
-            </Text>
+              <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
+              <View
+                style={{
+                  height: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    lineHeight: 18,
+                    // color: '#1D2122',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {selectedIndex}
+                </Text>
+              </View>
+
+              <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
+            </View>
           </View>
-
-          <View style={{ width: 1, height: 6, backgroundColor: 'white' }} />
-        </View>
-      </View>
-
+        </Animated.View>
+      </GestureDetector>
       <Image
         source={require('../../assets/sound-effects/right.png')}
         style={{

@@ -16,7 +16,7 @@ const SwitchCom: FC<SwitchComProps> = props => {
       inActiveText={'Off'}
       circleSize={40}
       barHeight={50}
-      backgroundActive={'rgba(255, 255, 255, 1)'}
+      backgroundActive={'#FACF00'}
       backgroundInactive={'rgba(255, 255, 255, 1)'}
       circleActiveColor={'rgba(0, 0, 0, 1)'}
       circleInActiveColor={'rgba(0, 0, 0, 1)'}
@@ -29,7 +29,7 @@ const SwitchCom: FC<SwitchComProps> = props => {
       switchRightPx={6} // denominator for logic when sliding to FALSE position. Higher number = more space from LEFT of the circle to BEGINNING of the slider
       containerStyle={{ width: 146, height: 166 }}
       activeTextStyle={{
-        color: 'black',
+        color: 'white',
         fontSize: 14,
         fontWeight: '600',
       }}

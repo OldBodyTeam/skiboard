@@ -21,28 +21,29 @@ import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import useBLE from '@hooks/useBLE';
 import { BLEConfig } from '@utils/ble';
 import { useTranslation } from 'react-i18next';
-import {
-  FadeInView,
-  SpringInView,
-  SpringInViewX,
-} from '@components/fade-in-view/FadeInView';
+import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
+import { useMount } from 'ahooks';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
   NativeStackScreenProps<RootStackParamList, 'Home'>
 > &
   PropsWithChildren<{ name?: string }>;
+
 const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
   const [userInfo] = useRecoilState(userInfoState);
-  console.log('---->', userInfo);
   const { bleWrite } = useBLE();
   // () => navigation.push('EditLight')
   const handleCollection = async () => {
     navigation.push('Drawer');
   };
+  useMount(async () => {
+    handleSendOpenApp();
+  });
   const { t } = useTranslation();
+
   return (
     <ImageBackground
       style={{
@@ -51,7 +52,7 @@ const DesignScreen = (props: DesignScreenProps) => {
       }}
       source={require('../../assets/bg-home.png')}>
       <StatusBar />
-      <ScrollView>
+      <ScrollView style={{ flex: 1 }}>
         <FadeInView>
           <CoverImage
             type="design"

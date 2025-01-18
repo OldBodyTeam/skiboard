@@ -18,7 +18,7 @@ type ResetProps = NativeStackScreenProps<
 > &
   PropsWithChildren<{ changeStatus: (status: ChangeStatus) => void }>;
 const Reset: FC<ResetProps> = props => {
-  const { navigation, changeStatus } = props;
+  const { changeStatus } = props;
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [passwordOne, setPasswordOne] = useState('');
@@ -31,7 +31,7 @@ const Reset: FC<ResetProps> = props => {
         passwordOne,
         passwordTwo,
       });
-      Toast.show('修改密码成功');
+      Toast.show(t('password-modify'));
     } catch (e) {
       Toast.show('重置密码失败');
     }

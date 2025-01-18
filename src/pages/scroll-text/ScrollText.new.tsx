@@ -49,7 +49,7 @@ const ScrollTextNew: FC<ScrollTextProps> = props => {
   const handleScrollText = useMemoizedFn((text: string) => {
     console.log(text);
     if (text.trim().length > 0 && !/^[0-9a-zA-Z]+$/g.test(text.trim())) {
-      return Toast.show('只能输入数字字母', {
+      return Toast.show(t('scroll-Tips'), {
         position: Toast.positions.CENTER,
       });
     }

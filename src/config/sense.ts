@@ -4,6 +4,6 @@ const sense = {
   Birthday: '57be020361', // 生日
   Firworks: '57be020561', // 烟花
   Christmas: '57be020d61', // 圣诞
-  Sunset: '57be020561', // 日落
+  Sunset: '57be020261', // 日落
 };
 export { sense };

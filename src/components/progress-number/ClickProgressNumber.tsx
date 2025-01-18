@@ -11,7 +11,6 @@ const ClickProgressNumber: FC<{ mode: 'glow' | 'led' }> = props => {
 
   const { bleWrite } = useBLE();
   useEffect(() => {
-    console.log('***********', showIndex);
     if (mode === 'led') {
       bleWrite(BLEConfig.led[String(showIndex) as keyof typeof led]);
     } else if (mode === 'glow') {

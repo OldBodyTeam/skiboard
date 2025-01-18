@@ -5,4 +5,8 @@ const deviceInfoState = atom<Peripheral>({
   key: 'deviceInfoState',
   default: {} as Peripheral,
 });
-export { deviceInfoState };
+const butteryState = atom<number>({
+  key: 'buttery',
+  default: 0,
+});
+export { deviceInfoState, butteryState };

@@ -1,6 +1,7 @@
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { ClientRequest } from '@services/client';
-import React, { FC, ReactNode, useRef, useState } from 'react';
+import { useDeepCompareEffect } from 'ahooks';
+import React, { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import {
   Image,
   Text,
@@ -16,12 +17,16 @@ export type HeaderProps = {
   extra?: ReactNode;
   collectionId?: string;
   onChange: (title: string) => void;
+  title: string;
 };
 const Header: FC<HeaderProps> = props => {
-  const { handlePress, extra, collectionId, onChange } = props;
+  const { handlePress, extra, collectionId, onChange, title: a } = props;
   const insets = useSafeAreaInsets();
   const modalEditRef = useRef<BlurModalRef>(null);
-  const [title, setTitle] = useState('Smiling Face');
+  const [title, setTitle] = useState(a ?? 'Smiling Face');
+  useDeepCompareEffect(() => {
+    setTitle(a);
+  }, [a]);
   const handleEdit = async () => {
     modalEditRef.current?.closeModal();
     if (collectionId) {
@@ -30,8 +35,10 @@ const Header: FC<HeaderProps> = props => {
         name: title,
       });
     }
+    console.log('*********', title);
     onChange(title);
   };
+
   return (
     <View
       style={{

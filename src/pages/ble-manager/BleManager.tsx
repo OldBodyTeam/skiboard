@@ -24,17 +24,25 @@ import BleManager, {
   BleScanMode,
   Peripheral,
 } from 'react-native-ble-manager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Video from 'react-native-video';
-import { useMemoizedFn, useMount } from 'ahooks';
+import { useDebounceFn, useMemoizedFn, useMount } from 'ahooks';
 import { useRecoilState } from 'recoil';
 import videoMp4 from './connected.mp4';
-import { deviceInfoState } from '@stores/device/device.atom';
+import { butteryState, deviceInfoState } from '@stores/device/device.atom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { getI18n, useTranslation } from 'react-i18next';
 import { Logger } from '@utils/log';
+import { Buffer } from 'buffer';
+import dayjs from 'dayjs';
 import Toast from 'react-native-root-toast';
 import LottieView from 'lottie-react-native';
+import useBLE from '@hooks/useBLE';
+import { getHex } from '@utils/hex';
+import { get } from 'lodash';
+// import { get } from 'lodash';
+// import { bleManagerEmitter } from '@components/background-ble/BackgroundBle';
 declare module 'react-native-ble-manager' {
   interface Peripheral {
     connected?: boolean;
@@ -50,6 +58,19 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 const SECONDS_TO_SCAN_FOR = 0;
 const SERVICE_UUIDS: string[] = [];
 const ALLOW_DUPLICATES = true;
+export const handleSendOpenApp = () => {
+  const dayNumber = dayjs().day();
+  const dayNumberAdjusted = dayNumber === 0 ? 6 : dayNumber - 1;
+  const time = dayjs().format('HH:mm:ss').toString();
+  const str = time
+    .split(':')
+    .concat([dayNumberAdjusted + ''])
+    .map(v => getHex(Number(v) - 1))
+    .join('');
+  console.log('*****', str);
+  // await bleWrite(`57a005${str}61`);
+  return `57a005${str}61`;
+};
 enum BleDeviceStatus {
   isScanning = 'isScanning',
   prepareConnect = 'prepareConnect',
@@ -62,6 +83,7 @@ type BleManagerBlockProps = NativeStackScreenProps<
 >;
 const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   const { navigation } = props;
+  const { t } = useTranslation();
   const [userOpt, setUserOpt] = useState<BleDeviceStatus>(
     BleDeviceStatus.isScanning,
   );
@@ -135,7 +157,16 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     setUserOpt(BleDeviceStatus.connected);
     console.debug('[handleStopScan] scan is stopped.');
   };
-
+  // TODO：关机判断 -> 二次链接
+  // 链接 禁用 done + loading
+  // 白色换掉 done
+  // 灯带拖拽一直发统一指令 done
+  // 麦克风指令排查 done
+  // 切换 黑色框 没有默认值 -> 问题四 // done
+  // 反向灯带 点不过去 没问题
+  // 定时操作指令排查 done
+  // 去掉紫色底色 done
+  // 灯带开启 on给个颜色 yellow done
   const handleDisconnectedPeripheral = (
     event: BleDisconnectPeripheralEvent,
   ) => {
@@ -154,14 +185,6 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
 
   const handleConnectPeripheral = (event: any) => {
     console.log(`[handleConnectPeripheral][${event.peripheral}] connected.`);
-  };
-
-  const handleUpdateValueForCharacteristic = (
-    data: BleManagerDidUpdateValueForCharacteristicEvent,
-  ) => {
-    console.debug(
-      `[handleUpdateValueForCharacteristic] received data from '${data.peripheral}' with characteristic='${data.characteristic}' and value='${data.value}'`,
-    );
   };
 
   const handleDiscoverPeripheral = (peripheral: Peripheral) => {
@@ -246,18 +269,18 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         await sleep(900);
         try {
           if (Platform.OS === 'android') {
-            const maxLength =
-              await BleManager.getMaximumWriteValueLengthForWithoutResponse(
-                peripheral.id,
-              );
-            console.log(maxLength);
-            const mtu = await BleManager.requestMTU(
-              peripheral.id,
-              maxLength > 500 ? maxLength : 510,
-            );
-            Toast.show(`MTU size changed to ${mtu} bytes`, {
-              position: Toast.positions.CENTER,
-            });
+            // const maxLength =
+            //   await BleManager.getMaximumWriteValueLengthForWithoutResponse(
+            //     peripheral.id,
+            //   );
+            // console.log(maxLength);
+            // const mtu = await BleManager.requestMTU(
+            //   peripheral.id,
+            //   maxLength > 500 ? maxLength : 510,
+            // );
+            // Toast.show(`MTU size changed to ${mtu} bytes`, {
+            //   position: Toast.positions.CENTER,
+            // });
           }
         } catch (error) {
           console.log(`Failed to change MTU size: ${error}`);
@@ -309,16 +332,40 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   function sleep(ms: number) {
     return new Promise<void>(resolve => setTimeout(resolve, ms));
   }
+  const handleUpdateValueForCharacteristic = useMemoizedFn(
+    async (data: BleManagerDidUpdateValueForCharacteristicEvent) => {
+      try {
+        await BleManager.startNotification(
+          data.peripheral,
+          data.service,
+          data.characteristic,
+        );
+        const peripheralData = await BleManager.retrieveServices(
+          data.peripheral,
+        );
+        const readData = get(peripheralData, 'characteristics.0.value', {
+          bytes: [] as number[],
+        });
+        const decodedBytes = Buffer.from(readData.bytes);
+        const code = decodedBytes.toString('hex');
+        const decimalValue = parseInt(code.slice(-4, -2), 16);
+        setInfo(decimalValue);
+        console.log(decimalValue);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  );
 
   useEffect(() => {
     BleManager.start({ showAlert: false })
       .then(() => {
-        Toast.show('BleManager started.');
+        Toast.show(t('BleManager-started'));
         // 开始扫描
         setTimeout(() => {
           startScan();
-          Toast.show('开始扫描');
-        }, 3000);
+          // Toast.show('开始扫描');
+        }, 4000);
       })
       .catch((error: any) =>
         Toast.show(`BeManager could not be started.${error.message}`),
@@ -348,7 +395,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     return () => {
       console.debug('[app] main component unmounting. Removing listeners...');
       for (const listener of listeners) {
-        listener.remove();
+        // listener.remove();
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -398,24 +445,58 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   });
   const [deviceInfo, setDeviceInfo] = useState<Peripheral>();
   const [_, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
-  const handleConnectedBLE = async () => {
-    // 当前取第一个可操作蓝牙
-    const device = Array.from(canUseDevice).at(0)!;
-    const info = peripherals.get(device)!;
-    await togglePeripheralConnection(info);
-    setDeviceInfo(info);
-    setGlobalDeviceInfo(info);
-    // 数据共享到系统中
-  };
-  useEffect(() => {
+  const [d, setD] = useState(false);
+  const { getBLEBatteryPower } = useBLE();
+  const [, setInfo] = useRecoilState(butteryState);
+  const { run: handleConnectedBLE } = useDebounceFn(
+    async () => {
+      if (d) {
+        return;
+      }
+      setD(true);
+      try {
+        // 当前取第一个可操作蓝牙
+        const device = Array.from(canUseDevice).at(0)!;
+        const info = peripherals.get(device)!;
+        await togglePeripheralConnection(info);
+        let localDevice = (await AsyncStorage.getItem(
+          'device_info',
+        )) as unknown as any[];
+        if (localDevice) {
+          localDevice = JSON.parse(
+            localDevice as unknown as string,
+          ) as unknown as any[];
+          localDevice = localDevice?.map(item => {
+            return {
+              ...item,
+              currentStatus: 'undo',
+            };
+          });
+          localDevice.push({ ...info, currentStatus: 'do' });
+        } else {
+          localDevice = [];
+          localDevice.push({ ...info, currentStatus: 'do' });
+        }
+        await AsyncStorage.setItem('device_info', JSON.stringify(localDevice));
+        setDeviceInfo(info);
+        setGlobalDeviceInfo(info);
+        getBLEBatteryPower().then(a => setInfo(a ?? 100));
+      } catch (e) {
+        Toast.show((e as Error).message);
+      }
+
+      // 数据共享到系统中
+    },
+    { leading: true },
+  );
+  useMount(() => {
     Logger(`deviceInfo?.connected ${deviceInfo?.connected}`);
     if (deviceInfo?.connected) {
       // 路由跳转
       navigation.replace('Home', { screen: 'DesignScreen' });
     }
-  }, [deviceInfo?.connected, navigation]);
+  });
 
-  const { t } = useTranslation();
   const [lan, setLanguage] = useState<'zh' | 'en'>('zh');
   useMount(() => {
     const { language } = getI18n();
@@ -542,11 +623,13 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
               repeat={true}
               muted
               style={{ flex: 1 }}
+              resizeMode="cover"
             />
           </View>
           <TouchableHighlight
             style={{ flex: 1, overflow: 'hidden' }}
-            onPress={handleConnectedBLE}>
+            onPress={handleConnectedBLE}
+            disabled={d}>
             <View
               style={{
                 backgroundColor: 'rgba(215, 220, 225, 0.43)',
@@ -562,11 +645,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
                   fontWeight: 'bold',
                   color: '#333333',
                 }}>
-                {deviceInfo?.connected
-                  ? t('ble-connected')
-                  : deviceInfo?.connecting
-                  ? t('ble-connecting')
-                  : t('ble-connect')}
+                {d ? t('ble-connecting') : t('ble-connect')}
               </Text>
             </View>
           </TouchableHighlight>

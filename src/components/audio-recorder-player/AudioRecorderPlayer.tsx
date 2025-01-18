@@ -65,9 +65,9 @@ const AudioRecorderPlayerWithWave: FC<{ sIndex: number }> = props => {
   const { bleWrite } = useBLE();
   const { run } = useThrottleFn(
     async volumn => {
-      let size = -volumn;
+      let size = Math.floor(volumn + 80);
       let data = getHex(size);
-      if (size >= 40 && size < 50) {
+      if (size < 50) {
         data = `0000${getHex(size)}`;
       } else if (size >= 50 && size < 60) {
         data = `00${getHex(size)}00`;
@@ -76,33 +76,33 @@ const AudioRecorderPlayerWithWave: FC<{ sIndex: number }> = props => {
       }
       await bleWrite(`57e204${data}61`);
     },
-    { wait: 300 },
+    { wait: 100 },
   );
   const onStartRecord = async (): Promise<void> => {
     if (Platform.OS === 'android') {
       try {
-        const grants = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        ]);
+        // const grants = await PermissionsAndroid.requestMultiple([
+        //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        //   PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        //   PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        // ]);
 
         console.log('write external stroage', grants);
 
-        if (
-          grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.READ_EXTERNAL_STORAGE'] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.RECORD_AUDIO'] ===
-            PermissionsAndroid.RESULTS.GRANTED
-        ) {
-          console.log('permissions granted');
-        } else {
-          console.log('All required permissions not granted');
+        // if (
+        //   grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+        //     PermissionsAndroid.RESULTS.GRANTED &&
+        //   grants['android.permission.READ_EXTERNAL_STORAGE'] ===
+        //     PermissionsAndroid.RESULTS.GRANTED &&
+        //   grants['android.permission.RECORD_AUDIO'] ===
+        //     PermissionsAndroid.RESULTS.GRANTED
+        // ) {
+        //   console.log('permissions granted');
+        // } else {
+        //   console.log('All required permissions not granted');
 
-          return;
-        }
+        //   return;
+        // }
       } catch (err) {
         console.warn(err);
 
@@ -126,7 +126,7 @@ const AudioRecorderPlayerWithWave: FC<{ sIndex: number }> = props => {
       const xAxis = Math.floor(e.currentPosition / 1000);
       setIsplay((e.currentMetering ?? -60) > -40);
       if ((e.currentMetering ?? -60) > -40) {
-        run(e.currentMetering);
+        // run(e.currentMetering);
       }
       setAudioState(prev => {
         return {

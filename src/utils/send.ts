@@ -6,8 +6,13 @@ class Queue<T> {
   private items: T[] = [];
 
   // 填充数据到队列中
-  enqueue(item: T) {
-    this.items.push(item);
+  enqueue(item: T | T[]) {
+    this.items = this.items.concat(item);
+  }
+
+  get(poi: number) {
+    console.log('get', poi);
+    return this.items.at(poi);
   }
 
   // 消费队列中的数据
@@ -27,23 +32,33 @@ class Queue<T> {
 
 class Consumer<T> {
   private queue: Queue<T>;
-  private intervalId: NodeJS.Timeout | null = null;
+  intervalId: NodeJS.Timeout | null = null;
 
   constructor(queue: Queue<T>) {
     this.queue = queue;
   }
 
   // 开始消费数据，每300ms消费一个
-  startConsuming(cb: any) {
+  startConsuming(cb: any, timer = 300) {
     this.intervalId = setInterval(() => {
       if (!this.queue.isEmpty()) {
         const item = this.queue.dequeue();
-        console.log('queue', item);
+        console.log('queue --->', item);
         cb(item);
       } else {
         this.stopConsuming();
       }
-    }, 300);
+    }, timer);
+  }
+
+  startMusicConsuming(cb: any, timer = 300, startPoi: number) {
+    if (!this.queue.isEmpty()) {
+      const item = this.queue.get(startPoi);
+      console.log('queue --->', item);
+      cb(item);
+    } else {
+      this.stopConsuming();
+    }
   }
 
   // 停止消费数据
@@ -52,6 +67,13 @@ class Consumer<T> {
       clearInterval(this.intervalId);
       this.intervalId = null;
       this.queue.clear();
+    }
+  }
+  pauseConsuming() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+      // this.queue.clear();
     }
   }
 }

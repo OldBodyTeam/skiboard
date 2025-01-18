@@ -4,11 +4,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
 import { RootStackParamList } from 'route.config';
-import { CarouselOneData, CarouselThreeData, CarouselTwoData } from './utils';
+import {
+  CarouselOneData,
+  CarouselThreeData,
+  CarouselTwoData,
+  glowModes,
+} from './utils';
 // import { useScreenSize } from '@hooks/useScreenSize';
 
 import CoverCard from '@components/cover-card/CoverCard';
 import { useTranslation } from 'react-i18next';
+import { get } from 'lodash';
 enum LINE {
   ONE = 'one',
   TWO = 'two',
@@ -37,6 +43,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
     three: true,
   });
   const [selectedTitle, setSelectedTitle] = useState('Rainbow');
+  const [scrollDataItem, setScrollDataItem] = useState(glowModes.Rainbow.at(0));
   const [selectedLine, setSelectedLine] = useState<undefined | LINE>();
   const [selectedLinePosition, setSelectedLinePosition] = useState(-1);
   const handleAutoPlay = (id: LINE, title: string, index?: number) => {
@@ -49,6 +56,7 @@ const LightGlowModes = (props: LightGlowModesProps) => {
       };
     });
     setSelectedTitle(title);
+    setScrollDataItem(get(glowModes, `${title}.0`));
     setSelectedLine(id);
     setSelectedLinePosition(index!);
   };
@@ -98,7 +106,11 @@ const LightGlowModes = (props: LightGlowModesProps) => {
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, paddingBottom: 40, marginTop: 30 }}>
-            <CoverCard selectedTitle={selectedTitle} mode="glow" />
+            <CoverCard
+              selectedTitle={selectedTitle}
+              mode="glow"
+              scrollDataItem={scrollDataItem as string}
+            />
           </ScrollView>
         </ScrollView>
       </SafeAreaView>

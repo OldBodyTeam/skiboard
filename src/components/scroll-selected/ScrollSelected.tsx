@@ -1,35 +1,37 @@
-import useBLE from '@hooks/useBLE';
-import { bleState } from '@stores/ble/ble.atom';
-import { BLEConfig } from '@utils/ble';
+// import { bleState } from '@stores/ble/ble.atom';
+import { glowModes } from '@pages/light-glow-modes/utils';
 import { useDebounceFn, useMount } from 'ahooks';
-import { get } from 'lodash';
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Image, Text } from 'react-native';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
-import { useRecoilState } from 'recoil';
 export type ScrollSelectedProps = {
-  scrollData: string[];
+  // scrollData: string[];
   title: string;
+  handleSelectedTitle: (a: string, poi: string) => void;
+  value: string;
 };
 const ScrollSelected: FC<ScrollSelectedProps> = props => {
-  const { scrollData, title } = props;
+  const { title, handleSelectedTitle } = props;
+  console.log('title &&&&&& ->', title);
   const r = useRef<ICarouselInstance>(null);
-  console.log(scrollData, title);
-  useEffect(() => {
-    const index = scrollData.findIndex(v => v === title);
-    r.current?.scrollTo({ index });
-  }, [scrollData, title]);
   const { t } = useTranslation();
-  const { bleWrite } = useBLE();
-  const [_, setBleConfig] = useRecoilState(bleState);
+  const scrollData = useMemo(() => {
+    return glowModes[title as keyof typeof glowModes];
+  }, [title]);
+  const { run } = useDebounceFn(
+    (a, b: number) => {
+      handleSelectedTitle(title, scrollData[b]);
+    },
+    { wait: 100 },
+  );
   useMount(() => {
-    setBleConfig({ title, key: scrollData[0] });
+    const index = scrollData.findIndex(v => v === title);
+    setTimeout(() => {
+      r.current?.scrollTo({ index: index === -1 ? 0 : index });
+    }, 300);
   });
-  const { run } = useDebounceFn((_a, b: number) => {
-    setBleConfig({ title, key: scrollData[b] });
-    bleWrite(get(BLEConfig, `mode.${title}.${scrollData[b]}`) ?? '');
-  });
+  console.log('**********', scrollData);
   return (
     <View
       style={{

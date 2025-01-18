@@ -24,10 +24,10 @@ const Auth = (props: AuthProps) => {
         if (deviceInfo.connected) {
           navigation.push('Home', { screen: 'DesignScreen' });
         } else {
-          __DEV__
-            ? navigation.push('Home', { screen: 'DesignScreen' })
-            : navigation.push('BleManager');
-          // navigation.push('BleManager');
+          // __DEV__
+          //   ? navigation.push('Home', { screen: 'DesignScreen' })
+          //   : navigation.push('BleManager');
+          navigation.push('BleManager');
         }
       } catch (e) {
         console.log(e);

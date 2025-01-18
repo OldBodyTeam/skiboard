@@ -132,6 +132,7 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
                                     key={`${r}-${c}`}
                                     width={10}
                                     selected={!!frame?.includes(`${r}-${c}`)}
+                                    a
                                   />
                                 );
                               })}
