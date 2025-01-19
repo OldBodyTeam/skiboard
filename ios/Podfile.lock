@@ -972,9 +972,9 @@ PODS:
   - React-Mapbuffer (0.73.11):
     - glog
     - React-debug
-  - react-native-ble-manager (11.5.7):
+  - react-native-ble-manager (11.6.0):
     - React-Core
-  - react-native-ble-plx (3.2.1):
+  - react-native-ble-plx (3.4.0):
     - glog
     - MultiplatformBleAdapter (= 0.2.0)
     - RCT-Folly (= 2022.05.16.00)
@@ -983,11 +983,11 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-image-picker (7.1.2):
+  - react-native-image-picker (7.2.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-safe-area-context (4.14.0):
+  - react-native-safe-area-context (4.14.1):
     - React-Core
   - react-native-track-player (4.1.1):
     - React-Core
@@ -997,7 +997,7 @@ PODS:
     - react-native-video/Video (= 5.2.1)
   - react-native-video/Video (5.2.1):
     - React-Core
-  - react-native-webview (13.12.4):
+  - react-native-webview (13.13.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1168,7 +1168,7 @@ PODS:
     - React-jsi (= 0.73.11)
     - React-logger (= 0.73.11)
     - React-perflogger (= 0.73.11)
-  - ReactNativeUiLib (4.3.2):
+  - ReactNativeUiLib (4.5.0):
     - React
   - RNAudioRecorderPlayer (3.6.12):
     - React-Core
@@ -1182,11 +1182,11 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.7.0):
     - React-Core
-  - RNGestureHandler (2.21.2):
+  - RNGestureHandler (2.14.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNLocalize (3.3.0):
+  - RNLocalize (3.4.1):
     - React-Core
   - RNReanimated (3.6.1):
     - glog
@@ -1532,14 +1532,14 @@ SPEC CHECKSUMS:
   React-jsinspector: a98428936fb888cc15d857226a26d9ac0a668a0e
   React-logger: 6c1170f7bc315878ef4bd3b918e09130cf632798
   React-Mapbuffer: 41c166b84fc479afc78097cd51404109ec9edf68
-  react-native-ble-manager: 59a0c7178d6fa0272a1b86f976469b800ce08eba
-  react-native-ble-plx: 78372e30504303eebed11fceade317cddff80f9b
+  react-native-ble-manager: 7e6373a746c5a815d0a65a11cc5f633c72c36c5b
+  react-native-ble-plx: f0581bfbc1127184aa9429f062eadfcba6818add
   react-native-blur: b2b140d3d65077a1d5d26be62d9415f895592344
-  react-native-image-picker: d3db110a3ded6e48c93aef7e8e51afdde8b16ed0
-  react-native-safe-area-context: 4532f1a0c5d34a46b9324ccaaedcb5582a302b7d
+  react-native-image-picker: 3e4ad7a308e087f49f8aa1443c9ead2e8ce8f060
+  react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
   react-native-track-player: 82ef1756ffeea61140fea17519ecd6d64ec3cf3e
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
-  react-native-webview: 3e512ed8be8d36d24acc6fdfd7f7d1476a096b3c
+  react-native-webview: 873405c789b07e5ded301b9afbe169037a80ee2d
   React-nativeconfig: 8fd29a35a3e4e8c37682d976667663d834ba6165
   React-NativeModulesApple: 68eb729eaf628ba066bca5308dd4ccacaaacba97
   React-perflogger: 3887a05940ccd34a83457fd153fdeda509b31737
@@ -1560,14 +1560,14 @@ SPEC CHECKSUMS:
   React-runtimescheduler: a36193fd33a0187852d54d402e170510f1300952
   React-utils: eaaed6083fccd050a594baf1d72db5f949a3b9bb
   ReactCommon: 1a93f1ef5c6e33bf14b9563cdb8e7621a893aa37
-  ReactNativeUiLib: acf5e70a64140d6f38a969978f090c16862c2d3d
+  ReactNativeUiLib: 88d6fc082003b0bbc519a5c75c1f246cde7c73c2
   RNAudioRecorderPlayer: 224c7de87722938aedce04000d09baa633148f5b
   RNBootSplash: e025d4ee98d942ee6c8b495a6fe66339a6b5f6dd
   RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
   RNCMaskedView: c8e1f01fc0f41ddf4e16246aef1143b3311588ca
   RNDateTimePicker: 4f3c4dbd4f908be32ec8c93f086e8924bd4a2e07
-  RNGestureHandler: 57144b74a3402b21180df3ec7b3a0266ddf89548
-  RNLocalize: 298e85ce16540a11de40c1a588ead39fc5e9a072
+  RNGestureHandler: a4c4561307e67f2942f5a4fe1526ff78cf3f5280
+  RNLocalize: 06991b9c31e7a898a9fa6ddb204ce0f53a967248
   RNReanimated: dee37576492f1a375017515f5c77e66e5eec696b
   RNScreens: 69850d4519d95b9359cec15a67bb5f9d0bd75262
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a

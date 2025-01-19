@@ -7,9 +7,10 @@ import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
 import { isAxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
+import { useAtom } from 'jotai';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'> &
   PropsWithChildren<{ name?: string }>;
 type Params = {
@@ -20,7 +21,7 @@ type Params = {
 };
 const Login = (props: LoginProps) => {
   const { navigation } = props;
-  const [_, setUserInfo] = useRecoilState(userInfoState);
+  const [_, setUserInfo] = useAtom(userInfoState);
   const getUserInfo = async (userId: string) => {
     const client = await ClientRequest();
     const { data } = await client.userControllerUser(userId);

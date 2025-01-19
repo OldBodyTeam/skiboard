@@ -12,8 +12,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { deviceInfoState } from '@stores/device/device.atom';
+import { useAtom } from 'jotai';
 
 type DeviceListProps = NativeStackScreenProps<
   RootStackParamList,
@@ -26,7 +27,7 @@ const DeviceList = ({ navigation }: DeviceListProps) => {
   };
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const [deviceInfo] = useRecoilState(deviceInfoState);
+  const [deviceInfo] = useAtom(deviceInfoState);
   console.log('deviceInfo', deviceInfo);
   return (
     <View

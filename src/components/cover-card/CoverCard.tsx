@@ -9,8 +9,11 @@ import useBLE from '@hooks/useBLE';
 import { useScreenSize } from '@hooks/useScreenSize';
 // import { poi } from '@pages/draw/config';
 import { glowModes, scrollData } from '@pages/light-glow-modes/utils';
+import { defaultDataAtom, glowAtom, ledAtom } from '@stores/led/led';
 import { BLEConfig } from '@utils/ble';
+import { useSend } from '@utils/send';
 import { useMemoizedFn, useMount } from 'ahooks';
+import { useAtom } from 'jotai';
 // import { BLEConfig } from '@utils/ble';
 import { findIndex, get } from 'lodash';
 import React, { FC, useEffect, useMemo, useState } from 'react';
@@ -27,16 +30,45 @@ const CoverCard: FC<CoverCardProps> = props => {
   const [a, setA] = useState(selectedTitle);
   const [keyPoi, setKeyPoi] = useState(scrollDataItem);
   const { bleWrite } = useBLE();
+  const [ledValue, setLedValue] = useAtom(ledAtom);
+  const [glowValue, setGlowValue] = useAtom(glowAtom);
+  const { queue, consumer } = useSend();
+  const getCode = useMemoizedFn((code: string) => {
+    if (mode === 'led') {
+      // bleWrite(code);
+      queue.enqueue(ledValue.speed);
+      ledValue.reverse ? queue.enqueue(ledValue.reverse) : null;
+      queue.enqueue(code);
+      setLedValue(() => {
+        return {
+          ...defaultDataAtom,
+          title: code,
+          reverse: '',
+        };
+      });
+    } else if (mode === 'glow') {
+      queue.enqueue(glowValue.speed);
+      glowValue.reverse ? queue.enqueue(glowValue.reverse) : null;
+      queue.enqueue(code);
+      // bleWrite(code);
+      setGlowValue(prev => {
+        return {
+          ...prev,
+          title: code,
+          reverse: '',
+        };
+      });
+    }
+    consumer.startConsuming(bleWrite);
+  });
   const handleSelectedTitle = useMemoizedFn(async (m: string, poi: string) => {
     setA(m);
     setKeyPoi(poi);
     console.info('***>', get(BLEConfig, `mode.${m}.${poi}`));
-    await bleWrite(get(BLEConfig, `mode.${m}.${poi}`) ?? '');
+    getCode(get(BLEConfig, `mode.${m}.${poi}`) ?? '');
   });
   useMount(async () => {
-    await bleWrite(
-      get(BLEConfig, `mode.${selectedTitle}.${scrollDataItem}`) ?? '',
-    );
+    getCode(get(BLEConfig, `mode.${selectedTitle}.${scrollDataItem}`) ?? '');
   });
   useEffect(() => {
     setA(selectedTitle);

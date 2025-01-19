@@ -1,9 +1,7 @@
 import PickerModal, {
   PickerModalRef,
 } from '@components/picker-modal/PickerModal';
-import useBLE from '@hooks/useBLE';
 import { TIME } from '@pages/music-screen/config';
-import { getHex } from '@utils/hex';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable, Image } from 'react-native';
@@ -36,7 +34,7 @@ const PickTime: FC<PickTimeProps> = props => {
     time: TIME;
     numType1: number;
   }) => {
-    console.log('chooseTime', chooseTime, pointer.size);
+    // console.log('chooseTime', chooseTime, pointer.size);
     modalRef.current?.closeModal();
     setShowTime(chooseTime);
     const { time, currentTime, numType1 } = chooseTime;
@@ -47,7 +45,7 @@ const PickTime: FC<PickTimeProps> = props => {
     });
     onHandleTime(numType1, { type: time, currentTime });
 
-    console.log(pointer);
+    // console.log(pointer);
     // await bleWrite('57ae020161');
     // await sleep();
     // if (numType1 === 1) {

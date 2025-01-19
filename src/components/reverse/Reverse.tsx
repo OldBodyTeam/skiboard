@@ -1,9 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { reverseMode } from '@config/mode';
 import useBLE from '@hooks/useBLE';
+import { glowAtom, ledAtom } from '@stores/led/led';
 import { BLEConfig } from '@utils/ble';
+import { useSend } from '@utils/send';
 import { useMemoizedFn } from 'ahooks';
+import { useAtom } from 'jotai';
 import { get } from 'lodash';
 import React, { FC, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { View } from 'react-native-ui-lib';
@@ -12,11 +17,17 @@ const Reverse: FC<{
   title: string;
   keyPoi: string;
 }> = props => {
-  const { title, keyPoi } = props;
+  const { title, keyPoi, mode } = props;
   const [reverse, setReverse] = useState(false);
   const { bleWrite } = useBLE();
   useEffect(() => {
     setReverse(false);
+    setLedValue(prev => {
+      return {
+        ...prev,
+        reverse: '',
+      };
+    });
   }, [title, keyPoi]);
   // console.log('&&&&&&', get(reverseMode, `${title}.${keyPoi}`));
   // useEffect(() => {
@@ -31,20 +42,49 @@ const Reverse: FC<{
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [bleWrite, mode, reverse]);
-
+  const { t } = useTranslation();
+  const [ledValue, setLedValue] = useAtom(ledAtom);
+  const [glowValue, setGlowValue] = useAtom(glowAtom);
+  const { queue, consumer } = useSend();
+  const getCode = useMemoizedFn((code: string) => {
+    if (mode === 'led') {
+      // bleWrite(code);
+      queue.enqueue(ledValue.speed);
+      queue.enqueue(ledValue.title);
+      queue.enqueue(code);
+      setLedValue(prev => {
+        return {
+          ...prev,
+          reverse: code,
+        };
+      });
+    } else if (mode === 'glow') {
+      queue.enqueue(glowValue.speed);
+      queue.enqueue(ledValue.title);
+      queue.enqueue(code);
+      // bleWrite(code);
+      setGlowValue(prev => {
+        return {
+          ...prev,
+          reverse: code,
+        };
+      });
+    }
+    consumer.startConsuming(bleWrite);
+  });
   const handleBtnRevise = useMemoizedFn(async () => {
     const code = get(reverseMode, `${title}.${keyPoi}`);
     if (code) {
       setReverse(true);
-      await bleWrite(code);
+      getCode(code);
     } else {
-      Toast.show('暂无反向灯效', { position: Toast.positions.CENTER });
+      Toast.show(t('not-reverse'), { position: Toast.positions.CENTER });
     }
   });
 
   const handleCancelBtnRevise = useMemoizedFn(async () => {
     setReverse(false);
-    await bleWrite(get(BLEConfig, `mode.${title}.${keyPoi}`) ?? '');
+    getCode(get(BLEConfig, `mode.${title}.${keyPoi}`) ?? '');
   });
 
   return (

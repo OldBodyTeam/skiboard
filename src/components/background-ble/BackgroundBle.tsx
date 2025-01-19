@@ -1,8 +1,9 @@
 import { sleep } from '@components/pick-time/PickTime';
 import { butteryState, deviceInfoState } from '@stores/device/device.atom';
-import { useMemoizedFn } from 'ahooks';
+import { useMemoizedFn, useMount } from 'ahooks';
+import { useSetAtom } from 'jotai';
 import { get } from 'lodash';
-import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
+import React, { FC, PropsWithChildren, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 import BleManager, {
   BleManagerDidUpdateValueForCharacteristicEvent,
@@ -11,7 +12,7 @@ import BleManager, {
   BleScanMode,
   Peripheral,
 } from 'react-native-ble-manager';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 const BleManagerModule = NativeModules.BleManager;
 export const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 const SECONDS_TO_SCAN_FOR = 0;
@@ -21,8 +22,8 @@ const ALLOW_DUPLICATES = true;
 const BackgroundBle: FC<PropsWithChildren<any>> = props => {
   const { children } = props;
   const [, setPeripherals] = useState(new Map<Peripheral['id'], Peripheral>());
-  const [_deviceInfo, setDeviceInfo] = useRecoilState(deviceInfoState);
-  const [, setInfo] = useRecoilState(butteryState);
+  const setDeviceInfo = useSetAtom(deviceInfoState);
+  const setInfo = useSetAtom(butteryState);
   const handleUpdateValueForCharacteristic = useMemoizedFn(
     async (data: BleManagerDidUpdateValueForCharacteristicEvent) => {
       await BleManager.startNotification(
@@ -31,14 +32,20 @@ const BackgroundBle: FC<PropsWithChildren<any>> = props => {
         data.characteristic,
       );
       const peripheralData = await BleManager.retrieveServices(data.peripheral);
-      const readData = get(peripheralData, 'characteristics.0.value', {
-        bytes: [] as number[],
-      });
-      const decodedBytes = Buffer.from(readData.bytes);
-      const code = decodedBytes.toString('hex');
-      const decimalValue = parseInt(code.slice(-4, -2), 16);
-      setInfo(decimalValue);
-      console.log(decimalValue);
+      if (get(peripheralData, 'characteristics.0.value')) {
+        const readData = get(peripheralData, 'characteristics.0.value', {
+          bytes: [] as number[],
+        });
+        const decodedBytes = Buffer.from(readData.bytes);
+        const code = decodedBytes.toString('hex');
+        const decimalValue = parseInt(code.slice(-4, -2), 16);
+        setInfo(decimalValue);
+      } else {
+        const decodedBytes = Buffer.from(data.value);
+        const code = decodedBytes.toString('hex');
+        const decimalValue = parseInt(code.slice(-4, -2), 16);
+        setInfo(decimalValue);
+      }
     },
   );
 
@@ -135,7 +142,7 @@ const BackgroundBle: FC<PropsWithChildren<any>> = props => {
       }
     },
   );
-  useEffect(() => {
+  useMount(() => {
     const listeners = [
       bleManagerEmitter.addListener(
         'BleManagerDiscoverPeripheral',
@@ -157,11 +164,7 @@ const BackgroundBle: FC<PropsWithChildren<any>> = props => {
         listener.remove();
       }
     };
-  }, [
-    handleDisconnectedPeripheral,
-    handleDiscoverPeripheral,
-    // handleUpdateValueForCharacteristic,
-  ]);
+  });
 
   return <>{children}</>;
 };

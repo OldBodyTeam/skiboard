@@ -194,5 +194,12 @@
     "create-frame-tips": "最多创建10个frames",
     "BleManager-started": "开始扫描",
     "open-swiutch": "先开启开关",
-    "reconnect": "蓝牙重新连接成功"
+    "reconnect": "蓝牙重新连接成功",
+    "not-found": "未搜索到蓝牙设备，请先将设备开机",
+    "not-again": "当前无法连接蓝牙，请重试",
+    "not-failed": "国际初始化失败",
+    "not-strip": "点亮灯带",
+    "not-supported": "暂不支持",
+    "not-reverse": "此灯效无反向",
+    "error": "错误"
 }

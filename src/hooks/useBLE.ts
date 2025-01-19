@@ -1,15 +1,16 @@
 import { deviceInfoState } from '@stores/device/device.atom';
 import { useMemoizedFn } from 'ahooks';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { Buffer } from 'buffer';
 import BleManager from 'react-native-ble-manager';
 import { BLEWriteLogger } from '@utils/log';
 import Toast from 'react-native-root-toast';
 import { get } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
 
 const useBLE = () => {
-  const [deviceInfo] = useRecoilState(deviceInfoState);
+  const [deviceInfo] = useAtom(deviceInfoState);
   const deviceId = deviceInfo.id;
   const deviceServiceUUID = deviceInfo.serviceUUIDs?.at(0)!;
   const deviceCharacteristicUUID = deviceInfo.characteristicUUIDs?.at(0)!;
@@ -32,13 +33,20 @@ const useBLE = () => {
         deviceInfo.characteristicUUIDs!.at(0)!,
       );
       const peripheralData = await BleManager.retrieveServices(deviceInfo.id);
-      const readData = get(peripheralData, 'characteristics.0.value', {
-        bytes: [] as number[],
-      });
-      const decodedBytes = Buffer.from(readData.bytes);
-      const code = decodedBytes.toString('hex');
-      const decimalValue = parseInt(code.slice(-4, -2), 16);
-      return decimalValue;
+      if (get(peripheralData, 'characteristics.0.value')) {
+        const readData = get(peripheralData, 'characteristics.0.value', {
+          bytes: [] as number[],
+        });
+        const decodedBytes = Buffer.from(readData.bytes);
+        const code = decodedBytes.toString('hex');
+        const decimalValue = parseInt(code.slice(-4, -2), 16);
+        return decimalValue;
+      } else {
+        const decodedBytes = Buffer.from([]);
+        const code = decodedBytes.toString('hex');
+        const decimalValue = parseInt(code.slice(-4, -2), 16);
+        return decimalValue;
+      }
     } catch (error) {
       console.log('getBLEBatteryPower', (error as Error).message);
     }
@@ -71,7 +79,9 @@ const useBLE = () => {
           // setInfo(decimalValue ?? 0);
           const buffer = Buffer.from(data, 'hex');
           const bleData = buffer.toJSON().data;
-          Toast.show(`蓝牙开始写入${data}`);
+          if (__DEV__) {
+            Toast.show(`蓝牙开始写入${data}`);
+          }
           await BleManager.writeWithoutResponse(
             deviceId,
             deviceServiceUUID,
@@ -82,7 +92,7 @@ const useBLE = () => {
 
           BLEWriteLogger(data);
         } catch (error) {
-          Toast.show('暂无蓝牙设备，请打开蓝牙后使用', {
+          Toast.show(t('not-found'), {
             position: Toast.positions.CENTER,
           });
           console.log('belWrite', (error as Error).message);
@@ -102,7 +112,7 @@ const useBLE = () => {
     }
   });
   if (!deviceId || !deviceCharacteristicUUID || !deviceServiceUUID) {
-    __DEV__ ? undefined : Toast.show('当前无法连接蓝牙，请重试');
+    __DEV__ ? undefined : Toast.show(t('not-again'));
   }
   // return __DEV__
   //   ? {

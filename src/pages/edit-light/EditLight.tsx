@@ -16,7 +16,7 @@ import { Pressable, Text, TextInput } from 'react-native';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { ClientRequest } from '@services/client';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import useToast from '@hooks/useToast';
 import { useMemoizedFn, useMount } from 'ahooks';
@@ -25,11 +25,12 @@ import { BLEConfig } from '@utils/ble';
 import { editLight } from '@config/edit-light';
 import { getHex, getSimpleHex } from '@utils/hex';
 import { useSend } from '@utils/send';
+import { useAtomValue } from 'jotai';
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
 const EditLight = (props: EditLightProps) => {
   const modalEditRef = useRef<BlurModalRef>(null);
-  const [userInfo] = useRecoilState(userInfoState);
+  const userInfo = useAtomValue(userInfoState);
   const { navigation, route } = props;
   const { bleWrite } = useBLE();
   const { collectionId } = route.params || {};

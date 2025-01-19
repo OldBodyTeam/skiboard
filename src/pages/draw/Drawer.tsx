@@ -35,10 +35,11 @@ import { BLEConfig } from '@utils/ble';
 import useBLE from '@hooks/useBLE';
 import { useSend } from '@utils/send';
 import { getHex, getSimpleHex } from '@utils/hex';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import useToast from '@hooks/useToast';
-import { v4 } from 'uuid';
+import { useAtomValue } from 'jotai';
+// import { v4 } from 'uuid';
 const windowWidth = Dimensions.get('window').width;
 type DrawerProps = NativeStackScreenProps<RootStackParamList, 'ScrollText'> &
   PropsWithChildren<{ name?: string }>;
@@ -81,7 +82,7 @@ const Drawer: FC<DrawerProps> = props => {
   const [target, setTarget] = useState<Set<string>>(new Set());
   const [selectedList, setSelectedList] = useState<Set<string>>(new Set());
   const [clear, setClear] = useState(false);
-  const [userInfo] = useRecoilState(userInfoState);
+  const userInfo = useAtomValue(userInfoState);
   const showToast = useToast();
   const getCollectionList = async () => {
     try {
@@ -97,23 +98,27 @@ const Drawer: FC<DrawerProps> = props => {
   };
   const [collectionNum, setCollectionNum] = useState(1);
   useMount(async () => {
-    const collectionData = await getCollectionList();
-    // @ts-ignore
-    if ((collectionData?.length ?? 0) > 10) {
-      showToast('只能创建10个作品，请删除后在进行绘制');
-      navigation.push('Home', { screen: 'DesignScreen' });
-      return;
-    }
-    // @ts-ignore
-    setCollectionNum((collectionData?.length ?? 0) + 1);
-    if (collectionId) {
-      const i = (collectionData as unknown as any[]).findIndex(
-        item => item.id === collectionId,
-      );
-      setCollectionNum(i + 1);
-    } else {
+    try {
+      const collectionData = await getCollectionList();
       // @ts-ignore
-      setIndex((collectionData?.length ?? 0) + 1 ?? 1);
+      if ((collectionData?.length ?? 0) > 10) {
+        showToast('只能创建10个作品，请删除后在进行绘制');
+        navigation.push('Home', { screen: 'DesignScreen' });
+        return;
+      }
+      // @ts-ignore
+      setCollectionNum((collectionData?.length ?? 0) + 1);
+      if (collectionId) {
+        const i = (collectionData as unknown as any[]).findIndex(
+          item => item.id === collectionId,
+        );
+        setCollectionNum(i + 1);
+      } else {
+        // @ts-ignore
+        // setCollectionNum((collectionData?.length ?? 0) + 1 ?? 1);
+      }
+    } catch (e) {
+      console.log((e as Error).message);
     }
   });
   const a = (e: any) => {
@@ -309,7 +314,6 @@ const Drawer: FC<DrawerProps> = props => {
       return new Map(prev);
     });
   });
-  console.log('keys', Array.from(frameList.keys()));
   const { queue, consumer } = useSend();
 
   const handleBlueData = useMemoizedFn(() => {
@@ -466,7 +470,8 @@ const Drawer: FC<DrawerProps> = props => {
             style={styles.userOptBlock}
             tint="systemThinMaterialDark"
             blurReductionFactor={10}
-            experimentalBlurMethod="dimezisBlurView">
+            // experimentalBlurMethod="dimezisBlurView"
+          >
             <View style={styles.leftOpt}>
               <TouchableOpacity
                 onPress={handlePrev}

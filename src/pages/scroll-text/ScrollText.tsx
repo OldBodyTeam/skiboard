@@ -3,9 +3,10 @@ import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BLEConfig } from '@utils/ble';
 import { getHex } from '@utils/hex';
-import { Logger } from '@utils/log';
+// import { Logger } from '@utils/log';
 import { get } from 'lodash';
 import React, { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,14 +20,15 @@ type ScrollTextProps = NativeStackScreenProps<
 const ScrollText = (props: ScrollTextProps) => {
   const { navigation } = props;
   const { bleWrite } = useBLE();
+  const { t } = useTranslation();
   const handleNavigation = async (event: WebViewMessageEvent) => {
-    console.log('*************', event.nativeEvent.data);
+    // console.log('*************', event.nativeEvent.data);
     try {
       const data = JSON.parse(event.nativeEvent.data) as {
         type: 'chooseText' | 'back';
         [p: string]: any;
       };
-      console.log('*************', event.nativeEvent.data);
+      // console.log('*************', event.nativeEvent.data);
       switch (data.type) {
         case 'chooseText':
           const text = data.str as string[];
@@ -52,8 +54,8 @@ const ScrollText = (props: ScrollTextProps) => {
           );
       }
     } catch (error) {
-      Toast.show('写入失败');
-      Logger('scroll text 写入失败');
+      Toast.show(t('error'));
+      // Logger('scroll text 写入失败');
     }
   };
   const insets = useSafeAreaInsets();

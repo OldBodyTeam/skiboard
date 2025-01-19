@@ -12,10 +12,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 import { useToastMessage } from '@hooks/useAxiosError';
 import { ChangeStatus } from '@pages/entry/enums';
+import { useSetAtom } from 'jotai';
 type LoginProps = NativeStackScreenProps<
   RootStackParamList,
   'Register' | 'Reset' | 'Login'
@@ -27,7 +28,7 @@ const Login: FC<LoginProps> = props => {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [passwordOne, setPasswordOne] = useState('');
-  const [_, setUserInfo] = useRecoilState(userInfoState);
+  const setUserInfo = useSetAtom(userInfoState);
   const { handleAxiosError, toast } = useToastMessage();
   const getUserInfo = async (userId: string) => {
     const client = await ClientRequest();

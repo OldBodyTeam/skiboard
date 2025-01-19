@@ -11,9 +11,10 @@ import {
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { useTranslation } from 'react-i18next';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { butteryState, deviceInfoState } from '@stores/device/device.atom';
 import { useDebounceFn } from 'ahooks';
+import { useAtom } from 'jotai';
 export type DeviceListItemProps = {
   device: any;
 };
@@ -34,8 +35,8 @@ const DeviceListItem: FC<DeviceListItemProps> = props => {
   };
   const { width } = useScreenSize();
   const { t } = useTranslation();
-  const [deviceInfo, setDeviceInfo] = useRecoilState(deviceInfoState);
-  const [info] = useRecoilState(butteryState);
+  const [deviceInfo, setDeviceInfo] = useAtom(deviceInfoState);
+  const [info] = useAtom(butteryState);
   const [name, setName] = useState(deviceInfo.name);
   const { run } = useDebounceFn((name?: string) => {
     setDeviceInfo(prev => {

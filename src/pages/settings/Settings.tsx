@@ -3,6 +3,7 @@ import Header from '@components/header/Header';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
 import { userInfoState } from '@stores/login/login.atom';
+import { useAtom } from 'jotai';
 import React, {
   PropsWithChildren,
   useEffect,
@@ -25,7 +26,7 @@ import {
 } from 'react-native';
 import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-root-toast';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 
 type SettingsTextProps = NativeStackScreenProps<
@@ -36,7 +37,7 @@ type SettingsTextProps = NativeStackScreenProps<
 const Settings = (props: SettingsTextProps) => {
   const { navigation } = props;
   const [uri, setUri] = useState<Asset['uri']>();
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [userInfo, setUserInfo] = useAtom(userInfoState);
   const handleAvatar = async () => {
     try {
       const { didCancel, assets } = await launchImageLibrary({
@@ -95,7 +96,7 @@ const Settings = (props: SettingsTextProps) => {
       const newUserInfo = result.data.data;
       setUserInfo(newUserInfo);
     } catch (e) {
-      Toast.show('修改用户名失败', {
+      Toast.show(t('error'), {
         position: Toast.positions.CENTER,
         delay: 0,
         animation: true,

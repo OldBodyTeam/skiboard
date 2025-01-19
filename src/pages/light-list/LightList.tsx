@@ -6,14 +6,15 @@ import { RootStackParamList } from 'route.config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
-import { ScrollView, Text, TouchableHighlight } from 'react-native';
+import { Text, TouchableHighlight } from 'react-native';
 import { ClientRequest } from '@services/client';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 // import { createWebView, useBridge } from '@webview-bridge/react-native';
-import { appBridge } from '@pages/edit-light/utils';
+// import { appBridge } from '@pages/edit-light/utils';
 import { useTranslation } from 'react-i18next';
 import Toast from 'react-native-root-toast';
+import { useAtomValue } from 'jotai';
 // import { WebViewMessageEvent } from 'react-native-webview';
 // export const { WebView } = createWebView({
 //   bridge: appBridge,
@@ -32,7 +33,7 @@ const LightList = (props: LightListProps) => {
   };
   const insets = useSafeAreaInsets();
   const uri = useWebViewUrl('draw-list');
-  const [userInfo] = useRecoilState(userInfoState);
+  const userInfo = useAtomValue(userInfoState);
   const webRef = useRef<any>(null);
   const modalDeleteRef = useRef<BlurModalRef>(null);
   const getCollectionList = async () => {
@@ -54,7 +55,7 @@ const LightList = (props: LightListProps) => {
         webRef.current?.injectJavaScript(injected);
       }, 1000);
     } catch (e) {
-      Toast.show(`${(e as Error).message}`);
+      Toast.show(t('error'));
     }
   };
   const [deleteInfo, setDeleteInfo] = useState<{

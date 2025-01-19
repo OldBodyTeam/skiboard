@@ -575,17 +575,18 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = skiboard/skiboard.entitlements;
-				CURRENT_PROJECT_VERSION = "1.0.10-beta.0";
+				CURRENT_PROJECT_VERSION = "1.0.11-beta.0";
 				DEVELOPMENT_TEAM = 9878P34AZ7;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = skiboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumii;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.10;
+				MARKETING_VERSION = 1.0.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -609,16 +610,17 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = skiboard/skiboard.entitlements;
-				CURRENT_PROJECT_VERSION = 1.0.10;
+				CURRENT_PROJECT_VERSION = 1.0.11;
 				DEVELOPMENT_TEAM = 9878P34AZ7;
 				INFOPLIST_FILE = skiboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lumii;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.10;
+				MARKETING_VERSION = 1.0.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

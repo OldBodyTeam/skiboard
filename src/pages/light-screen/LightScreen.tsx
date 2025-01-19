@@ -24,6 +24,8 @@ import { useTranslation } from 'react-i18next';
 import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
 import { getHex } from '@utils/hex';
 import { useToastMessage } from '@hooks/useAxiosError';
+import { useSend } from '@utils/send';
+import { useDebounce, useDebounceFn, useMemoizedFn } from 'ahooks';
 const data = ['#FFFF00', '#FF00AB', '#00FFFF', '#FF0000', '#00FF00', '#0000FF'];
 const randomNumber = () => Math.floor(Math.random() * 256);
 type LightScreenProps = CompositeScreenProps<
@@ -33,40 +35,52 @@ type LightScreenProps = CompositeScreenProps<
   PropsWithChildren<{ name?: string }>;
 const LightScreen = (props: LightScreenProps) => {
   const { navigation } = props;
-
+  const [progress, setProgress] = useState(0);
+  const [colorPointer, setColorPointer] = useState('57ed04FF8A5E61');
   const [selected, setSelected] = useState(-1);
   const [switchValue, setSwitchValue] = useState<boolean>(false);
   const { toast } = useToastMessage();
-
-  const handleSelectedColor = (currentOptIndex: number) => {
-    if (!switchValue) {
-      toast(t('打开灯带开关'));
-      return;
-    }
-    if (switchValue && currentOptIndex !== 11) {
-      setSelected(currentOptIndex);
-      const writeData = data[currentOptIndex].slice(1);
-      console.log(
-        writeData,
-        BLEConfig.lightScreen[writeData as keyof typeof lightScreen],
-      );
-      bleWrite(BLEConfig.lightScreen[writeData as keyof typeof lightScreen]);
-    } else if (currentOptIndex === 11) {
-      bleWrite(
-        `57ed04${getHex(randomNumber())}${getHex(randomNumber())}${getHex(
+  const { t } = useTranslation();
+  const { queue, consumer } = useSend();
+  const { run: handleSelectedColor } = useDebounceFn(
+    (currentOptIndex: number) => {
+      if (!switchValue) {
+        toast(t('not-strip'));
+        return;
+      }
+      queue.enqueue(`57af02${getHex(progress)}61`);
+      if (switchValue && currentOptIndex !== 11) {
+        setSelected(currentOptIndex);
+        const writeData = data[currentOptIndex].slice(1);
+        // console.log(
+        //   writeData,
+        //   BLEConfig.lightScreen[writeData as keyof typeof lightScreen],
+        // );
+        const color =
+          BLEConfig.lightScreen[writeData as keyof typeof lightScreen];
+        queue.enqueue(color);
+        setColorPointer(color);
+      } else if (currentOptIndex === 11) {
+        const color = `57ed04${getHex(randomNumber())}${getHex(
           randomNumber(),
-        )}61`,
-      );
-      setSelected(11);
-    }
-  };
-  // const [progress, setProgress] = useState(0);
+        )}${getHex(randomNumber())}61`;
+        queue.enqueue(color);
+        setColorPointer(color);
+        setSelected(11);
+      }
+      consumer.startConsuming(bleWrite);
+    },
+    { wait: 50 },
+  );
   const { bleWrite } = useBLE();
 
-  const handleProgressChange = (num: number) => {
-    bleWrite(`57af02${getHex(num)}61`);
-    // setProgress(num);
-  };
+  const { run: handleProgressChange } = useDebounceFn(
+    (num: number) => {
+      bleWrite(`57af02${getHex(num)}61`);
+      setProgress(num);
+    },
+    { wait: 50 },
+  );
   // useEffect(() => {
   //   if (typeof progress === 'number') {
   //     bleWrite(`57af02${getHex(progress)}61`);
@@ -81,10 +95,34 @@ const LightScreen = (props: LightScreenProps) => {
   //   );
   // }, [bleWrite, switchValue]);
 
-  const handleSelected = async (color: string) => {
+  const handleSelected = useMemoizedFn(async (color: string) => {
     await bleWrite(`57ed04${color}61`);
-  };
-  const { t } = useTranslation();
+    setColorPointer(`57ed04${color}61`);
+  });
+  const { run: handleOpenLight } = useDebounceFn(
+    async (value: boolean) => {
+      queue.enqueue(
+        value
+          ? BLEConfig.lightScreen.openLight
+          : BLEConfig.lightScreen.closeLight,
+      );
+      if (value) {
+        queue.enqueue(colorPointer);
+      }
+      // queue.enqueue(colorPointer);
+      // await bleWrite(
+      //   value
+      //     ? BLEConfig.lightScreen.openLight
+      //     : BLEConfig.lightScreen.closeLight,
+      // );
+      // if (value) {
+      //   await bleWrite('57ed04FF8A5E61');
+      // }
+      setSwitchValue(value);
+      consumer.startConsuming(bleWrite);
+    },
+    { wait: 50 },
+  );
   return (
     <ImageBackground
       style={{
@@ -143,17 +181,7 @@ const LightScreen = (props: LightScreenProps) => {
               <Progress onProgressChange={handleProgressChange} />
               <Switch
                 switchValue={switchValue}
-                onSwitchChange={async (value: boolean) => {
-                  await bleWrite(
-                    value
-                      ? BLEConfig.lightScreen.openLight
-                      : BLEConfig.lightScreen.closeLight,
-                  );
-                  if (value) {
-                    await bleWrite('57ed04FF8A5E61');
-                  }
-                  setSwitchValue(value);
-                }}
+                onSwitchChange={handleOpenLight}
               />
             </View>
             <ScrollView

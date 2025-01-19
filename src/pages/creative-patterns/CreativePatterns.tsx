@@ -49,14 +49,14 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
       ) as unknown as CollectionEntity[];
       setCollectionInfo(collection);
     } catch (e) {
-      Toast.show((e as Error).message);
-      console.log(e);
+      Toast.show(t('error'));
+      // console.log(e);
     }
   };
 
   const { width } = useScreenSize();
   const handleEditLight = (collectionId: string) => {
-    console.log(collectionId);
+    // console.log(collectionId);
     navigation.push('Drawer', { collectionId: collectionId });
   };
   useMount(() => {

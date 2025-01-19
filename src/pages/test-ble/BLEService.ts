@@ -41,7 +41,7 @@ class BLEServiceInstance {
       const subscription = this.manager.onStateChange(state => {
         switch (state) {
           case BluetoothState.Unsupported:
-            this.showErrorToast('暂不支持');
+            this.showErrorToast(t('not-supported'));
             break;
           case BluetoothState.PoweredOff:
             this.onBluetoothPowerOff();
@@ -500,21 +500,21 @@ class BLEServiceInstance {
     return false;
   };
 
-  showErrorToast = (error: string) => {
-    Toast.show({
-      type: 'error',
-      text1: 'Error',
-      text2: error,
-    });
-    console.error(error);
+  showErrorToast = () => {
+    // Toast.show({
+    //   type: 'error',
+    //   text1: 'Error',
+    //   text2: error,
+    // // });
+    // console.error(error);
   };
 
-  showSuccessToast = (info: string) => {
-    Toast.show({
-      type: 'success',
-      text1: 'Success',
-      text2: info,
-    });
+  showSuccessToast = () => {
+    // Toast.show({
+    //   type: 'success',
+    //   text1: 'Success',
+    //   text2: info,
+    // });
   };
 }
 

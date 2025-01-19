@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { RootStackParamList } from 'route.config';
 import type { CompositeScreenProps } from '@react-navigation/native';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import useBLE from '@hooks/useBLE';
@@ -23,6 +23,7 @@ import { BLEConfig } from '@utils/ble';
 import { useTranslation } from 'react-i18next';
 import { FadeInView, SpringInView } from '@components/fade-in-view/FadeInView';
 import { useMount } from 'ahooks';
+import { useAtomValue } from 'jotai';
 
 type DesignScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'DesignScreen'>,
@@ -33,7 +34,7 @@ type DesignScreenProps = CompositeScreenProps<
 const DesignScreen = (props: DesignScreenProps) => {
   const { navigation } = props;
   const [switchStatus, setSwitchStatus] = useState<'off' | 'on'>('off');
-  const [userInfo] = useRecoilState(userInfoState);
+  const userInfo = useAtomValue(userInfoState);
   const { bleWrite } = useBLE();
   // () => navigation.push('EditLight')
   const handleCollection = async () => {

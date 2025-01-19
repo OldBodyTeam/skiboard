@@ -7,6 +7,7 @@ import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
 import { isAxiosError } from 'axios';
 import { useWebViewUrl } from '@hooks/useWebviewUrl';
+import { useTranslation } from 'react-i18next';
 type RegisterProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
   PropsWithChildren<{ name?: string }>;
 type Params = {
@@ -21,8 +22,8 @@ const Register = (props: RegisterProps) => {
   const goLoginPage = () => {
     navigation.navigate('Login');
   };
+  const { t } = useTranslation();
   const register = async (params: Omit<Params, 'type' | 'goPage'>) => {
-    console.log('params', params);
     try {
       const client = await ClientRequest();
       await client.authControllerRegister({
@@ -35,7 +36,7 @@ const Register = (props: RegisterProps) => {
       if (isAxiosError(e)) {
         console.log(JSON.stringify(e.message));
       }
-      Toast.show('注册失败', {
+      Toast.show(t('error'), {
         position: Toast.positions.CENTER,
         delay: 0,
         animation: true,

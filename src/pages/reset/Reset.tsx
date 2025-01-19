@@ -33,7 +33,7 @@ const Reset: FC<ResetProps> = props => {
       });
       Toast.show(t('password-modify'));
     } catch (e) {
-      Toast.show('重置密码失败');
+      Toast.show(t('error'));
     }
   };
   return (

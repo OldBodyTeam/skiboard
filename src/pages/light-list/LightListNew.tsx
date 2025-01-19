@@ -1,7 +1,7 @@
 import Header from '@components/header/Header';
-import DrawItem from '@pages/draw/DrawItem';
+// import DrawItem from '@pages/draw/DrawItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { covertCanUseCanvasData, covertMap } from '@utils/draw-config';
+import { covertCanUseCanvasData } from '@utils/draw-config';
 import { FC, PropsWithChildren, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -20,7 +20,7 @@ import { useScreenSize } from '@hooks/useScreenSize';
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import { ClientRequest } from '@services/client';
 import Toast from 'react-native-root-toast';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { userInfoState } from '@stores/login/login.atom';
 import { CollectionEntity } from '@services/data-contracts';
 import {
@@ -37,6 +37,7 @@ import { useSend } from '@utils/send';
 import { getHex, getSimpleHex } from '@utils/hex';
 import useBLE from '@hooks/useBLE';
 import dayjs from 'dayjs';
+import { useAtomValue } from 'jotai';
 type LightListProps = NativeStackScreenProps<RootStackParamList, 'LightList'> &
   PropsWithChildren<{ name?: string }>;
 const windowWidth = Dimensions.get('window').width;
@@ -48,7 +49,7 @@ const LightListNew: FC<LightListProps> = props => {
   };
   const [currenStatus, setCurrentStatus] = useState(false);
   const modalDeleteRef = useRef<BlurModalRef>(null);
-  const [userInfo] = useRecoilState(userInfoState);
+  const userInfo = useAtomValue(userInfoState);
   const [deleteInfo, setDeleteInfo] = useState<{
     collectionId: string;
     frameIndex: number;
@@ -91,7 +92,7 @@ const LightListNew: FC<LightListProps> = props => {
 
       setCollectionInfo(collection);
     } catch (e) {
-      Toast.show(`${(e as Error).message}`);
+      Toast.show(t('error'));
     }
   };
 
@@ -338,7 +339,7 @@ const LightListNew: FC<LightListProps> = props => {
             </TouchableHighlight>
           </View>
         </BlurModal>
-        <TouchableHighlight
+        <TouchableWithoutFeedback
           onPress={handleSync}
           style={{
             position: 'absolute',
@@ -357,17 +358,17 @@ const LightListNew: FC<LightListProps> = props => {
               alignItems: 'center',
               justifyContent: 'center',
               marginLeft: 8,
-              fontWeight: '600',
-              color: '#333333',
-              fontSize: 18,
+
               borderRadius: 24,
               backgroundColor: '#F7E54C',
               flexBasis: '100%',
               width: (windowWidth - 8 - 48) / 2,
             }}>
-            <Text>同步</Text>
+            <Text style={{ fontWeight: '600', color: '#333333', fontSize: 18 }}>
+              同步
+            </Text>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       </SafeAreaView>
     </View>
   );

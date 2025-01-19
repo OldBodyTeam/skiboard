@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /**
  * Sample BLE React Native App
  */
@@ -27,7 +28,7 @@ import BleManager, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Video from 'react-native-video';
 import { useDebounceFn, useMemoizedFn, useMount } from 'ahooks';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import videoMp4 from './connected.mp4';
 import { butteryState, deviceInfoState } from '@stores/device/device.atom';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -41,6 +42,7 @@ import LottieView from 'lottie-react-native';
 import useBLE from '@hooks/useBLE';
 import { getHex } from '@utils/hex';
 import { get } from 'lodash';
+import { useSetAtom } from 'jotai';
 // import { get } from 'lodash';
 // import { bleManagerEmitter } from '@components/background-ble/BackgroundBle';
 declare module 'react-native-ble-manager' {
@@ -129,7 +131,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   //     }
   //   });
   // });
-  const startScan = () => {
+  const startScan = useMemoizedFn(() => {
     if (userOpt === BleDeviceStatus.isScanning) {
       // reset found peripherals before scan
       setPeripherals(new Map<Peripheral['id'], Peripheral>());
@@ -152,11 +154,11 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         console.error('[startScan] ble scan error thrown', error);
       }
     }
-  };
-  const handleStopScan = () => {
+  });
+  const handleStopScan = useMemoizedFn(() => {
     setUserOpt(BleDeviceStatus.connected);
     console.debug('[handleStopScan] scan is stopped.');
-  };
+  });
   // TODO：关机判断 -> 二次链接
   // 链接 禁用 done + loading
   // 白色换掉 done
@@ -167,27 +169,27 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   // 定时操作指令排查 done
   // 去掉紫色底色 done
   // 灯带开启 on给个颜色 yellow done
-  const handleDisconnectedPeripheral = (
-    event: BleDisconnectPeripheralEvent,
-  ) => {
-    console.debug(
-      `[handleDisconnectedPeripheral][${event.peripheral}] disconnected.`,
-    );
-    setPeripherals(map => {
-      let p = map.get(event.peripheral);
-      if (p) {
-        p.connected = false;
-        return new Map(map.set(event.peripheral, p));
-      }
-      return map;
-    });
-  };
+  const handleDisconnectedPeripheral = useMemoizedFn(
+    (event: BleDisconnectPeripheralEvent) => {
+      console.debug(
+        `[handleDisconnectedPeripheral][${event.peripheral}] disconnected.`,
+      );
+      setPeripherals(map => {
+        let p = map.get(event.peripheral);
+        if (p) {
+          p.connected = false;
+          return new Map(map.set(event.peripheral, p));
+        }
+        return map;
+      });
+    },
+  );
 
-  const handleConnectPeripheral = (event: any) => {
+  const handleConnectPeripheral = useMemoizedFn((event: any) => {
     console.log(`[handleConnectPeripheral][${event.peripheral}] connected.`);
-  };
+  });
 
-  const handleDiscoverPeripheral = (peripheral: Peripheral) => {
+  const handleDiscoverPeripheral = useMemoizedFn((peripheral: Peripheral) => {
     console.debug(
       '[handleDiscoverPeripheral] new BLE peripheral=',
       peripheral.name,
@@ -202,15 +204,17 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         return new Set(prev);
       });
     }
-  };
+  });
 
-  const togglePeripheralConnection = async (peripheral: Peripheral) => {
-    if (!peripheral.connected) {
-      await connectPeripheral(peripheral);
-    }
-  };
+  const togglePeripheralConnection = useMemoizedFn(
+    async (peripheral: Peripheral) => {
+      if (!peripheral.connected) {
+        await connectPeripheral(peripheral);
+      }
+    },
+  );
 
-  const retrieveConnected = async () => {
+  const retrieveConnected = useMemoizedFn(async () => {
     try {
       const connectedPeripherals = await BleManager.getConnectedPeripherals();
       if (connectedPeripherals.length === 0) {
@@ -240,9 +244,9 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         error,
       );
     }
-  };
+  });
 
-  const connectPeripheral = async (peripheral: Peripheral) => {
+  const connectPeripheral = useMemoizedFn(async (peripheral: Peripheral) => {
     try {
       if (peripheral) {
         setPeripherals(map => {
@@ -283,8 +287,8 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
             // });
           }
         } catch (error) {
-          console.log(`Failed to change MTU size: ${error}`);
-          Toast.show(`Failed to change MTU size: ${error}`, {
+          // console.log(`Failed to change MTU size: ${error}`);
+          Toast.show(t('error'), {
             position: Toast.positions.CENTER,
           });
         }
@@ -327,7 +331,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         error,
       );
     }
-  };
+  });
 
   function sleep(ms: number) {
     return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -343,21 +347,27 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         const peripheralData = await BleManager.retrieveServices(
           data.peripheral,
         );
-        const readData = get(peripheralData, 'characteristics.0.value', {
-          bytes: [] as number[],
-        });
-        const decodedBytes = Buffer.from(readData.bytes);
-        const code = decodedBytes.toString('hex');
-        const decimalValue = parseInt(code.slice(-4, -2), 16);
-        setInfo(decimalValue);
-        console.log(decimalValue);
+        if (get(peripheralData, 'characteristics.0.value')) {
+          const readData = get(peripheralData, 'characteristics.0.value', {
+            bytes: [] as number[],
+          });
+          const decodedBytes = Buffer.from(readData.bytes);
+          const code = decodedBytes.toString('hex');
+          const decimalValue = parseInt(code.slice(-4, -2), 16);
+          setInfo(decimalValue);
+        } else {
+          const decodedBytes = Buffer.from(data.value);
+          const code = decodedBytes.toString('hex');
+          const decimalValue = parseInt(code.slice(-4, -2), 16);
+          setInfo(decimalValue);
+        }
       } catch (e) {
         console.log(e);
       }
     },
   );
 
-  useEffect(() => {
+  useMount(() => {
     BleManager.start({ showAlert: false })
       .then(() => {
         Toast.show(t('BleManager-started'));
@@ -398,8 +408,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         // listener.remove();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   const handleAndroidPermissions = useMemoizedFn(() => {
     if (Platform.OS === 'android' && Platform.Version >= 31) {
@@ -444,10 +453,10 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     }
   });
   const [deviceInfo, setDeviceInfo] = useState<Peripheral>();
-  const [_, setGlobalDeviceInfo] = useRecoilState(deviceInfoState);
+  const setGlobalDeviceInfo = useSetAtom(deviceInfoState);
   const [d, setD] = useState(false);
   const { getBLEBatteryPower } = useBLE();
-  const [, setInfo] = useRecoilState(butteryState);
+  const setInfo = useSetAtom(butteryState);
   const { run: handleConnectedBLE } = useDebounceFn(
     async () => {
       if (d) {
@@ -480,7 +489,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
         await AsyncStorage.setItem('device_info', JSON.stringify(localDevice));
         setDeviceInfo(info);
         setGlobalDeviceInfo(info);
-        getBLEBatteryPower().then(a => setInfo(a ?? 100));
+        // getBLEBatteryPower().then(a => setInfo(a ?? 100));
       } catch (e) {
         Toast.show((e as Error).message);
       }
@@ -489,13 +498,14 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
     },
     { leading: true },
   );
-  useMount(() => {
+  console.log('deviceInfo', deviceInfo);
+  useEffect(() => {
     Logger(`deviceInfo?.connected ${deviceInfo?.connected}`);
     if (deviceInfo?.connected) {
       // 路由跳转
       navigation.replace('Home', { screen: 'DesignScreen' });
     }
-  });
+  }, [deviceInfo?.connected]);
 
   const [lan, setLanguage] = useState<'zh' | 'en'>('zh');
   useMount(() => {
@@ -623,7 +633,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
               repeat={true}
               muted
               style={{ flex: 1 }}
-              resizeMode="cover"
+              resizeMode={Platform.OS === 'android' ? 'cover' : undefined}
             />
           </View>
           <TouchableHighlight

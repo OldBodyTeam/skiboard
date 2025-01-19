@@ -3,16 +3,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
 import { deviceInfoState } from '@stores/device/device.atom';
 import { userInfoState } from '@stores/login/login.atom';
+import { useAtom, useSetAtom } from 'jotai';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { Text, View } from 'react-native';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 type AuthProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
   PropsWithChildren<{ name?: string }>;
 const Auth = (props: AuthProps) => {
   const { navigation } = props;
-  const [_, setUserInfo] = useRecoilState(userInfoState);
-  const [deviceInfo] = useRecoilState(deviceInfoState);
+  const setUserInfo = useSetAtom(userInfoState);
+  const [deviceInfo] = useAtom(deviceInfoState);
   useEffect(() => {
     const handleAutoLogin = async () => {
       try {

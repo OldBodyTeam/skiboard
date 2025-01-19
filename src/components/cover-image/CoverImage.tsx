@@ -1,8 +1,15 @@
 // import useBLE from '@hooks/useBLE';
 import { butteryState, deviceInfoState } from '@stores/device/device.atom';
+import { useAtomValue } from 'jotai';
 // import { useMount, useThrottleFn } from 'ahooks';
 // import { get } from 'lodash';
-import React, { FC, useEffect, useState, PropsWithChildren } from 'react';
+import React, {
+  FC,
+  useEffect,
+  useState,
+  PropsWithChildren,
+  useMemo,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -23,7 +30,7 @@ import {
 //   Peripheral,
 // } from 'react-native-ble-manager';
 
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 const bgList = {
   light: {
     bg: require('../../assets/cover-img/light-bg.png'),
@@ -74,8 +81,11 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
   }, [type]);
 
   // const [batteryPower, setBatteryPower] = useState(100);
-  const [deviceInfo] = useRecoilState(deviceInfoState);
-  const [batteryPower] = useRecoilState(butteryState);
+  const deviceInfo = useAtomValue(deviceInfoState);
+  const batteryPowerGlobal = useAtomValue(butteryState);
+  const batteryPower = useMemo(() => {
+    return Number.isNaN(batteryPowerGlobal) ? 1 : batteryPowerGlobal;
+  }, [batteryPowerGlobal]);
   // const { run: handleUpdateValueForCharacteristic } = useThrottleFn(
   //   async (data: BleManagerDidUpdateValueForCharacteristicEvent) => {
   //     try {
@@ -123,7 +133,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
         source={bgList[type].bg}
         style={{
           height,
-          width: Dimensions.get('screen').width,
+          width: Dimensions.get('window').width,
           position: 'relative',
         }}>
         {children}
@@ -137,7 +147,7 @@ const CoverImage: FC<PropsWithChildren<CoverImageProps>> = props => {
             position: 'absolute',
             left: 25,
             bottom,
-            width: Dimensions.get('screen').width - 50,
+            width: Dimensions.get('window').width - 50,
           }}>
           <View
             style={{

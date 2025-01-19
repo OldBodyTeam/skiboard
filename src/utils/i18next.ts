@@ -1,4 +1,4 @@
-import i18next, { ModuleType } from 'i18next';
+import i18next, { ModuleType, t } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,7 +43,7 @@ const web = i18next
     },
     error => {
       if (error) {
-        Toast.show('国际化初始化失败');
+        Toast.show(t('not-failed'));
       }
     },
   );
