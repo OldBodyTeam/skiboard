@@ -5,7 +5,7 @@ import { deviceInfoState } from '@stores/device/device.atom';
 import { userInfoState } from '@stores/login/login.atom';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { PropsWithChildren, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 // import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 type AuthProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
@@ -25,10 +25,10 @@ const Auth = (props: AuthProps) => {
         if (deviceInfo.connected) {
           navigation.push('Home', { screen: 'DesignScreen' });
         } else {
-          // __DEV__
-          //   ? navigation.push('Home', { screen: 'DesignScreen' })
-          //   : navigation.push('BleManager');
-          navigation.push('BleManager');
+          __DEV__
+            ? navigation.push('Home', { screen: 'DesignScreen' })
+            : navigation.push('BleManager');
+          // navigation.push('BleManager');
         }
       } catch (e) {
         console.log(e);
@@ -43,9 +43,8 @@ const Auth = (props: AuthProps) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
-      <Text>权限请求中</Text>
-    </View>
+      }}
+    />
   );
 };
 export default Auth;

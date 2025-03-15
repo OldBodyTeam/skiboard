@@ -10,17 +10,32 @@
  */
 
 export interface UserEntity {
+  /** 用户ID */
   id: string;
+  /** 用户名 */
   username: string;
+  /** 用户邮箱 */
   email: string;
+  /** 用户密码 */
   password: string;
+  /** 用户头像URL */
   avatar: string;
-  /** @format date-time */
+  /**
+   * 创建时间
+   * @format date-time
+   */
   createAt: string;
-  /** @format date-time */
+  /**
+   * 更新时间
+   * @format date-time
+   */
   updateAt: string;
-  /** @format date-time */
+  /**
+   * 删除时间
+   * @format date-time
+   */
   deleteAt: string;
+  /** 用户收藏列表 */
   collections: CollectionEntity[];
 }
 

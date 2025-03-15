@@ -17,6 +17,7 @@ import { RootStackParamList } from 'route.config';
 import { useToastMessage } from '@hooks/useAxiosError';
 import { ChangeStatus } from '@pages/entry/enums';
 import { useSetAtom } from 'jotai';
+import { useDebug } from '@hooks/useDebug';
 type LoginProps = NativeStackScreenProps<
   RootStackParamList,
   'Register' | 'Reset' | 'Login'
@@ -35,6 +36,7 @@ const Login: FC<LoginProps> = props => {
     const { data } = await client.userControllerUser(userId);
     setUserInfo(data.data);
   };
+  const { getDebugStatus } = useDebug();
   const login = async () => {
     try {
       const client = await ClientRequest();
@@ -45,8 +47,13 @@ const Login: FC<LoginProps> = props => {
       const token = requestData.data.data?.access_token ?? '';
       await AsyncStorage.setItem('access_token', token);
       await getUserInfo(requestData.data.data?.userId ?? '');
-      toast('登录成功');
-      navigation.push('BleManager');
+      // toast('登录成功');
+      if (getDebugStatus()) {
+        navigation.push('Home', { screen: 'DesignScreen' });
+      } else {
+        navigation.push('BleManager');
+      }
+
       // navigation.push('Home', { screen: 'DesignScreen' });
     } catch (e: unknown) {
       handleAxiosError(e);

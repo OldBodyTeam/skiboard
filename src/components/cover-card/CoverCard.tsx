@@ -135,17 +135,16 @@ const CoverCard: FC<CoverCardProps> = props => {
 
         <View
           style={{
-            marginTop: 16,
+            paddingTop: 16,
           }}>
           <View
             style={{
-              marginBottom: 29 / 2,
+              paddingBottom: 29 / 2,
             }}>
             <Text
               style={{
                 color: '#333333',
                 fontWeight: 'bold',
-                height: 14,
                 lineHeight: 17,
               }}>
               {t('Reverse')}
@@ -197,7 +196,6 @@ const CoverCard: FC<CoverCardProps> = props => {
               style={{
                 color: '#333333',
                 fontWeight: 'bold',
-                height: 14,
                 lineHeight: 17,
                 marginBottom: 20,
                 marginTop: 31 / 2,

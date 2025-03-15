@@ -1,4 +1,5 @@
 import React, { useImperativeHandle, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, LayoutRectangle, Pressable, Image } from 'react-native';
 export type InterpolateItemRef = {
   getWidth: any;
@@ -11,6 +12,7 @@ const InterpolateItem = React.forwardRef<
     selectedLed: boolean;
   }
 >((props, ref) => {
+  const { t } = useTranslation();
   const { item, onPress, selectedLed } = props;
   const [domRef, setDomRef] = useState<LayoutRectangle>();
   useImperativeHandle(
@@ -67,7 +69,7 @@ const InterpolateItem = React.forwardRef<
               flex: 1,
               textAlign: 'center',
             }}>
-            {item.title}
+            {t(item.title)}
           </Text>
         </View>
       </View>

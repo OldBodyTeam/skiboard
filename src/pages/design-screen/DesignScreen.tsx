@@ -168,7 +168,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                       ? { color: 'black', fontWeight: '600' }
                       : { color: '#ffffff' }),
                   }}>
-                  {switchStatus === 'off' ? 'Auto-Brake Off' : 'Off'}
+                  {switchStatus === 'off' ? t('Auto-Brake-Off') : t('Off')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -197,7 +197,7 @@ const DesignScreen = (props: DesignScreenProps) => {
                       ? { color: 'black', fontWeight: '600' }
                       : { color: '#ffffff' }),
                   }}>
-                  {switchStatus === 'on' ? 'Auto-Brake On' : 'On'}
+                  {switchStatus === 'on' ? t('Auto-Brake-On') : t('On')}
                 </Text>
               </View>
             </TouchableOpacity>

@@ -46,7 +46,7 @@ function App(): React.JSX.Element {
           <NavigationContainer
             onReady={() => {
               i18next.then(() => {
-                BootSplash.hide({ fade: true });
+                // BootSplash.hide({ fade: true });
               });
             }}>
             <Stack.Navigator

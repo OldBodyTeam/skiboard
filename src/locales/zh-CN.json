@@ -201,5 +201,19 @@
     "not-strip": "点亮灯带",
     "not-supported": "暂不支持",
     "not-reverse": "此灯效无反向",
-    "error": "错误"
+    "error": "错误",
+    "Off": "关",
+    "Auto-Brake-Off": "刹车感应关",
+    "On": "开",
+    "Auto-Brake-On": "刹车感应开",
+    "Deletion": "账户注销",
+    "deletion-text": "注销后，永久删除其账户和相关数据",
+    "max-limit": "只能创建10个作品，请删除后在进行绘制",
+    "Update-Successful": "更新成功",
+    "Update-Failed": "更新失败",
+    "Creation-Successful": "创建成功",
+    "Creation-Failed": "创建失败",
+    "Deletion-Successful": "删除成功",
+    "Deletion-Failed": "删除失败",
+    "create": "创建"
 }

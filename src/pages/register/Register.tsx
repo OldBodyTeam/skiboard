@@ -12,6 +12,7 @@ import {
 import { RootStackParamList } from 'route.config';
 import { useToastMessage } from '@hooks/useAxiosError';
 import { ChangeStatus } from '@pages/entry/enums';
+import { useDebounceFn } from 'ahooks';
 type RegisterProps = NativeStackScreenProps<
   RootStackParamList,
   'Register' | 'Reset' | 'Login'
@@ -23,8 +24,8 @@ const Register: FC<RegisterProps> = props => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { handleAxiosError, toast } = useToastMessage();
-  const register = async () => {
+  const { handleAxiosError } = useToastMessage();
+  const { run: register } = useDebounceFn(async () => {
     try {
       const client = await ClientRequest();
       await client.authControllerRegister({
@@ -32,12 +33,12 @@ const Register: FC<RegisterProps> = props => {
         password: password,
         username: username,
       });
-      toast('注册成功');
-      navigation.navigate('Login');
+      // toast('注册成功');
+      navigation.push('Login');
     } catch (e) {
       handleAxiosError(e);
     }
-  };
+  });
   return (
     <View style={{ flex: 1, backgroundColor: '#131416' }}>
       <ScrollView style={{ flex: 1, paddingHorizontal: 28 }}>

@@ -47,9 +47,10 @@ export type ItemsProps = {
   width: number;
   selected: boolean;
   a?: boolean;
+  b?: boolean;
 };
 export const Items: FC<ItemsProps> = props => {
-  const { selected, width, a } = props;
+  const { selected, width, a, b } = props;
 
   return (
     <View
@@ -60,7 +61,13 @@ export const Items: FC<ItemsProps> = props => {
               width: width,
               height: width,
               borderRadius: width,
-              backgroundColor: selected ? '#F7E54C' : '#715DEE',
+              backgroundColor: b
+                ? selected
+                  ? '#F7E54C'
+                  : '#715DEE'
+                : selected
+                ? '#F7E54C'
+                : '#D8D8D8',
             }
           : {
               width: width,
@@ -102,7 +109,7 @@ const Drawer: FC<DrawerProps> = props => {
       const collectionData = await getCollectionList();
       // @ts-ignore
       if ((collectionData?.length ?? 0) > 10) {
-        showToast('只能创建10个作品，请删除后在进行绘制');
+        showToast(t('max-limit'));
         navigation.push('Home', { screen: 'DesignScreen' });
         return;
       }
@@ -317,6 +324,7 @@ const Drawer: FC<DrawerProps> = props => {
   const { queue, consumer } = useSend();
 
   const handleBlueData = useMemoizedFn(() => {
+    let i = 1;
     frameList.forEach((value, key) => {
       const item = Array.from(value).map(v => poi.get(v));
       console.log(
@@ -329,8 +337,9 @@ const Drawer: FC<DrawerProps> = props => {
       queue.enqueue(
         `57e0${getHex(item.length + 2)}00${getSimpleHex(
           collectionNum,
-        )}${getSimpleHex(key)}${item.join('')}61`,
+        )}${getSimpleHex(i)}${item.join('')}61`,
       );
+      i++;
     });
     queue.enqueue(`57e00301${getSimpleHex(collectionNum)}061`);
     // @ts-ignore
@@ -353,9 +362,9 @@ const Drawer: FC<DrawerProps> = props => {
         frameList: JSON.stringify(serverData),
       });
       navigation.push('LightList');
-      showToast('创建成功');
+      showToast(t('Creation-Successful'));
     } catch (e) {
-      showToast('创建失败');
+      showToast(t('Creation-Failed'));
     }
   };
   const updateCollection = async () => {
@@ -378,9 +387,9 @@ const Drawer: FC<DrawerProps> = props => {
         ),
       );
       navigation.push('LightList');
-      showToast('更新成功');
+      showToast(t('Update-Successful'));
     } catch (e) {
-      showToast('更新失败');
+      showToast(t('Update-Failed'));
     }
   };
   const { run: handleSave } = useDebounceFn(() => {
@@ -458,6 +467,7 @@ const Drawer: FC<DrawerProps> = props => {
                           key={`${r}-${c}`}
                           width={currentWidth}
                           selected={selectedList.has(`${r}-${c}`)}
+                          b
                         />
                       );
                     })}
@@ -595,12 +605,12 @@ const Drawer: FC<DrawerProps> = props => {
               <View style={styles.btnBlock}>
                 <TouchableOpacity onPress={handleSinglePreview}>
                   <View style={styles.previewBtn}>
-                    <Text>预览</Text>
+                    <Text>{t('preview')}</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleSave}>
                   <View style={styles.createBtn}>
-                    <Text>创建</Text>
+                    <Text>{t('create')}</Text>
                   </View>
                 </TouchableOpacity>
               </View>

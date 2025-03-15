@@ -1,8 +1,10 @@
 import BlurModal, { BlurModalRef } from '@components/blur-Modal/BlurModal';
 import Header from '@components/header/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ClientRequest } from '@services/client';
 import { userInfoState } from '@stores/login/login.atom';
+import { useMemoizedFn } from 'ahooks';
 import { useAtom } from 'jotai';
 import React, {
   PropsWithChildren,
@@ -23,6 +25,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-root-toast';
@@ -78,6 +81,7 @@ const Settings = (props: SettingsTextProps) => {
   };
   const modalEditRef = useRef<BlurModalRef>(null);
   const modalLogoutRef = useRef<BlurModalRef>(null);
+  const modalDeletionRef = useRef<BlurModalRef>(null);
   const [username, setUsername] = useState('Hyuk Design');
   useEffect(() => {
     setUsername(userInfo?.username ?? '');
@@ -114,6 +118,21 @@ const Settings = (props: SettingsTextProps) => {
     ],
     [t],
   );
+  const handleUserDeletion = useMemoizedFn(async () => {
+    try {
+      modalDeletionRef.current?.closeModal();
+      const client = await ClientRequest();
+      await client.userControllerDeleteUser(userInfo?.id ?? '');
+      navigation.replace('Login');
+    } catch (error) {
+      Toast.show(t('error'), {
+        position: Toast.positions.CENTER,
+        delay: 0,
+        animation: true,
+        duration: Toast.durations.SHORT,
+      });
+    }
+  });
   return (
     <View
       style={{
@@ -128,14 +147,33 @@ const Settings = (props: SettingsTextProps) => {
             title=""
             handlePress={back}
             extra={
-              <TouchableOpacity
-                style={{ position: 'absolute', top: 30, right: 16 }}
-                onPress={() => modalLogoutRef.current?.openModal()}>
-                <Text
-                  style={{ fontSize: 18, fontWeight: '500', color: '#ffffff' }}>
-                  {t('Logout')}
-                </Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => modalLogoutRef.current?.openModal()}
+                  style={{
+                    marginRight: 20,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '500',
+                      color: '#ffffff',
+                    }}>
+                    {t('Logout')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => modalDeletionRef.current?.openModal()}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '500',
+                      color: '#ffffff',
+                    }}>
+                    {t('Deletion')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             }
           />
           <View
@@ -191,7 +229,13 @@ const Settings = (props: SettingsTextProps) => {
               return (
                 <TouchableOpacity
                   key={v.label}
-                  onPress={() => navigation.push('Home')}>
+                  onPress={() =>
+                    v.label === t('GUIDE')
+                      ? Linking.canOpenURL(
+                          'https://ski-music.oss-cn-beijing.aliyuncs.com/docs/%E8%AF%B4%E6%98%8E%E4%B9%A6%E6%9C%80%E7%BB%88%E8%AE%BE%E8%AE%A11220.pdf',
+                        )
+                      : navigation.push('Home')
+                  }>
                   <View
                     style={{
                       borderColor: 'rgba(216, 216, 216, 0.2)',
@@ -332,7 +376,8 @@ const Settings = (props: SettingsTextProps) => {
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback
               style={{ flex: 1, marginTop: 12 }}
-              onPress={() => {
+              onPress={async () => {
+                await AsyncStorage.removeItem('access_token');
                 Promise.resolve()
                   .then(() => {
                     modalLogoutRef.current?.closeModal();
@@ -341,6 +386,60 @@ const Settings = (props: SettingsTextProps) => {
                     navigation.replace('Login');
                   });
               }}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <Text
+                  style={{
+                    color: '#FCE500',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
+                  {t('confirm')}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+      </BlurModal>
+      <BlurModal
+        ref={modalDeletionRef}
+        title={t('Deletion')}
+        content={t('deletion-text')}>
+        <View style={{ display: 'flex', marginTop: 8, width: '100%' }}>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 50,
+              flexDirection: 'row',
+            }}>
+            <TouchableWithoutFeedback
+              style={{ flex: 1, marginTop: 12 }}
+              onPress={() => modalDeletionRef.current?.closeModal()}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <Text
+                  style={{
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
+                  {t('cancel')}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              style={{ flex: 1, marginTop: 12 }}
+              onPress={handleUserDeletion}>
               <View
                 style={{
                   alignItems: 'center',

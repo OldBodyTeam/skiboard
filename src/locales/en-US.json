@@ -201,5 +201,19 @@
     "not-strip": "Light up the light strip",
     "not-supported": "Not supported yet",
     "not-reverse": "This lighting effect has no reverse",
-    "error": "error"
+    "error": "error",
+    "Off": "Off",
+    "Auto-Brake-Off": "Auto-Brake Off",
+    "On": "On",
+    "Auto-Brake-On": "Auto-Brake On",
+    "Deletion": "Account Deletion",
+    "deletion-text": "After cancellation, the account and its associated data will be permanently deleted",
+    "max-limit": "You can only create up to 10 artworks. Please delete some before creating new ones",
+    "Update-Successful": "Update Successful",
+    "Update-Failed": "Update Failed",
+    "Creation-Successful": "Creation Successful",
+    "Creation-Failed": "Creation Failed",
+    "Deletion-Successful": "Deletion Successful",
+    "Deletion-Failed": "Deletion Failed",
+    "create": "Create"
 }

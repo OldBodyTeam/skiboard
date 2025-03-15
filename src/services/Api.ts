@@ -119,6 +119,28 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags user
+   * @name UserControllerDeleteUser
+   * @request DELETE:/api/user/{id}
+   * @secure
+   */
+  userControllerDeleteUser = (id: string, params: RequestParams = {}) =>
+    this.request<
+      {
+        msg?: string;
+        code?: number;
+      },
+      any
+    >({
+      path: `/api/user/${id}`,
+      method: 'DELETE',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags collection
    * @name CollectionControllerCreate
    * @request POST:/api/collection/{userId}/collection/create

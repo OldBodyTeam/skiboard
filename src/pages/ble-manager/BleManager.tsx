@@ -370,7 +370,7 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
   useMount(() => {
     BleManager.start({ showAlert: false })
       .then(() => {
-        Toast.show(t('BleManager-started'));
+        // Toast.show(t('BleManager-started'));
         // 开始扫描
         setTimeout(() => {
           startScan();

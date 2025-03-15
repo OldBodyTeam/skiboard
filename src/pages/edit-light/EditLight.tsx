@@ -26,6 +26,7 @@ import { editLight } from '@config/edit-light';
 import { getHex, getSimpleHex } from '@utils/hex';
 import { useSend } from '@utils/send';
 import { useAtomValue } from 'jotai';
+import { useTranslation } from 'react-i18next';
 type EditLightProps = NativeStackScreenProps<RootStackParamList, 'EditLight'> &
   PropsWithChildren<{ name?: string }>;
 const EditLight = (props: EditLightProps) => {
@@ -33,6 +34,7 @@ const EditLight = (props: EditLightProps) => {
   const userInfo = useAtomValue(userInfoState);
   const { navigation, route } = props;
   const { bleWrite } = useBLE();
+  const { t } = useTranslation();
   const { collectionId } = route.params || {};
   const showToast = useToast();
   const getCollectionList = async () => {
@@ -58,7 +60,7 @@ const EditLight = (props: EditLightProps) => {
       setIndex(i + 1);
     } else {
       if (index + 1 > 10) {
-        showToast('只能创建10个作品，请删除后在进行绘制');
+        showToast(t('max-limit'));
         navigation.push('Home', { screen: 'DesignScreen' });
       }
       // @ts-ignore
@@ -76,9 +78,9 @@ const EditLight = (props: EditLightProps) => {
         frameList: JSON.stringify(data.serverData) as any,
       });
       navigation.push('LightList');
-      showToast('创建成功');
+      showToast(t('Creation-Successful'));
     } catch (e) {
-      showToast('创建失败');
+      showToast(t('Creation-Failed'));
     }
   };
   const updateCollection = async (data: {
@@ -99,9 +101,9 @@ const EditLight = (props: EditLightProps) => {
         ),
       );
       navigation.push('LightList');
-      showToast('更新成功');
+      showToast(t('Update-Successful'));
     } catch (e) {
-      showToast('更新失败');
+      showToast(t('Update-Failed'));
     }
   };
   const deleteFrameInCollection = async (data: { frameIndex: number }) => {
@@ -110,9 +112,9 @@ const EditLight = (props: EditLightProps) => {
       await client.collectionControllerDeleteFrameList(collectionId, {
         position: data.frameIndex,
       });
-      showToast('删除成功');
+      showToast(t('Deletion-Successful'));
     } catch (e) {
-      showToast('删除失败');
+      showToast(t('Deletion-Failed'));
     }
   };
   const copyFrameInCollection = async (data: { frameIndex: number }) => {

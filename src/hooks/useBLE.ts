@@ -8,12 +8,14 @@ import Toast from 'react-native-root-toast';
 import { get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
+import { useDebug } from './useDebug';
 
 const useBLE = () => {
   const [deviceInfo] = useAtom(deviceInfoState);
   const deviceId = deviceInfo.id;
   const deviceServiceUUID = deviceInfo.serviceUUIDs?.at(0)!;
   const deviceCharacteristicUUID = deviceInfo.characteristicUUIDs?.at(0)!;
+  const { getDebugStatus } = useDebug();
   // console.log(
   //   '正在读取id',
   //   deviceId,
@@ -112,18 +114,19 @@ const useBLE = () => {
     }
   });
   if (!deviceId || !deviceCharacteristicUUID || !deviceServiceUUID) {
-    __DEV__ ? undefined : Toast.show(t('not-again'));
+    // __DEV__ ? undefined : Toast.show(t('not-again'));
   }
-  // return __DEV__
-  //   ? {
-  //       getBLEBatteryPower: () => Promise.resolve('70'),
-  //       bleWrite: (data: any) => {
-  //         console.log(data);
-  //         Promise.resolve({});
-  //       },
-  //       checkBLEConnectStatus: () => Promise.resolve({}),
-  //     }
-  //   : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
-  return { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
+  console.log('deviceId', getDebugStatus());
+  return __DEV__ || getDebugStatus()
+    ? {
+        getBLEBatteryPower: () => Promise.resolve('70'),
+        bleWrite: (data: any) => {
+          console.log(data);
+          Promise.resolve({});
+        },
+        checkBLEConnectStatus: () => Promise.resolve({}),
+      }
+    : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
+  // return { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
 };
 export default useBLE;

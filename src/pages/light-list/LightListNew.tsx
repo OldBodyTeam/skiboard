@@ -139,7 +139,9 @@ const LightListNew: FC<LightListProps> = props => {
   const { queue, consumer } = useSend();
   const { run: handleSync } = useDebounceFn(() => {
     queue.enqueue('57e003ffff61');
+
     list.forEach((frameList, index) => {
+      let i = 1;
       const collectionNum = index + 1;
       frameList.forEach((value, key) => {
         const item = Array.from(value).map(v => poi.get(v));
@@ -154,8 +156,9 @@ const LightListNew: FC<LightListProps> = props => {
         queue.enqueue(
           `57e0${getHex(item.length + 2)}00${getSimpleHex(
             collectionNum,
-          )}${getSimpleHex(key)}${item.join('')}61`,
+          )}${getSimpleHex(i)}${item.join('')}61`,
         );
+        i++;
       });
       if (collectionNum === list.length) {
         queue.enqueue(`57e00301${getSimpleHex(collectionNum)}061`);
@@ -172,7 +175,7 @@ const LightListNew: FC<LightListProps> = props => {
         flexDirection: 'row',
       }}>
       <StatusBar />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, position: 'relative' }}>
         <Header
           title={t('effect')}
           handlePress={back}
@@ -292,6 +295,7 @@ const LightListNew: FC<LightListProps> = props => {
               );
             })}
           </View>
+          <View style={{ height: 100, flex: 1 }} />
         </ScrollView>
         <BlurModal
           ref={modalDeleteRef}
@@ -339,7 +343,7 @@ const LightListNew: FC<LightListProps> = props => {
             </TouchableHighlight>
           </View>
         </BlurModal>
-        <TouchableWithoutFeedback
+        <TouchableHighlight
           onPress={handleSync}
           style={{
             position: 'absolute',
@@ -368,7 +372,7 @@ const LightListNew: FC<LightListProps> = props => {
               同步
             </Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
       </SafeAreaView>
     </View>
   );
