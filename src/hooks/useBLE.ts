@@ -9,6 +9,7 @@ import { get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { useDebug } from './useDebug';
+import { Platform } from 'react-native';
 
 const useBLE = () => {
   const [deviceInfo] = useAtom(deviceInfoState);
@@ -41,7 +42,18 @@ const useBLE = () => {
         });
         const decodedBytes = Buffer.from(readData.bytes);
         const code = decodedBytes.toString('hex');
+        console.log('code', code, decodedBytes);
         const decimalValue = parseInt(code.slice(-4, -2), 16);
+        if (__DEV__) {
+          Toast.show(`电量：${decimalValue}, ${code}`);
+        }
+        if (decimalValue > 100) {
+          // Toast.show('电量异常，请检查设备');
+
+          return decimalValue / 100;
+        } else if (decimalValue < 0) {
+          return 0;
+        }
         return decimalValue;
       } else {
         const decodedBytes = Buffer.from([]);
@@ -84,6 +96,9 @@ const useBLE = () => {
           if (__DEV__) {
             Toast.show(`蓝牙开始写入${data}`);
           }
+          if (Platform.OS === 'android') {
+            await BleManager.requestMTU(deviceId, 512);
+          }
           await BleManager.writeWithoutResponse(
             deviceId,
             deviceServiceUUID,
@@ -116,17 +131,17 @@ const useBLE = () => {
   if (!deviceId || !deviceCharacteristicUUID || !deviceServiceUUID) {
     // __DEV__ ? undefined : Toast.show(t('not-again'));
   }
-  console.log('deviceId', getDebugStatus());
-  return __DEV__ || getDebugStatus()
-    ? {
-        getBLEBatteryPower: () => Promise.resolve('70'),
-        bleWrite: (data: any) => {
-          console.log(data);
-          Promise.resolve({});
-        },
-        checkBLEConnectStatus: () => Promise.resolve({}),
-      }
-    : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
-  // return { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
+  console.log('deviceId', getDebugStatus(), deviceId);
+  // return __DEV__ || getDebugStatus()
+  //   ? {
+  //       getBLEBatteryPower: () => Promise.resolve('70'),
+  //       bleWrite: (data: any) => {
+  //         console.log(data);
+  //         Promise.resolve({});
+  //       },
+  //       checkBLEConnectStatus: () => Promise.resolve({}),
+  //     }
+  //   : { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
+  return { getBLEBatteryPower, bleWrite, checkBLEConnectStatus };
 };
 export default useBLE;

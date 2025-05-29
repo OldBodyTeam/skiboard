@@ -83,7 +83,7 @@ export const Items: FC<ItemsProps> = props => {
 const Drawer: FC<DrawerProps> = props => {
   const { t } = useTranslation();
   const { navigation, route } = props;
-  const { collectionId } = route.params || {};
+  const { collectionId, from } = route.params || {};
   const { bleWrite } = useBLE();
   const data = covertCanUseCanvasData(drawData);
   const [target, setTarget] = useState<Set<string>>(new Set());
@@ -327,6 +327,7 @@ const Drawer: FC<DrawerProps> = props => {
     let i = 1;
     frameList.forEach((value, key) => {
       const item = Array.from(value).map(v => poi.get(v));
+      console.log('frameList', item.join(''));
       console.log(
         `57e0${getHex(item.length + 2)}00${getSimpleHex(
           collectionNum,
@@ -393,7 +394,15 @@ const Drawer: FC<DrawerProps> = props => {
     }
   };
   const { run: handleSave } = useDebounceFn(() => {
-    collectionId ? updateCollection() : createCollection();
+    if (from === 'creative') {
+      if (collectionNum >= 10) {
+        showToast(t('max-limit'));
+        return;
+      }
+      createCollection();
+    } else {
+      collectionId ? updateCollection() : createCollection();
+    }
     handleBlueData();
   });
   const { run: handleSinglePreview } = useDebounceFn(async () => {

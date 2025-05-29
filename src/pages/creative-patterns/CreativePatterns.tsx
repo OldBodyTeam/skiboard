@@ -57,7 +57,10 @@ const CreativePatterns: FC<CreativePatternsProps> = props => {
   const { width } = useScreenSize();
   const handleEditLight = (collectionId: string) => {
     // console.log(collectionId);
-    navigation.push('Drawer', { collectionId: collectionId });
+    navigation.push('Drawer', {
+      collectionId: collectionId,
+      from: 'creative',
+    });
   };
   useMount(() => {
     getCollectionList();

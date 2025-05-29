@@ -13,7 +13,6 @@ import {
   type Subscription,
 } from 'react-native-ble-plx';
 import { PermissionsAndroid, Platform } from 'react-native';
-import Toast from 'react-native-toast-message';
 import BleModule from './BLE';
 
 const deviceNotConnectedErrorText = 'Device is not connected';

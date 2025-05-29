@@ -1,9 +1,10 @@
 import { sleep } from '@components/pick-time/PickTime';
 import { butteryState, deviceInfoState } from '@stores/device/device.atom';
+import { userInfoState } from '@stores/login/login.atom';
 import { useMemoizedFn, useMount } from 'ahooks';
-import { useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { get } from 'lodash';
-import React, { FC, PropsWithChildren, useState } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 import BleManager, {
   BleManagerDidUpdateValueForCharacteristicEvent,
@@ -22,8 +23,9 @@ const ALLOW_DUPLICATES = true;
 const BackgroundBle: FC<PropsWithChildren<any>> = props => {
   const { children } = props;
   const [, setPeripherals] = useState(new Map<Peripheral['id'], Peripheral>());
-  const setDeviceInfo = useSetAtom(deviceInfoState);
+  const [deviceInfo, setDeviceInfo] = useAtom(deviceInfoState);
   const setInfo = useSetAtom(butteryState);
+  const userInfo = useAtomValue(userInfoState);
   const handleUpdateValueForCharacteristic = useMemoizedFn(
     async (data: BleManagerDidUpdateValueForCharacteristicEvent) => {
       await BleManager.startNotification(
@@ -142,7 +144,8 @@ const BackgroundBle: FC<PropsWithChildren<any>> = props => {
       }
     },
   );
-  useMount(() => {
+  useEffect(() => {
+    console.log('BackgroundBle useMount');
     const listeners = [
       bleManagerEmitter.addListener(
         'BleManagerDiscoverPeripheral',
@@ -160,11 +163,37 @@ const BackgroundBle: FC<PropsWithChildren<any>> = props => {
     ];
 
     return () => {
+      console.log('BackgroundBle unmount');
       for (const listener of listeners) {
         listener.remove();
       }
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    console.log('BackgroundBle useEffect', deviceInfo, userInfo);
+    if (!deviceInfo.id && userInfo) {
+      BleManager.start({ showAlert: false })
+        .then(() => {
+          console.log('Module initialized');
+          // Start scanning
+          return BleManager.scan(
+            SERVICE_UUIDS,
+            SECONDS_TO_SCAN_FOR,
+            ALLOW_DUPLICATES,
+            {
+              matchMode: BleScanMatchMode.Sticky,
+              scanMode: BleScanMode.LowLatency,
+              callbackType: BleScanCallbackType.AllMatches,
+            },
+          );
+        })
+        .catch(err => {
+          console.error('Error starting BLE manager:', err);
+        });
+    }
+  }, [deviceInfo, userInfo]);
 
   return <>{children}</>;
 };

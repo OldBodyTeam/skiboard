@@ -5,7 +5,7 @@ import { deviceInfoState } from '@stores/device/device.atom';
 import { userInfoState } from '@stores/login/login.atom';
 import { useAtom, useSetAtom } from 'jotai';
 import React, { PropsWithChildren, useEffect } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 // import { useRecoilState } from 'recoil';
 import { RootStackParamList } from 'route.config';
 type AuthProps = NativeStackScreenProps<RootStackParamList, 'Register'> &
@@ -22,6 +22,7 @@ const Auth = (props: AuthProps) => {
         const userId = (data.data as any).data.sub;
         const userInfoData = await client.userControllerUser(userId);
         setUserInfo(userInfoData.data.data);
+        console.log('userInfoData', userInfoData.data.data);
         if (deviceInfo.connected) {
           navigation.push('Home', { screen: 'DesignScreen' });
         } else {
@@ -43,8 +44,14 @@ const Auth = (props: AuthProps) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      }}
-    />
+        flex: 1,
+        // backgroundColor: '#131416',
+      }}>
+      <Image
+        source={require('../../assets/images/logo.png')}
+        style={{ width: 100, height: 100 }}
+      />
+    </View>
   );
 };
 export default Auth;

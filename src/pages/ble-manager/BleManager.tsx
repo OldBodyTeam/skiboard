@@ -354,7 +354,16 @@ const BleManagerBlock: FC<BleManagerBlockProps> = props => {
           const decodedBytes = Buffer.from(readData.bytes);
           const code = decodedBytes.toString('hex');
           const decimalValue = parseInt(code.slice(-4, -2), 16);
-          setInfo(decimalValue);
+          if (__DEV__) {
+            Toast.show(`电量：${decimalValue}, ${code}`);
+          }
+          if (decimalValue > 100) {
+            setInfo(100);
+          } else if (decimalValue < 0) {
+            setInfo(0);
+          } else {
+            setInfo(decimalValue);
+          }
         } else {
           const decodedBytes = Buffer.from(data.value);
           const code = decodedBytes.toString('hex');

@@ -111,10 +111,21 @@ const Settings = (props: SettingsTextProps) => {
   const { t } = useTranslation();
   const pageInfo = useMemo(
     () => [
-      { label: t('HOME') },
-      { label: t('GUIDE') },
-      { label: t('ABOUT') },
-      { label: t('BLOG') },
+      {
+        label: t('HOME'),
+        action:
+          'https://www.xiaohongshu.com/user/profile/5b50123b11be103ee14a599b?xsec_token=YB2eKE7c-pJSW4fpB5Vj3GxzzRQgVKqqnzKe9gPZM5ZjI=&xsec_source=app_share&xhsshare=CopyLink&appuid=5b50123b11be103ee14a599b&apptime=1741006270&share_id=b8cfc855ee5a4928be3d0fd28f548182',
+      },
+      {
+        label: t('GUIDE'),
+        action: 'https://ski-web.gawtec.com/blog',
+      },
+      {
+        label: t('ABOUT'),
+        action:
+          'https://www.xiaohongshu.com/user/profile/5b50123b11be103ee14a599b?xsec_token=YB2eKE7c-pJSW4fpB5Vj3GxzzRQgVKqqnzKe9gPZM5ZjI=&xsec_source=app_share&xhsshare=CopyLink&appuid=5b50123b11be103ee14a599b&apptime=1741006270&share_id=b8cfc855ee5a4928be3d0fd28f548182',
+      },
+      // { label: t('BLOG') },
     ],
     [t],
   );
@@ -230,10 +241,21 @@ const Settings = (props: SettingsTextProps) => {
                 <TouchableOpacity
                   key={v.label}
                   onPress={() =>
-                    v.label === t('GUIDE')
-                      ? Linking.canOpenURL(
-                          'https://ski-music.oss-cn-beijing.aliyuncs.com/docs/%E8%AF%B4%E6%98%8E%E4%B9%A6%E6%9C%80%E7%BB%88%E8%AE%BE%E8%AE%A11220.pdf',
-                        )
+                    v.action
+                      ? Linking.canOpenURL(v.action)
+                          .then(canOpen => {
+                            console.log('是否可以打开:', canOpen);
+                            Linking.openURL(v.action)
+                              .then(() => {
+                                console.log('链接已打开');
+                              })
+                              .catch(error => {
+                                console.error('打开链接时出错:', error);
+                              });
+                          })
+                          .catch(error => {
+                            console.error('检查链接时出错:', error);
+                          })
                       : navigation.push('Home')
                   }>
                   <View
@@ -257,7 +279,27 @@ const Settings = (props: SettingsTextProps) => {
                 </TouchableOpacity>
               );
             })}
-            <TouchableOpacity onPress={() => navigation.push('Home')}>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.canOpenURL(
+                  'https://www.xiaohongshu.com/user/profile/5b50123b11be103ee14a599b?tab=goods&channelType=share_outside&xhsshare=CopyLink&appuid=5b50123b11be103ee14a599b&apptime=1741006398&share_id=c6b8e76228bd460795acfb666d3d46dc',
+                )
+                  .then(canOpen => {
+                    console.log('是否可以打开:', canOpen);
+                    Linking.openURL(
+                      'https://www.xiaohongshu.com/user/profile/5b50123b11be103ee14a599b?tab=goods&channelType=share_outside&xhsshare=CopyLink&appuid=5b50123b11be103ee14a599b&apptime=1741006398&share_id=c6b8e76228bd460795acfb666d3d46dc',
+                    )
+                      .then(() => {
+                        console.log('链接已打开');
+                      })
+                      .catch(error => {
+                        console.error('打开链接时出错:', error);
+                      });
+                  })
+                  .catch(error => {
+                    console.error('检查链接时出错:', error);
+                  })
+              }>
               <View
                 style={{
                   borderColor: 'rgba(216, 216, 216, 0.2)',
