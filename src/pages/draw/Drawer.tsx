@@ -41,15 +41,19 @@ import useToast from '@hooks/useToast';
 import { useAtomValue } from 'jotai';
 // import { v4 } from 'uuid';
 const windowWidth = Dimensions.get('window').width;
+
 type DrawerProps = NativeStackScreenProps<RootStackParamList, 'ScrollText'> &
   PropsWithChildren<{ name?: string }>;
+
 export type ItemsProps = {
   width: number;
   selected: boolean;
   a?: boolean;
   b?: boolean;
 };
-export const Items: FC<ItemsProps> = props => {
+
+// 将 Items 组件的定义移到 Drawer 组件外部，并使用 React.memo 进行优化
+export const Items: FC<ItemsProps> = React.memo(props => {
   const { selected, width, a, b } = props;
 
   return (
@@ -78,7 +82,7 @@ export const Items: FC<ItemsProps> = props => {
       )}
     />
   );
-};
+});
 
 const Drawer: FC<DrawerProps> = props => {
   const { t } = useTranslation();
@@ -149,26 +153,35 @@ const Drawer: FC<DrawerProps> = props => {
     deltaY: number;
   }>({ deltaX: 0, deltaY: 0 });
 
+  /**
+   * 当拖动开始时调用，用于初始化移动状态。
+   * @param e 触摸事件对象
+   */
   const onMoveStart = useMemoizedFn((e: any) => {
+    // 只有在移动模式且有选中点时才开始移动
     if (btnStatus.move && selectedList.size > 0) {
-      setMoveStartPoint({ x: e.x, y: e.y });
-      setIsMoving(true);
-      setCurrentDelta({ deltaX: 0, deltaY: 0 });
+      setMoveStartPoint({ x: e.x, y: e.y }); // 记录起始触摸点
+      setIsMoving(true); // 设置移动状态为true
+      setCurrentDelta({ deltaX: 0, deltaY: 0 }); // 重置当前位移
 
-      // 预计算原始位置
+      // 预计算所有选中点的原始行列坐标
       const origPos = new Map<string, { r: number; c: number }>();
       selectedList.forEach(point => {
         const [r, c] = point.split('-').map(Number);
         origPos.set(point, { r, c });
       });
-      setOriginalPositions(origPos);
-      setTempSelectedList(new Set([...selectedList]));
+      setOriginalPositions(origPos); // 存储原始位置
+      setTempSelectedList(new Set([...selectedList])); // 初始化临时选中点列表，用于即时显示
     }
   });
 
-  // 优化的移动更新函数，带节流处理
+  /**
+   * 拖动过程中调用，用于更新选中点的位置。此函数进行了节流处理。
+   * @param e 触摸事件对象
+   */
   const { run: onMoveUpdate } = useThrottleFn(
     (e: any) => {
+      // 如果不在移动模式，或者未开始移动，或者没有起始点，或者没有选中点，则不执行更新
       if (
         !btnStatus.move ||
         !isMoving ||
@@ -178,47 +191,54 @@ const Drawer: FC<DrawerProps> = props => {
         return;
       }
 
+      // 计算当前触摸点与起始点的位移，并将其转换为网格单位
       const deltaX = Math.round((e.x - moveStartPoint.x) / currentWidth);
       const deltaY = Math.round((e.y - moveStartPoint.y) / currentWidth);
 
-      // 如果移动距离没有变化，跳过处理
+      // 如果位移没有变化，则跳过更新，避免不必要的渲染
       if (deltaX === currentDelta.deltaX && deltaY === currentDelta.deltaY) {
         return;
       }
 
-      // 边界检查优化：只检查边界条件，不重复计算位置
+      // 边界检查：检查所有选中点移动后是否会超出画布边界
       let canMove = true;
       for (const [point, pos] of originalPositions) {
         const newR = pos.r + deltaY;
         const newC = pos.c + deltaX;
 
+        // 检查新位置是否在画布范围内
         if (
           newR < 0 ||
-          newR >= canvasData.length ||
+          newR >= canvasData.length || // 行边界检查
           newC < 0 ||
-          newC >= canvasData[newR]?.length
+          newC >= canvasData[newR]?.length // 列边界检查
         ) {
-          canMove = false;
-          break; // 早期退出优化
+          canMove = false; // 如果超出边界，则不能移动
+          break; // 提前退出循环
         }
       }
 
       if (canMove) {
-        // 批量更新新位置
+        // 如果可以移动，则计算所有选中点的新位置，并更新到临时选中点列表
         const newSelectedList = new Set<string>();
         originalPositions.forEach((pos, point) => {
           newSelectedList.add(`${pos.r + deltaY}-${pos.c + deltaX}`);
         });
 
-        setTempSelectedList(newSelectedList);
-        setCurrentDelta({ deltaX, deltaY });
+        setTempSelectedList(newSelectedList); // 更新临时列表，即时反映在UI上
+        setCurrentDelta({ deltaX, deltaY }); // 更新当前位移
       }
       // 如果不能移动，保持当前位置不变，不进行额外操作
     },
-    { wait: 16 }, // 约60fps的更新频率
+    { wait: 16 }, // 节流时间设置为16毫秒，实现约60帧每秒的更新频率
   );
 
+  /**
+   * 手势开始或更新时的处理函数（通用逻辑）。
+   * @param e 触摸事件对象
+   */
   const a = (e: any) => {
+    // 查找当前触摸点对应的画布点
     const poi = getPointPoi.find(item => {
       if (
         e.x >= item.x &&
@@ -233,15 +253,16 @@ const Drawer: FC<DrawerProps> = props => {
     });
 
     if (btnStatus.move) {
+      // 如果是移动模式，并且当前未处于移动状态，则调用onMoveStart来初始化移动
       if (!isMoving) {
         onMoveStart(e);
-      } else {
-        onMoveUpdate(e);
       }
+      // onUpdate 会在手势更新时直接调用 onMoveUpdate，所以这里不需要重复调用
     } else {
-      // Original behavior for edit and clear modes
+      // 非移动模式（编辑或清除模式）的原始行为
       setSelectedList(prev => {
         if (poi && !prev.has(poi?.target) && poi?.target && !btnStatus.clear) {
+          // 编辑模式下：如果点未选中且存在，则添加选中
           prev.add(poi?.target);
           setTarget(new Set([...prev]));
           return new Set([...prev]);
@@ -251,6 +272,7 @@ const Drawer: FC<DrawerProps> = props => {
           poi?.target &&
           btnStatus.clear
         ) {
+          // 清除模式下：如果点已选中且存在，则删除选中
           prev.delete(poi?.target);
           return new Set([...prev]);
         } else {
@@ -259,16 +281,20 @@ const Drawer: FC<DrawerProps> = props => {
       });
     }
   };
+
+  /**
+   * 手势结束时的处理函数（通用逻辑）。
+   * @param _e 触摸事件对象 (这里不直接使用，因为我们主要依赖tempSelectedList)
+   */
   const b = (_e: any) => {
     if (btnStatus.move && isMoving) {
-      // 确认新位置
-      setSelectedList(new Set([...tempSelectedList]));
-      setTarget(new Set([...tempSelectedList]));
+      // 移动模式下，手势结束时确认新位置
+      setSelectedList(new Set([...tempSelectedList])); // 将临时列表中的位置设置为最终选中位置
+      setTarget(new Set([...tempSelectedList])); // 更新目标集合
 
-      // 重置移动状态
-      resetMoveState();
+      resetMoveState(); // 重置移动相关的所有状态
     } else if (!btnStatus.move) {
-      // Original behavior
+      // 非移动模式的原始行为
       if (!btnStatus.clear) {
         setCurrentStatus({ prev: false, next: true });
       } else {
@@ -277,38 +303,42 @@ const Drawer: FC<DrawerProps> = props => {
     }
   };
 
+  // 定义平移手势
   const panGesture = Gesture.Pan()
-    .shouldCancelWhenOutside(false)
-    .minDistance(1)
+    .shouldCancelWhenOutside(false) // 当手势超出组件边界时，不取消手势
+    .minDistance(1) // 最小拖动距离，避免轻微抖动触发
     .onStart(e => {
-      'worklet';
-      runOnJS(a)(e);
+      'worklet'; // Worklet标记，在UI线程执行
+      runOnJS(a)(e); // 调用a函数，处理移动起始逻辑
     })
     .onUpdate(e => {
-      'worklet';
+      'worklet'; // Worklet标记，在UI线程执行
       if (btnStatus.move) {
-        // 移动模式下直接调用优化的节流函数
-        runOnJS(onMoveUpdate)(e);
+        runOnJS(onMoveUpdate)(e); // 在移动模式下，持续调用onMoveUpdate进行节流更新
       } else {
-        runOnJS(a)(e);
+        runOnJS(a)(e); // 非移动模式下，调用a函数处理选中/取消选中
       }
     })
     .onEnd(e => {
-      'worklet';
-      runOnJS(b)(e);
+      'worklet'; // Worklet标记，在UI线程执行
+      runOnJS(b)(e); // 调用b函数，处理移动结束逻辑
     })
     .onFinalize(() => {
-      'worklet';
-      // 确保手势结束时清理状态
+      'worklet'; // Worklet标记，在UI线程执行
+      // 确保手势最终结束时，重置移动状态
       if (btnStatus.move) {
-        runOnJS(b)({});
+        runOnJS(b)({}); // 调用b函数，确保移动状态被正确重置
       }
     });
+
+  // 定义点击手势
   const tap = Gesture.Tap().onEnd(e => {
-    'worklet';
-    runOnJS(a)(e);
-    runOnJS(b)(e);
+    'worklet'; // Worklet标记，在UI线程执行
+    runOnJS(a)(e); // 调用a函数，处理点击选中/取消选中逻辑
+    runOnJS(b)(e); // 调用b函数，处理点击结束逻辑（非移动模式下）
   });
+
+  // 组合手势：平移手势优先于点击手势
   const composed = Gesture.Race(panGesture, tap);
   const [currentStatus, setCurrentStatus] = useState({
     prev: true,
@@ -360,18 +390,23 @@ const Drawer: FC<DrawerProps> = props => {
     setSelectedList(new Set([...originList]));
   });
 
+  /**
+   * 重置所有移动相关的临时状态。
+   */
   const resetMoveState = useMemoizedFn(() => {
     setMoveStartPoint(null);
     setIsMoving(false);
     setOriginalPositions(new Map());
-    setTempSelectedList(new Set());
+    setTempSelectedList(new Set()); // 清空临时列表
     setCurrentDelta({ deltaX: 0, deltaY: 0 });
-    // 取消待处理的节流函数调用
-    onMoveUpdate.cancel();
+    onMoveUpdate.cancel(); // 取消任何待处理的节流函数调用
   });
 
+  /**
+   * 设置为编辑模式。
+   */
   const handleEditDrawer = useMemoizedFn(() => {
-    resetMoveState();
+    resetMoveState(); // 切换模式时重置移动状态
     setStatus(() => {
       return {
         edit: true,
@@ -381,8 +416,11 @@ const Drawer: FC<DrawerProps> = props => {
     });
   });
 
+  /**
+   * 设置为清除模式。
+   */
   const handleClear = useMemoizedFn(() => {
-    resetMoveState();
+    resetMoveState(); // 切换模式时重置移动状态
     setStatus(() => {
       return {
         edit: false,
@@ -392,8 +430,11 @@ const Drawer: FC<DrawerProps> = props => {
     });
   });
 
+  /**
+   * 设置为移动模式。
+   */
   const handleEdit = useMemoizedFn(() => {
-    resetMoveState();
+    resetMoveState(); // 切换模式时重置移动状态
     setStatus(() => {
       return {
         edit: false,
@@ -429,7 +470,7 @@ const Drawer: FC<DrawerProps> = props => {
     }
     setOptFrameIndex(index);
     if (frameList.has(index)) {
-      // 设置
+      // Set
       const itemData = frameList.get(index)!;
       setSelectedList(new Set([...itemData]));
       setTarget(new Set([...itemData]));
@@ -469,7 +510,7 @@ const Drawer: FC<DrawerProps> = props => {
     }
     setOptFrameIndex(frameList.size + 1);
     if (frameList.has(index)) {
-      // 设置
+      // Set
       const itemData = frameList.get(index)!;
       setSelectedList(new Set([...itemData]));
       setTarget(new Set([...itemData]));
@@ -504,8 +545,8 @@ const Drawer: FC<DrawerProps> = props => {
           collectionNum,
         )}${getSimpleHex(key)}${item.join('')}61`,
       );
-      // 同步 预览亮 创建不亮
-      // 问题：新编辑永远在第二个 1,2,3,4
+      // Synchronize preview light, don't create light
+      // Problem: New edits are always in the second 1,2,3,4
       queue.enqueue(
         `57e0${getHex(item.length + 2)}00${getSimpleHex(
           collectionNum,
