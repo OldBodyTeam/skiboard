@@ -16,13 +16,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {
-  covertCanUseCanvasData,
-  drawData,
-  getPointPoi,
-  poi,
-  data,
-} from './config';
+import { covertCanUseCanvasData, drawData, getPointPoi, poi } from './config';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { runOnJS } from 'react-native-reanimated';
@@ -143,22 +137,24 @@ const Drawer: FC<DrawerProps> = props => {
     x: number;
     y: number;
   } | null>(null);
-  const [movingPoints, setMovingPoints] = useState<Set<string>>(new Set());
   const [originalPositions, setOriginalPositions] = useState<
     Map<string, { r: number; c: number }>
   >(new Map());
   const [isMoving, setIsMoving] = useState(false);
-  const [tempSelectedList, setTempSelectedList] = useState<Set<string>>(new Set());
-  const [lastValidMove, setLastValidMove] = useState<{ deltaX: number; deltaY: number }>({ deltaX: 0, deltaY: 0 });
-  const [currentValidMove, setCurrentValidMove] = useState<{ deltaX: number; deltaY: number }>({ deltaX: 0, deltaY: 0 });
+  const [tempSelectedList, setTempSelectedList] = useState<Set<string>>(
+    new Set(),
+  );
+  const [currentDelta, setCurrentDelta] = useState<{
+    deltaX: number;
+    deltaY: number;
+  }>({ deltaX: 0, deltaY: 0 });
 
   const onMoveStart = useMemoizedFn((e: any) => {
     if (btnStatus.move && selectedList.size > 0) {
       setMoveStartPoint({ x: e.x, y: e.y });
       setIsMoving(true);
-      setLastValidMove({ deltaX: 0, deltaY: 0 });
-      setCurrentValidMove({ deltaX: 0, deltaY: 0 });
-      
+      setCurrentDelta({ deltaX: 0, deltaY: 0 });
+
       // 预计算原始位置
       const origPos = new Map<string, { r: number; c: number }>();
       selectedList.forEach(point => {
@@ -170,26 +166,32 @@ const Drawer: FC<DrawerProps> = props => {
     }
   });
 
-  // 基本移动功能：边界阻止，不超出画布范围
-  const onMoveUpdate = useMemoizedFn((e: any) => {
-    if (btnStatus.move && isMoving && moveStartPoint && originalPositions.size > 0) {
-      const deltaX = Math.round((e.x - moveStartPoint.x) / currentWidth);
-      const deltaY = Math.round((e.y - moveStartPoint.y) / currentWidth);
-      
-      // 如果移动距离没有变化，跳过处理
-      if (deltaX === lastValidMove.deltaX && deltaY === lastValidMove.deltaY) {
+  // 优化的移动更新函数，带节流处理
+  const { run: onMoveUpdate } = useThrottleFn(
+    (e: any) => {
+      if (
+        !btnStatus.move ||
+        !isMoving ||
+        !moveStartPoint ||
+        originalPositions.size === 0
+      ) {
         return;
       }
 
-      const newSelectedList = new Set<string>();
-      let canMove = true;
+      const deltaX = Math.round((e.x - moveStartPoint.x) / currentWidth);
+      const deltaY = Math.round((e.y - moveStartPoint.y) / currentWidth);
 
-      // 检查所有点是否都可以移动到新位置（不超出边界）
-      originalPositions.forEach((pos, point) => {
+      // 如果移动距离没有变化，跳过处理
+      if (deltaX === currentDelta.deltaX && deltaY === currentDelta.deltaY) {
+        return;
+      }
+
+      // 边界检查优化：只检查边界条件，不重复计算位置
+      let canMove = true;
+      for (const [point, pos] of originalPositions) {
         const newR = pos.r + deltaY;
         const newC = pos.c + deltaX;
 
-        // 边界检查
         if (
           newR < 0 ||
           newR >= canvasData.length ||
@@ -197,23 +199,24 @@ const Drawer: FC<DrawerProps> = props => {
           newC >= canvasData[newR]?.length
         ) {
           canMove = false;
+          break; // 早期退出优化
         }
-      });
-
-      // 只有当所有点都可以移动时，才进行移动
-      if (canMove) {
-        originalPositions.forEach((pos, point) => {
-          const newR = pos.r + deltaY;
-          const newC = pos.c + deltaX;
-          newSelectedList.add(`${newR}-${newC}`);
-        });
-        setTempSelectedList(newSelectedList);
-        setCurrentValidMove({ deltaX, deltaY });
       }
-      
-      setLastValidMove({ deltaX, deltaY });
-    }
-  });
+
+      if (canMove) {
+        // 批量更新新位置
+        const newSelectedList = new Set<string>();
+        originalPositions.forEach((pos, point) => {
+          newSelectedList.add(`${pos.r + deltaY}-${pos.c + deltaX}`);
+        });
+
+        setTempSelectedList(newSelectedList);
+        setCurrentDelta({ deltaX, deltaY });
+      }
+      // 如果不能移动，保持当前位置不变，不进行额外操作
+    },
+    { wait: 16 }, // 约60fps的更新频率
+  );
 
   const a = (e: any) => {
     const poi = getPointPoi.find(item => {
@@ -261,14 +264,9 @@ const Drawer: FC<DrawerProps> = props => {
       // 确认新位置
       setSelectedList(new Set([...tempSelectedList]));
       setTarget(new Set([...tempSelectedList]));
-      
+
       // 重置移动状态
-      setMoveStartPoint(null);
-      setIsMoving(false);
-      setOriginalPositions(new Map());
-      setTempSelectedList(new Set());
-      setLastValidMove({ deltaX: 0, deltaY: 0 });
-      setCurrentValidMove({ deltaX: 0, deltaY: 0 });
+      resetMoveState();
     } else if (!btnStatus.move) {
       // Original behavior
       if (!btnStatus.clear) {
@@ -289,6 +287,7 @@ const Drawer: FC<DrawerProps> = props => {
     .onUpdate(e => {
       'worklet';
       if (btnStatus.move) {
+        // 移动模式下直接调用优化的节流函数
         runOnJS(onMoveUpdate)(e);
       } else {
         runOnJS(a)(e);
@@ -366,8 +365,9 @@ const Drawer: FC<DrawerProps> = props => {
     setIsMoving(false);
     setOriginalPositions(new Map());
     setTempSelectedList(new Set());
-    setLastValidMove({ deltaX: 0, deltaY: 0 });
-    setCurrentValidMove({ deltaX: 0, deltaY: 0 });
+    setCurrentDelta({ deltaX: 0, deltaY: 0 });
+    // 取消待处理的节流函数调用
+    onMoveUpdate.cancel();
   });
 
   const handleEditDrawer = useMemoizedFn(() => {
@@ -391,7 +391,7 @@ const Drawer: FC<DrawerProps> = props => {
       };
     });
   });
-  
+
   const handleEdit = useMemoizedFn(() => {
     resetMoveState();
     setStatus(() => {
@@ -648,7 +648,9 @@ const Drawer: FC<DrawerProps> = props => {
                           key={`${r}-${c}`}
                           width={currentWidth}
                           selected={
-                            btnStatus.move && isMoving
+                            btnStatus.move &&
+                            isMoving &&
+                            tempSelectedList.size > 0
                               ? tempSelectedList.has(`${r}-${c}`)
                               : selectedList.has(`${r}-${c}`)
                           }
