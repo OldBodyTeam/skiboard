@@ -211,7 +211,7 @@ const Drawer: FC<DrawerProps> = props => {
           newR < 0 ||
           newR >= canvasData.length || // 行边界检查
           newC < 0 ||
-          newC >= canvasData[newR]?.length // 列边界检查
+          (canvasData[newR] && newC >= canvasData[newR].length) // 列边界检查，确保canvasData[newR]存在
         ) {
           canMove = false; // 如果超出边界，则不能移动
           break; // 提前退出循环
@@ -689,9 +689,8 @@ const Drawer: FC<DrawerProps> = props => {
                           key={`${r}-${c}`}
                           width={currentWidth}
                           selected={
-                            btnStatus.move &&
-                            isMoving &&
-                            tempSelectedList.size > 0
+                            // 简化了条件，确保在移动模式下始终检查 tempSelectedList
+                            btnStatus.move && isMoving
                               ? tempSelectedList.has(`${r}-${c}`)
                               : selectedList.has(`${r}-${c}`)
                           }
