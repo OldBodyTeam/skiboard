@@ -16,11 +16,17 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { covertCanUseCanvasData, drawData, getPointPoi, poi } from './config';
+import {
+  covertCanUseCanvasData,
+  drawData,
+  getPointPoi,
+  poi,
+  data,
+} from './config';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useScreenSize } from '@hooks/useScreenSize';
 import { runOnJS } from 'react-native-reanimated';
-import { useDebounceFn, useMemoizedFn, useMount } from 'ahooks';
+import { useDebounceFn, useMemoizedFn, useMount, useThrottleFn } from 'ahooks';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 import SliderDraw from './SliderDraw';
@@ -85,10 +91,15 @@ const Drawer: FC<DrawerProps> = props => {
   const { navigation, route } = props;
   const { collectionId, from } = route.params || {};
   const { bleWrite } = useBLE();
-  const data = covertCanUseCanvasData(drawData);
+  const canvasData = covertCanUseCanvasData(drawData);
   const [target, setTarget] = useState<Set<string>>(new Set());
   const [selectedList, setSelectedList] = useState<Set<string>>(new Set());
-  const [clear, setClear] = useState(false);
+  // const [clear, setClear] = useState(false);
+  const [btnStatus, setStatus] = useState({
+    edit: true,
+    clear: false,
+    move: false,
+  });
   const userInfo = useAtomValue(userInfoState);
   const showToast = useToast();
   const getCollectionList = async () => {
@@ -128,6 +139,82 @@ const Drawer: FC<DrawerProps> = props => {
       console.log((e as Error).message);
     }
   });
+  const [moveStartPoint, setMoveStartPoint] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [movingPoints, setMovingPoints] = useState<Set<string>>(new Set());
+  const [originalPositions, setOriginalPositions] = useState<
+    Map<string, { r: number; c: number }>
+  >(new Map());
+  const [isMoving, setIsMoving] = useState(false);
+  const [tempSelectedList, setTempSelectedList] = useState<Set<string>>(new Set());
+  const [lastValidMove, setLastValidMove] = useState<{ deltaX: number; deltaY: number }>({ deltaX: 0, deltaY: 0 });
+  const [currentValidMove, setCurrentValidMove] = useState<{ deltaX: number; deltaY: number }>({ deltaX: 0, deltaY: 0 });
+
+  const onMoveStart = useMemoizedFn((e: any) => {
+    if (btnStatus.move && selectedList.size > 0) {
+      setMoveStartPoint({ x: e.x, y: e.y });
+      setIsMoving(true);
+      setLastValidMove({ deltaX: 0, deltaY: 0 });
+      setCurrentValidMove({ deltaX: 0, deltaY: 0 });
+      
+      // 预计算原始位置
+      const origPos = new Map<string, { r: number; c: number }>();
+      selectedList.forEach(point => {
+        const [r, c] = point.split('-').map(Number);
+        origPos.set(point, { r, c });
+      });
+      setOriginalPositions(origPos);
+      setTempSelectedList(new Set([...selectedList]));
+    }
+  });
+
+  // 基本移动功能：边界阻止，不超出画布范围
+  const onMoveUpdate = useMemoizedFn((e: any) => {
+    if (btnStatus.move && isMoving && moveStartPoint && originalPositions.size > 0) {
+      const deltaX = Math.round((e.x - moveStartPoint.x) / currentWidth);
+      const deltaY = Math.round((e.y - moveStartPoint.y) / currentWidth);
+      
+      // 如果移动距离没有变化，跳过处理
+      if (deltaX === lastValidMove.deltaX && deltaY === lastValidMove.deltaY) {
+        return;
+      }
+
+      const newSelectedList = new Set<string>();
+      let canMove = true;
+
+      // 检查所有点是否都可以移动到新位置（不超出边界）
+      originalPositions.forEach((pos, point) => {
+        const newR = pos.r + deltaY;
+        const newC = pos.c + deltaX;
+
+        // 边界检查
+        if (
+          newR < 0 ||
+          newR >= canvasData.length ||
+          newC < 0 ||
+          newC >= canvasData[newR]?.length
+        ) {
+          canMove = false;
+        }
+      });
+
+      // 只有当所有点都可以移动时，才进行移动
+      if (canMove) {
+        originalPositions.forEach((pos, point) => {
+          const newR = pos.r + deltaY;
+          const newC = pos.c + deltaX;
+          newSelectedList.add(`${newR}-${newC}`);
+        });
+        setTempSelectedList(newSelectedList);
+        setCurrentValidMove({ deltaX, deltaY });
+      }
+      
+      setLastValidMove({ deltaX, deltaY });
+    }
+  });
+
   const a = (e: any) => {
     const poi = getPointPoi.find(item => {
       if (
@@ -142,35 +229,81 @@ const Drawer: FC<DrawerProps> = props => {
       }
     });
 
-    setSelectedList(prev => {
-      if (poi && !prev.has(poi?.target) && poi?.target && !clear) {
-        prev.add(poi?.target);
-        setTarget(new Set([...prev]));
-        return new Set([...prev]);
-      } else if (poi && prev.has(poi?.target) && poi?.target && clear) {
-        prev.delete(poi?.target);
-        return new Set([...prev]);
+    if (btnStatus.move) {
+      if (!isMoving) {
+        onMoveStart(e);
       } else {
-        return prev;
+        onMoveUpdate(e);
       }
-    });
+    } else {
+      // Original behavior for edit and clear modes
+      setSelectedList(prev => {
+        if (poi && !prev.has(poi?.target) && poi?.target && !btnStatus.clear) {
+          prev.add(poi?.target);
+          setTarget(new Set([...prev]));
+          return new Set([...prev]);
+        } else if (
+          poi &&
+          prev.has(poi?.target) &&
+          poi?.target &&
+          btnStatus.clear
+        ) {
+          prev.delete(poi?.target);
+          return new Set([...prev]);
+        } else {
+          return prev;
+        }
+      });
+    }
   };
   const b = (_e: any) => {
-    if (!clear) {
-      setCurrentStatus({ prev: false, next: true });
-    } else {
-      setCurrentStatus({ prev: true, next: false });
+    if (btnStatus.move && isMoving) {
+      // 确认新位置
+      setSelectedList(new Set([...tempSelectedList]));
+      setTarget(new Set([...tempSelectedList]));
+      
+      // 重置移动状态
+      setMoveStartPoint(null);
+      setIsMoving(false);
+      setOriginalPositions(new Map());
+      setTempSelectedList(new Set());
+      setLastValidMove({ deltaX: 0, deltaY: 0 });
+      setCurrentValidMove({ deltaX: 0, deltaY: 0 });
+    } else if (!btnStatus.move) {
+      // Original behavior
+      if (!btnStatus.clear) {
+        setCurrentStatus({ prev: false, next: true });
+      } else {
+        setCurrentStatus({ prev: true, next: false });
+      }
     }
   };
 
   const panGesture = Gesture.Pan()
-    .onUpdate(e => {
+    .shouldCancelWhenOutside(false)
+    .minDistance(1)
+    .onStart(e => {
       'worklet';
       runOnJS(a)(e);
+    })
+    .onUpdate(e => {
+      'worklet';
+      if (btnStatus.move) {
+        runOnJS(onMoveUpdate)(e);
+      } else {
+        runOnJS(a)(e);
+      }
     })
     .onEnd(e => {
       'worklet';
       runOnJS(b)(e);
+    })
+    .onFinalize(() => {
+      'worklet';
+      // 确保手势结束时清理状态
+      if (btnStatus.move) {
+        runOnJS(b)({});
+      }
     });
   const tap = Gesture.Tap().onEnd(e => {
     'worklet';
@@ -228,8 +361,46 @@ const Drawer: FC<DrawerProps> = props => {
     setSelectedList(new Set([...originList]));
   });
 
+  const resetMoveState = useMemoizedFn(() => {
+    setMoveStartPoint(null);
+    setIsMoving(false);
+    setOriginalPositions(new Map());
+    setTempSelectedList(new Set());
+    setLastValidMove({ deltaX: 0, deltaY: 0 });
+    setCurrentValidMove({ deltaX: 0, deltaY: 0 });
+  });
+
+  const handleEditDrawer = useMemoizedFn(() => {
+    resetMoveState();
+    setStatus(() => {
+      return {
+        edit: true,
+        clear: false,
+        move: false,
+      };
+    });
+  });
+
   const handleClear = useMemoizedFn(() => {
-    setClear(c => !c);
+    resetMoveState();
+    setStatus(() => {
+      return {
+        edit: false,
+        clear: true,
+        move: false,
+      };
+    });
+  });
+  
+  const handleEdit = useMemoizedFn(() => {
+    resetMoveState();
+    setStatus(() => {
+      return {
+        edit: false,
+        clear: false,
+        move: true,
+      };
+    });
   });
 
   const { width } = useScreenSize();
@@ -451,6 +622,7 @@ const Drawer: FC<DrawerProps> = props => {
       getCollection();
     }
   });
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#5938EC' }}>
       <StatusBar />
@@ -467,7 +639,7 @@ const Drawer: FC<DrawerProps> = props => {
         <View style={styles.page}>
           <GestureDetector gesture={composed}>
             <View style={styles.container}>
-              {data.map((rows, r) => {
+              {canvasData.map((rows, r) => {
                 return (
                   <View key={r} style={styles.rows}>
                     {rows.map((item, c) => {
@@ -475,7 +647,11 @@ const Drawer: FC<DrawerProps> = props => {
                         <Items
                           key={`${r}-${c}`}
                           width={currentWidth}
-                          selected={selectedList.has(`${r}-${c}`)}
+                          selected={
+                            btnStatus.move && isMoving
+                              ? tempSelectedList.has(`${r}-${c}`)
+                              : selectedList.has(`${r}-${c}`)
+                          }
                           b
                         />
                       );
@@ -518,11 +694,11 @@ const Drawer: FC<DrawerProps> = props => {
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity onPress={handleClear}>
+              <TouchableOpacity onPress={handleEditDrawer}>
                 <Image
                   source={require('../../assets/draw/magic.png')}
                   style={StyleSheet.compose(styles.clear, {
-                    backgroundColor: clear ? 'white' : 'yellow',
+                    backgroundColor: btnStatus.edit ? 'yellow' : 'white',
                     marginRight: 8,
                   })}
                 />
@@ -531,7 +707,16 @@ const Drawer: FC<DrawerProps> = props => {
                 <Image
                   source={require('../../assets/draw/clean.png')}
                   style={StyleSheet.compose(styles.clear, {
-                    backgroundColor: clear ? 'yellow' : 'white',
+                    backgroundColor: btnStatus.clear ? 'yellow' : 'white',
+                    marginRight: 8,
+                  })}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleEdit}>
+                <Image
+                  source={require('../../assets/draw/edit.png')}
+                  style={StyleSheet.compose(styles.clear, {
+                    backgroundColor: btnStatus.move ? 'yellow' : 'white',
                   })}
                 />
               </TouchableOpacity>
@@ -574,7 +759,7 @@ const Drawer: FC<DrawerProps> = props => {
                             style={styles.delete}
                           />
                         </TouchableWithoutFeedback>
-                        {data.map((rows, r) => {
+                        {canvasData.map((rows, r) => {
                           return (
                             <View key={r} style={styles.rows}>
                               {rows.map((item, c) => {
