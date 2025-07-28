@@ -1,5 +1,7 @@
 # mv ./skiboard.keystore ./android/app
-
+cd android
+./gradlew clean
+cd ..
 npm run build:android
 
 cd android
