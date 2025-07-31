@@ -2,6 +2,7 @@
 cd android
 ./gradlew clean
 cd ..
+watchman watch-del '/Users/bytedance/holiday/skiboard' ; watchman watch-project '/Users/bytedance/holiday/skiboard'
 npm run build:android
 
 cd android

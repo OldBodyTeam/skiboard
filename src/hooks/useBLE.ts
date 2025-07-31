@@ -98,14 +98,22 @@ const useBLE = () => {
           }
           if (Platform.OS === 'android') {
             await BleManager.requestMTU(deviceId, 512);
+            await BleManager.write(
+              deviceId,
+              deviceServiceUUID,
+              deviceCharacteristicUUID,
+              bleData,
+              512 - 3,
+            );
+          } else {
+            await BleManager.writeWithoutResponse(
+              deviceId,
+              deviceServiceUUID,
+              deviceCharacteristicUUID,
+              bleData,
+              512 - 3,
+            );
           }
-          await BleManager.writeWithoutResponse(
-            deviceId,
-            deviceServiceUUID,
-            deviceCharacteristicUUID,
-            bleData,
-            512 - 3,
-          );
 
           BLEWriteLogger(data);
         } catch (error) {
